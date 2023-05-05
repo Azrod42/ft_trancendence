@@ -4,9 +4,9 @@ COPY . /app
 
 WORKDIR /app
 
-# RUN yarn global add @nestjs/cli 
+RUN ls 
 
 EXPOSE 4000
-EXPOSE 5555
 
-ENTRYPOINT [ "/bin/sh", "-c", "npx prisma migrate deploy && yarn run start" ]
+# ENTRYPOINT [ "/bin/sh", "-c", "npx prisma migrate deploy && yarn run start" ]
+ENTRYPOINT [ "/bin/sh", "-c", "yarn install --non-interactive && yarn add @nestjs/cli && npx prisma migrate deploy && yarn run start" ]

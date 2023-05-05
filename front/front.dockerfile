@@ -4,7 +4,7 @@ COPY . /app
 
 WORKDIR /app
 
-RUN ls -la && sh -c yarn install 
+RUN sh -c yarn install 
 
 EXPOSE 3000
 

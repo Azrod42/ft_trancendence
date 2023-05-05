@@ -29,16 +29,15 @@ services:
       - back
 # -=-=-=-=-=-=-=-=-=-=BACKEND=-=-=-=-=-=-=-=-=-=-
   back:
+    volumes:
+      - ./back:/app
+      - uploads:/app/image_dir
     build:
       context: ./back
       dockerfile: ./back.dockerfile
     container_name: backend
-    volumes:
-      - ./back:/app
-      - uploads:/app/image_dir
     ports:
       - "4000:4000"
-      - "5555:5555"
     env_file:
       - ./back/back.env
     restart: unless-stopped
