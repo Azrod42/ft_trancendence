@@ -1,0 +1,80 @@
+version: '3.8'
+
+networks:
+  backend:
+
+volumes:
+  data:
+  uploads:
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: postgres
+    ports:
+      - 5432:5432
+    restart: unless-stopped
+    volumes:
+      - data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_DB=${POSTGRES_DB}
+    networks:
+      - backend
+  front:
+    image: node:lts-alpine
+    container_name: frontend
+    working_dir: /app
+    command: sh -c "yarn install && yarn run build && yarn global add serve && serve -s build -l 3000"
+    environment:
+      - PUBLIC_URL=${FRONT_URL}
+      - REACT_APP_BACKEND_URL=${BACK_URL}
+      - REACT_APP_BACKEND_SOCKET=${SOCKET_URL}
+    volumes:
+      - ./front:/app
+    restart: unless-stopped
+    depends_on:
+      - back
+    ports:
+      - "3000:3000"
+    networks:
+      - backend
+  back:
+    image: node:lts-alpine
+    container_name: backend
+    working_dir: /app
+    command: sh -c "yarn install && npx prisma migrate deploy && yarn run start"
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - SITE_URL=${SITE_URL}
+      - FRONT_URL=${FRONT_URL}
+      - BACK_URL=${BACK_URL}
+      - FRONT_PORT=${FRONT_PORT}
+      - BACK_PORT=${BACK_PORT}
+    volumes:
+      - ./back:/app
+      - uploads:/app/image_dir
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    ports:
+      - "4000:4000"
+    networks:
+      - backend
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: unless-stopped
+    container_name: nest-pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
+    ports:
+      - '5050:80'
+    depends_on:
+      - postgres
+    networks:
+      - backend
+
