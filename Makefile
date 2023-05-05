@@ -2,6 +2,8 @@ all :
 	docker-compose up
 build :
 	docker-compose up -build
-clean :
-	docker system prune -a
+cleandb:
+	docker volume prune -f
+clean : cleandb
 fclean : clean
+	docker system prune -af
