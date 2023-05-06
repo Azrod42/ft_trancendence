@@ -4,7 +4,7 @@ COPY . /app
 
 WORKDIR /app
 
-RUN sh -c yarn install 
+RUN apk update && apk upgrade
 
 EXPOSE 3000
 

@@ -4,7 +4,7 @@ COPY . /app
 
 WORKDIR /app
 
-RUN ls 
+RUN apk update && apk upgrade
 
 EXPOSE 4000
 
