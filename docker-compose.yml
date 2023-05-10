@@ -13,15 +13,15 @@ services:
 # -=-=-=-=-=-=-=-=-=-=FRONTEND=-=-=-=-=-=-=-=-=-=-
   front:
     volumes:
-      - ./front:/app
+      - ./frontend:/app
     build:
-      context: ./front
+      context: ./frontend
       dockerfile: ./front.dockerfile
     container_name: frontend
     ports:
       - "3000:3000"
     env_file:
-      - ./front/front.env
+      - ./frontend/front.env
     restart: unless-stopped
     networks:
       - backend
@@ -30,16 +30,16 @@ services:
 # -=-=-=-=-=-=-=-=-=-=BACKEND=-=-=-=-=-=-=-=-=-=-
   back:
     volumes:
-      - ./back:/app
+      - ./backend:/app
       - uploads:/app/image_dir
     build:
-      context: ./back
+      context: ./backend
       dockerfile: ./back.dockerfile
     container_name: backend
     ports:
       - "4000:4000"
     env_file:
-      - ./back/back.env
+      - ./backend/back.env
     restart: unless-stopped
     networks:
       - backend
