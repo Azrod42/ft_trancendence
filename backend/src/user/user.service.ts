@@ -15,7 +15,12 @@ export class UserService {
 			return user;
 			throw new HttpException("User with this id does no exist", HttpStatus.NOT_FOUND,);
 	}
-
+	async findByUsername (username: string){
+		const user = await this.userRepo.findOneBy({username});
+		if (user)
+			return user;
+			throw new HttpException("User with this username does no exist", HttpStatus.NOT_FOUND,);
+	}
 	async  create(userData: CreateUserDto) {
 		const newUser = await this.userRepo.create(userData);
 		await this.userRepo.save(newUser);

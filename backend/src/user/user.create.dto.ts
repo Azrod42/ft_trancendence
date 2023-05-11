@@ -1,7 +1,6 @@
 class CreateUserDto {
-	pseudo:string;
-	email:string;
 	password:string;
+	username:string;
 }
 
 export default CreateUserDto;

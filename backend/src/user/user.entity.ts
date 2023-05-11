@@ -6,7 +6,7 @@ class User {
     id: string
 
     @Column()
-    pseudo: string
+    username: string
 
     @Column()
     email: string
