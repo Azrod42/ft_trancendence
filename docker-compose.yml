@@ -39,7 +39,7 @@ services:
     ports:
       - "4000:4000"
     env_file:
-      - ./backend/back.env
+      - ./backend/.env
     restart: unless-stopped
     networks:
       - backend

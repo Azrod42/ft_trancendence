@@ -20,16 +20,20 @@ export class AuthService {
 		try {
 			const hashoedPassword = await bcrypt.hash(password, 12);
 			const user = await this.usersService.create({
-				username,
+				username: username,
 				password: hashoedPassword,
+				email: "undefine@email.tv",
+				avatar: "@/image_dir/undefine.png",
+				is2FOn: false,
+				secret2F: "undefined2fsecret"
 			});
 			user.password = undefined;
 			return user;
 		} catch (e) {
 			if (e?.code === postgresErrorCode.UniqueViolation) {
-				throw new HttpException('Username taken', HttpStatus.BAD_REQUEST);
+				throw new HttpException('Username is already taken', HttpStatus.BAD_REQUEST);
 			}
-			throw new HttpException('Somthing went wrong', HttpStatus.INTERNAL_SERVER_ERROR,);
+			throw new HttpException('Somthing went fucking wrong', HttpStatus.INTERNAL_SERVER_ERROR,);
 
 		}
 	}
@@ -54,11 +58,11 @@ export class AuthService {
 	public getCookieWithJwtToken(user: User) {
 		const payload: TokenPayload = {user};
 		const token = this.jwtService.sign(payload);
-		return `Authentication=${token}; HttpOnly; Path=/; Max-Age:${this.configService.get("JWT_EXPIRATION_TIME",)}`
+		return `Authentication=${token}; HttpOnly; Path=/; Max-Age:3600`
 	}
 
 	public getCookieForLogout() {
-		return ('Autentication=; HttpOnly; Path=/; Max-Age:0')
+		return ('Authentication=; HttpOnly; Path=/; Max-Age:0')
 	}
 }
 
