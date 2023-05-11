@@ -1,14 +1,78 @@
 .maindiv {
-	margin: 0px;
+	margin: 0px auto;
 	width: 100%;
+	max-width: 400px;
 	height: 100%;
-	background-color: #202020;
+	background-color: #121212;
 	display: flex;
+	flex-direction: column;
 	align-items: center;
 	justify-content: center;
+	padding: 20px;
+	border-radius: 5px;
 }
 
-.text {
+.form {
+	display: flex;
+	flex-direction: column;
+	gap: 30px;
+}
+
+.labelText {
+	color: white;
+	margin: 0;
+}
+
+.inpuetEl {
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+}
+
+.inputText {
+	width: 300px;
+	height: 25px;
+	margin: 0;
+	border-radius: 5px;
+	border: none;
+}
+
+.inputButton {
+	border: none;
+	border-radius: 5px;
+	box-shadow: 0 0 10px rgb(224, 13, 189);
+	width: 50%;
+	height: 26px;
+	margin: 0 auto;
+	margin-top: 10px;
+	background: #202020;
+	color: white;
+	transition-duration: 0.10s;
+	font-weight: 700;
+}
+
+.inputButton:hover {
+	transform: scale(1.02);
+}
+
+.inputButton:active {
+	transform: scale(0.9);
+}
+
+.noAcc {
+	margin: 0;
+	margin-top: 50px;
+	color: white;
+	font-size: 0.9rem;
+}
+
+.link {
 	margin: 0;
 	color: white;
+	font-size: 0.9rem;
+	text-decoration: underline;
+}
+
+.link:hover {
+	text-decoration: none;
 }

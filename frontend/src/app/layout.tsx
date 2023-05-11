@@ -1,8 +1,12 @@
 import NavBar from './(component)/navbar/page'
 import './globals.css'
-import { Inter } from 'next/font/google'
+import { Barlow } from 'next/font/google'
 
-const inter = Inter({ subsets: ['latin'] })
+const font = Barlow({ 
+	weight: ['200', '400', '700'],
+	style: ['normal', 'italic'],
+	subsets: ['latin']
+});
 
 export const metadata = {
   title: 'ft_trancendence',
@@ -16,7 +20,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-    	<body className={inter.className}>
+    	<body className={font.className}>
 			<NavBar />
 			{children}
 		</body>

@@ -8,6 +8,7 @@ interface AuthTypeProps {
 }
 
 const AuthType: React.FC<AuthTypeProps> = () => {
+
 	const left = () => {
 		document.getElementById('authtype__left')?.classList.remove("divider__authtype--colorDark");
 		document.getElementById('authtype__right')?.classList.remove("divider__authtype--colorLight");
