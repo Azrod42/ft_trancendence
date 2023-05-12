@@ -10,6 +10,7 @@
 	justify-content: center;
 	padding: 20px;
 	border-radius: 15px;
+	box-shadow: 0 0 10px rgb(255, 196, 4);
 }
 
 .form {
@@ -40,10 +41,10 @@
 .inputButton {
 	border: none;
 	border-radius: 5px;
-	box-shadow: 0 0 10px rgb(224, 13, 189);
+	box-shadow: 0 0 10px rgb(255, 196, 4);
 	width: 50%;
 	height: 26px;
-	margin: 0 auto;
+	margin: 30px auto;
 	margin-top: 10px;
 	background: #202020;
 	color: white;
@@ -61,7 +62,7 @@
 
 .noAcc {
 	margin: 0;
-	margin-top: 50px;
+	margin-top: 2px;
 	color: white;
 	font-size: 0.9rem;
 }

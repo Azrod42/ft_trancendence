@@ -5,7 +5,7 @@ import styles from'../login/login.module.css'
 import styles2 from'./singup.module.css'
 import { motion } from "framer-motion"
 import Image from 'next/image'
-import pitch from '/public/media/logo-register.webp'
+import logo_register from '/public/media/logo-register.png'
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { FormValuesRegister } from '../auth.api'
 import Joi from 'joi';
@@ -73,12 +73,13 @@ const signUp: React.FC<signUpProps> = ({}) => {
 		}
 	};
 
+	const defaultValue= true;
 	return(
 		<motion.div className={styles.maindiv}
-			initial={{y: "40px"}}
-			animate={{y: "0px"}}
+			initial={{x: "-70px"}}
+			animate={{x: "0px"}}
 		>
-			<Image src={pitch} alt="nintendo" width={66} height={76} priority={true}/>
+			<Image src={logo_register} alt="nintendo" width={85} height={85} priority={true}/>
 			<motion.div 
 				initial={{opacity:0}}
 				animate={isDisplay ? "open" : "closed"}
@@ -95,19 +96,19 @@ const signUp: React.FC<signUpProps> = ({}) => {
 			>
 			<div className={styles.inpuetEl}>
 		 		<label className={styles.labelText}>Email :</label>
-				<input className={styles.inputText} autoComplete='no' type="text" {...register("email", {required: true})} />
+				<input className={styles.inputText} autoComplete='no' value='default@email.com' type="text" {...register("email", {required: true})} />
 			</div>
 			<div className={styles.inpuetEl}>
 		 		<label className={styles.labelText}>Username :</label>
-				<input className={styles.inputText} autoComplete='no' type="text" {...register("username", {required: true})} />
+				<input className={styles.inputText} autoComplete='no' value='XxAzrodxX' type="text" {...register("username", {required: true})} />
 			</div>
 			<div className={styles.inpuetEl}>
 		 		<label className={styles.labelText}>Password :</label>
-				<input className={styles.inputText} type="password" {...register("password", {required: true})} />
+				<input className={styles.inputText} type="password" value='test1234' {...register("password", {required: true})} />
 			</div>
 			<div className={styles.inpuetEl}>
 		 		<label className={styles.labelText}>Reapeat-password :</label>
-				<input className={styles.inputText} autoComplete='no' type="password" {...register("passwordRepeat", {required: true})} />
+				<input className={styles.inputText} autoComplete='no' type="password" value='test1234' {...register("passwordRepeat", {required: true})} />
 			</div>
 
 				<input className={styles.inputButton} type="submit" value="Register" />

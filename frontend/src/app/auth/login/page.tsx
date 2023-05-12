@@ -97,10 +97,10 @@ const Login: React.FC<LoginProps> = ({}) => {
 	};
 	return(
 	<motion.div className={styles.maindiv}
-		initial={{y: "40px"}}
-		animate={{y: "0px"}}
+		initial={{x: "-70px"}}
+		animate={{x: "0px"}}
 	>
-		<Image src={loginImage} alt="nintendo" width={95} height={66} priority={true}/>
+		<Image src={loginImage} alt="nintendo" width={85} height={85} priority={true}/>
 		<motion.div 
 			initial={{opacity:0}}
 			animate={isDisplay ? "open" : "closed"}
