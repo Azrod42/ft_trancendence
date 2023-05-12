@@ -40,15 +40,12 @@ const Login: React.FC<LoginProps> = ({}) => {
 	const onSubmit: SubmitHandler<FormValues> = data => {
 		const value = schema.validate(data);
 		if (value.error){
-			document.getElementById("testt")?.classList.add("test");
-			setTimeout(() => {
-				toggleDisplayOn();
-			}, 600);
+			toggleDisplayOn();
 			setTimeout(() => {
 				let errorTypeEl: HTMLElement | null = document.getElementById("error-type")
 				if (errorTypeEl)
 					errorTypeEl.innerText = value.error.details['0'].context?.key!;
-			}, 1000);
+			}, 20);
 		}else {
 			toggleDisplayOff()
 		}
@@ -63,7 +60,7 @@ const Login: React.FC<LoginProps> = ({}) => {
 		</div>
 		}
 		<form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
-			<div id="testt" className={styles.inpuetEl}>
+			<div className={styles.inpuetEl}>
 		 		<label className={styles.labelText}>Username :</label>
     			<input className={styles.inputText} {...register("username")} />
 			</div>
