@@ -7,7 +7,7 @@ interface signUpProps {
 }
 
 const signUp: React.FC<signUpProps> = ({}) => {
-	console.log(window.location.href.split('/').pop());
+	// console.log(window.location.href.split('/').pop());
 	if (window.location.href.split('/').pop() == "login"){
 		document.getElementById('authtype__left')?.classList.remove("divider__authtype--colorLight");
 		document.getElementById('authtype__right')?.classList.remove("divider__authtype--colorDark");

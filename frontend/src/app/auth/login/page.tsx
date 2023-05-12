@@ -7,6 +7,9 @@ import pitch from '../../../../public/media/logo-login.png'
 import Link from 'next/link';
 import * as Joi from 'joi';
 import { motion } from "framer-motion"
+import { useMutation } from 'react-query'
+import Api from '@/app/api/api';
+import { FormValues, login } from '../auth.api';
 
 //JOI SCHEMA FOR PASSWORD VALIDATION
 const schema = Joi.object ({
@@ -18,14 +21,6 @@ const schema = Joi.object ({
 	password: Joi.string()
 		.pattern(new RegExp('^[a-zA-Z0-9]{5,30}$')),
 })
-
-//INPUT ASK IN FORM
-type FormValues = {
-	username: string;
-	password: string;
-  };
-
-
   
   //ERROR_DIV_ANIMATION
   const variants = {
@@ -40,12 +35,39 @@ interface LoginProps {
 }
 
 const Login: React.FC<LoginProps> = ({}) => {
+	const popUpDelay = 3000;
+	Api.init()
 	const { register, handleSubmit } = useForm<FormValues>();
 	const [isDisplay, setDisplay] = useState(false);
 
 	function toggleDisplayOn() {setDisplay((isDisplay) => isDisplay = true);}
 	function toggleDisplayOff() {setDisplay((isDisplay) => isDisplay = false);}
 
+	const loginMutation = useMutation(login, {
+		onSuccess: () => {
+			console.log("LOGINNNN");
+		},
+		onError: (e: any) => {
+			if ( e.response.status == 401) {
+				toggleDisplayOn()
+				let errorEl: HTMLElement | null = document.getElementById("error")
+				let errorTypeEl: HTMLElement | null = document.getElementById("error-type")
+				setTimeout(() => {
+					if (errorTypeEl && errorEl){
+						errorTypeEl.innerText = "";
+						errorEl.innerText = "Sorry, the data you are using is invalid"
+					}
+					setTimeout(() => {
+						if (errorEl)
+							errorEl.innerText = "Incorrect format on"
+					}, popUpDelay + 1000)
+				}, 20);
+				setTimeout(() => {
+					toggleDisplayOff()
+				}, popUpDelay);
+			}
+		}
+	});
 
 	const onSubmit: SubmitHandler<FormValues> = data => {
 		const value = schema.validate(data);
@@ -56,9 +78,12 @@ const Login: React.FC<LoginProps> = ({}) => {
 				if (errorTypeEl)
 					errorTypeEl.innerText = value.error.details['0'].context?.key!;
 			}, 20);
+			setTimeout(() => {
+				toggleDisplayOff()
+			}, popUpDelay);
 		}else {
 			toggleDisplayOff()
-			console.log(data)
+			loginMutation.mutate(data);
 		}
 
 	};
@@ -74,7 +99,7 @@ const Login: React.FC<LoginProps> = ({}) => {
 			variants={variants}
 		>
 			<div className={styles.errorMessage}>
-				<span>Incorrect format on </span><span>password</span>
+				<span id="error">Incorrect format on </span><span id="error-type" ></span>
 			</div>
 		</motion.div>
 		<motion.form className={styles.form} onSubmit={handleSubmit(onSubmit)}
@@ -101,3 +126,10 @@ const Login: React.FC<LoginProps> = ({}) => {
 export default Login;
 
 //frontend\src\app\auth\login\page.tsx
+
+
+// Api.init();
+// setIsApiReady(true);
+// if (!isReady)
+// 	return (<div>Loading ...</div>)
+// const [isReady, setIsApiReady] = useState(false);

@@ -4,6 +4,7 @@ import { LocalAuthenticationGuard } from './localAuth.guard';
 import RequestWithUser from './interface/requestWithUser.i';
 import { Response } from 'express';
 import JwtAuthGuard from './jwtAuth.guard';
+import CreateUserDto from 'src/user/user.create.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -11,8 +12,8 @@ export class AuthController {
 
 
 	@Post('register')
-	async register(@Body('username') username : string, @Body("password") password: string) {
-		return this.authService.register({username, password})
+	async register(@Body() registrationData: CreateUserDto) {
+		return this.authService.register(registrationData)
 	}
 
 

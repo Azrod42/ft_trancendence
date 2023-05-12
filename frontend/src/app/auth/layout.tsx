@@ -1,4 +1,7 @@
+"use client"
+import { useState } from 'react';
 import AuthType from './authtype/authtype'
+import Api from '../api/api';
 
 
 

@@ -15,17 +15,13 @@ export class AuthService {
 	constructor(private usersService: UserService, private jwtService: JwtService, 	private readonly configService: ConfigService) {}
 
 
-	async register({password, username}: IRegister) {
+	async register(registerData: CreateUserDto) {
 
 		try {
-			const hashoedPassword = await bcrypt.hash(password, 12);
+			const hashoedPassword = await bcrypt.hash(registerData.password, 12);
 			const user = await this.usersService.create({
-				username: username,
+				...registerData,
 				password: hashoedPassword,
-				email: "undefine@email.tv",
-				avatar: "@/image_dir/undefine.png",
-				is2FOn: false,
-				secret2F: "undefined2fsecret"
 			});
 			user.password = undefined;
 			return user;
@@ -64,10 +60,4 @@ export class AuthService {
 	public getCookieForLogout() {
 		return ('Authentication=; HttpOnly; Path=/; Max-Age:0')
 	}
-}
-
-interface IRegister {
-	password: string;
-	username: string;
-
 }
