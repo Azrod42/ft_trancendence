@@ -3,7 +3,7 @@ import React, {useState} from 'react';
 import styles from './login.module.css';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import Image from 'next/image';
-import pitch from '../../../../public/media/logo-login.png'
+import loginImage from '/public/media/logo-login.png'
 import Link from 'next/link';
 import * as Joi from 'joi';
 import { motion } from "framer-motion"
@@ -37,6 +37,14 @@ interface LoginProps {
 const Login: React.FC<LoginProps> = ({}) => {
 	const popUpDelay = 3000;
 	Api.init()
+
+	setTimeout(() => {
+		document.getElementById('authtype__left')?.classList.remove("divider__authtype--colorDark");
+		document.getElementById('authtype__right')?.classList.remove("divider__authtype--colorLight");
+		document.getElementById('authtype__left')?.classList.add("divider__authtype--colorLight");
+		document.getElementById('authtype__right')?.classList.add("divider__authtype--colorDark");
+	}, 20);
+
 	const { register, handleSubmit } = useForm<FormValues>();
 	const [isDisplay, setDisplay] = useState(false);
 
@@ -89,10 +97,10 @@ const Login: React.FC<LoginProps> = ({}) => {
 	};
 	return(
 	<motion.div className={styles.maindiv}
-		initial={{y: "-200px", scale: 0}}
-		animate={{y: "0px", scale: 1}}
+		initial={{y: "40px"}}
+		animate={{y: "0px"}}
 	>
-		<Image src={pitch} alt="nintendo" width={95} height={66} priority={true}/>
+		<Image src={loginImage} alt="nintendo" width={95} height={66} priority={true}/>
 		<motion.div 
 			initial={{opacity:0}}
 			animate={isDisplay ? "open" : "closed"}
@@ -109,7 +117,7 @@ const Login: React.FC<LoginProps> = ({}) => {
 		>
 			<div className={styles.inpuetEl}>
 		 		<label className={styles.labelText}>Username :</label>
-    			<input className={styles.inputText} {...register("username")} />
+    			<input className={styles.inputText} autoComplete='no' {...register("username")} />
 			</div>
 			<div className={styles.inpuetEl}>
 				<label className={styles.labelText}>Password :</label>

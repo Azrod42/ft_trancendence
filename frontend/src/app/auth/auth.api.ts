@@ -6,6 +6,13 @@ export type FormValues = {
 	password: string;
 };
 
+export type FormValuesRegister = {
+	email: string;
+	username: string;
+	password: string;
+	passwordRepeat: string;
+};
+
 interface LoginResponse {
 	id:string;
 	username: string;
