@@ -6,7 +6,7 @@ import Image from 'next/image';
 import pitch from '../../../../public/media/logo-login.png'
 import Link from 'next/link';
 import * as Joi from 'joi';
-import { motion, AnimatePresence } from "framer-motion"
+import { motion } from "framer-motion"
 
 //JOI SCHEMA FOR PASSWORD VALIDATION
 const schema = Joi.object ({
@@ -63,7 +63,10 @@ const Login: React.FC<LoginProps> = ({}) => {
 
 	};
 	return(
-	<div className={styles.maindiv}>
+	<motion.div className={styles.maindiv}
+		initial={{y: "-200px", scale: 0}}
+		animate={{y: "0px", scale: 1}}
+	>
 		<Image src={pitch} alt="nintendo" width={95} height={66} priority={true}/>
 		<motion.div 
 			initial={{opacity:0}}
@@ -91,7 +94,7 @@ const Login: React.FC<LoginProps> = ({}) => {
    		</motion.form>
 		<p className={styles.noAcc}>You do not have an account ?</p>
 		<Link className={styles.link} href="/auth/sign-up">Create an account</Link>
-	</div>
+	</motion.div>
 	)
 }
 
