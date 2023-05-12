@@ -1,14 +1,17 @@
 "use client"
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import Link from 'next/link';
-import styles from'../login/login.module.css'
-import styles2 from'./singup.module.css'
-import { motion } from "framer-motion"
-import Image from 'next/image'
-import logo_register from '/public/media/logo-register.png'
+import styles from '../login/login.module.css';
+import styles2 from'./singup.module.css';
+import { motion } from "framer-motion";
+import Image from 'next/image';
+import logo_register from '/public/media/logo-register.png';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { FormValuesRegister } from '../auth.api'
 import Joi from 'joi';
+import { FormValuesRegister, register as regist } from '../auth.api'
+import { useMutation } from 'react-query'
+
+
 
 
 const schema = Joi.object ({
@@ -39,21 +42,28 @@ interface signUpProps {
 const signUp: React.FC<signUpProps> = ({}) => {
 	const popUpDelay = 3000;
 	// console.log(window.location.href.split('/').pop());
-	setTimeout(() => {
+	useEffect(() => {
 		document.getElementById('authtype__left')?.classList.remove("divider__authtype--colorLight");
 		document.getElementById('authtype__right')?.classList.remove("divider__authtype--colorDark");
 		document.getElementById('authtype__left')?.classList.add("divider__authtype--colorDark");
 		document.getElementById('authtype__right')?.classList.add("divider__authtype--colorLight");
-	}, 20);
+	}, []);
 	
 
 	const [isDisplay, setDisplay] = useState(false);
+	const { register, handleSubmit, formState: { errors } } = useForm<FormValuesRegister>();
 
 	function toggleDisplayOn() {setDisplay((isDisplay) => isDisplay = true);}
 	function toggleDisplayOff() {setDisplay((isDisplay) => isDisplay = false);}
 
+	const {mutate: registerUser} = useMutation(regist, {
+		onSuccess: () => {
+			console.log("LOGINNNN");
+		},
+		onError: (e: any) => {
+		}
+	});
 
-	const { register, handleSubmit, formState: { errors } } = useForm<FormValuesRegister>();
 	const onSubmit: SubmitHandler<FormValuesRegister> = data => {
 		console.log(data);
 		const value = schema.validate(data);
@@ -69,6 +79,7 @@ const signUp: React.FC<signUpProps> = ({}) => {
 			}, popUpDelay);
 		}else {
 			toggleDisplayOff()
+			registerUser(data);
 			// loginMutation.mutate(data);
 		}
 	};
@@ -76,8 +87,8 @@ const signUp: React.FC<signUpProps> = ({}) => {
 	const defaultValue= true;
 	return(
 		<motion.div className={styles.maindiv}
-			initial={{x: "-70px"}}
-			animate={{x: "0px"}}
+			initial={{y: "-40px"}}
+			animate={{y: "0px"}}
 		>
 			<Image src={logo_register} alt="nintendo" width={85} height={85} priority={true}/>
 			<motion.div 

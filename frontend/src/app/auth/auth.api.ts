@@ -13,14 +13,22 @@ export type FormValuesRegister = {
 	passwordRepeat: string;
 };
 
-interface LoginResponse {
+interface UserAuthResponse {
 	id:string;
 	username: string;
 }
 
 export const login = async(formInput: FormValues) => {
-	const { data } = await Api.post<LoginResponse, FormValues>({
+	const { data } = await Api.post<UserAuthResponse, FormValues>({
 		url: "/auth/login",
 		data: formInput,
 	});
+}
+
+export const register = async (registerInput: FormValuesRegister) => {
+	const { data } = await Api.post<UserAuthResponse, FormValues>({
+		url: "/auth/register",
+		data: registerInput,
+	});
+	console.log(data);
 }

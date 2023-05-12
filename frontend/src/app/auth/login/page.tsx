@@ -1,5 +1,5 @@
 "use client"
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import styles from './login.module.css';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import Image from 'next/image';
@@ -38,12 +38,12 @@ const Login: React.FC<LoginProps> = ({}) => {
 	const popUpDelay = 3000;
 	Api.init()
 
-	setTimeout(() => {
+	useEffect(() => {
 		document.getElementById('authtype__left')?.classList.remove("divider__authtype--colorDark");
 		document.getElementById('authtype__right')?.classList.remove("divider__authtype--colorLight");
 		document.getElementById('authtype__left')?.classList.add("divider__authtype--colorLight");
 		document.getElementById('authtype__right')?.classList.add("divider__authtype--colorDark");
-	}, 20);
+	}, [])
 
 	const { register, handleSubmit } = useForm<FormValues>();
 	const [isDisplay, setDisplay] = useState(false);
@@ -97,8 +97,8 @@ const Login: React.FC<LoginProps> = ({}) => {
 	};
 	return(
 	<motion.div className={styles.maindiv}
-		initial={{x: "-70px"}}
-		animate={{x: "0px"}}
+		initial={{y: "-40px"}}
+		animate={{y: "0px"}}
 	>
 		<Image src={loginImage} alt="nintendo" width={85} height={85} priority={true}/>
 		<motion.div 
