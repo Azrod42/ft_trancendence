@@ -14,13 +14,12 @@ class CreateUserDto {
 	@IsEmail()
 	email: string;
 
-	@IsString()
 	avatar: string;
 
-	@IsBoolean()
+	passwordRepeat: string;
+
 	is2FOn: boolean;
 	
-	@IsString()
 	secret2F: string;
 }
 

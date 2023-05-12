@@ -53,7 +53,7 @@ const Login: React.FC<LoginProps> = ({}) => {
 
 	const loginMutation = useMutation(login, {
 		onSuccess: () => {
-			console.log("LOGINNNN");
+			console.log("Login Done");
 		},
 		onError: (e: any) => {
 			if ( e.response.status == 401) {

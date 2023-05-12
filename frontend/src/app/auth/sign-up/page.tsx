@@ -58,9 +58,10 @@ const signUp: React.FC<signUpProps> = ({}) => {
 
 	const {mutate: registerUser} = useMutation(regist, {
 		onSuccess: () => {
-			console.log("LOGINNNN");
+			console.log("Register Done");
 		},
 		onError: (e: any) => {
+			console.log(e);
 		}
 	});
 
@@ -80,7 +81,6 @@ const signUp: React.FC<signUpProps> = ({}) => {
 		}else {
 			toggleDisplayOff()
 			registerUser(data);
-			// loginMutation.mutate(data);
 		}
 	};
 
@@ -115,11 +115,11 @@ const signUp: React.FC<signUpProps> = ({}) => {
 			</div>
 			<div className={styles.inpuetEl}>
 		 		<label className={styles.labelText}>Password :</label>
-				<input className={styles.inputText} type="password" value='test1234' {...register("password", {required: true})} />
+				<input className={styles.inputText} type="password" value='test1' {...register("password", {required: true})} />
 			</div>
 			<div className={styles.inpuetEl}>
 		 		<label className={styles.labelText}>Reapeat-password :</label>
-				<input className={styles.inputText} autoComplete='no' type="password" value='test1234' {...register("passwordRepeat", {required: true})} />
+				<input className={styles.inputText} autoComplete='no' type="password" value='test1' {...register("passwordRepeat", {required: true})} />
 			</div>
 
 				<input className={styles.inputButton} type="submit" value="Register" />

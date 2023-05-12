@@ -20,12 +20,18 @@ export class AuthService {
 		try {
 			const hashoedPassword = await bcrypt.hash(registerData.password, 12);
 			const user = await this.usersService.create({
-				...registerData,
+				username: registerData.username,
+				email: registerData.email,
 				password: hashoedPassword,
+				passwordRepeat: "",
+				is2FOn: false,
+				secret2F: "undefine",
+				avatar: "undefine",
 			});
 			user.password = undefined;
 			return user;
 		} catch (e) {
+			console.log(e);
 			if (e?.code === postgresErrorCode.UniqueViolation) {
 				throw new HttpException('Username is already taken', HttpStatus.BAD_REQUEST);
 			}
