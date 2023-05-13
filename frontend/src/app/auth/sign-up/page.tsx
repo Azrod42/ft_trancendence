@@ -8,12 +8,14 @@ import Image from 'next/image';
 import logo_register from '/public/media/logo-register.png';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import Joi from 'joi';
-import { FormValuesRegister, register as regist } from '../auth.api'
+import { FormValuesRegister, UserAuthResponse, register as regist } from '../auth.api'
 import { useMutation } from 'react-query'
+import Api from '@/app/api/api';
+import { useRouter } from 'next/navigation';
+import { isUserLog } from '@/app/(common)/checkLog';
 
 
-
-
+//JOI SCHEMA FOR PASSWORD VALIDATION
 const schema = Joi.object ({
 	email: Joi.string()
         .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net', 'fr', 'dev'] } }),
@@ -23,11 +25,11 @@ const schema = Joi.object ({
 		.max(30)
 		.required(),
 	password: Joi.string()
-		.pattern(new RegExp('^[a-zA-Z0-9]{5,30}$')),
+		.pattern(new RegExp('^[a-zA-Z0-9]{6,30}$')),
 	passwordRepeat: Joi.ref('password'),
 })
 
-  //ERROR_DIV_ANIMATION
+//ERROR_DIV_ANIMATION
   const variants = {
 	open: {opacity: 1, y: "0"},
 	closed: {opacity:0, y: "-30px"},
@@ -35,36 +37,80 @@ const schema = Joi.object ({
 	translateDown: {marginTop: "0px"}
   }
 
+//REACT FUNCTIONAL COMPONENT INTERFACE	
 interface signUpProps {
-
 }
 
 const signUp: React.FC<signUpProps> = ({}) => {
 	const popUpDelay = 3000;
-	// console.log(window.location.href.split('/').pop());
+	Api.init(); //mandatory to do api call to backend
+
+	//FORM DATA HANDLE
+	const { register, handleSubmit, formState: { errors } } = useForm<FormValuesRegister>();
+	
+	//ERROR DIV DISPLAY
+	const [isDisplay, setDisplay] = useState(false);
+	function toggleDisplayOn() {setDisplay((isDisplay) => isDisplay = true);}
+	function toggleDisplayOff() {setDisplay((isDisplay) => isDisplay = false);}
+
+
+	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
+	//CHECK IF USER IS LOG (REDIRECT DASHBOARD) 
+	const { push } = useRouter();
+	useEffect(() => {
+		const data = isUserLog();
+		data.then(function(data: UserAuthResponse | undefined) {
+			if (data !== undefined){
+				push('/dashboard');
+			}
+		})
+	})
+	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
+
+	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
+	//CHANGE BACKGOUND LOGIN/SIGN-UP
 	useEffect(() => {
 		document.getElementById('authtype__left')?.classList.remove("divider__authtype--colorLight");
 		document.getElementById('authtype__right')?.classList.remove("divider__authtype--colorDark");
 		document.getElementById('authtype__left')?.classList.add("divider__authtype--colorDark");
 		document.getElementById('authtype__right')?.classList.add("divider__authtype--colorLight");
 	}, []);
-	
+	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
 
-	const [isDisplay, setDisplay] = useState(false);
-	const { register, handleSubmit, formState: { errors } } = useForm<FormValuesRegister>();
 
-	function toggleDisplayOn() {setDisplay((isDisplay) => isDisplay = true);}
-	function toggleDisplayOff() {setDisplay((isDisplay) => isDisplay = false);}
-
+	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
+	//LOGIN MUTATION CALL BY onsubmit to resolve api call register
 	const {mutate: registerUser} = useMutation(regist, {
 		onSuccess: () => {
 			console.log("Register Done");
 		},
 		onError: (e: any) => {
-			console.log(e);
+			console.log(e.response.data.message)
+			if (e.response.status === 400){
+				toggleDisplayOn()
+				let errorEl: HTMLElement | null = document.getElementById("error")
+				let errorTypeEl: HTMLElement | null = document.getElementById("error-type")
+				setTimeout(() => {
+					if (errorTypeEl && errorEl){
+						errorTypeEl.innerText = "";
+						errorEl.innerText = e.response.data.message;
+					}
+					setTimeout(() => {
+						if (errorEl)
+							errorEl.innerText = "Incorrect format on"
+					}, popUpDelay + 1000)
+				}, 20);
+				setTimeout(() => {
+					toggleDisplayOff()
+				}, popUpDelay);
+			}
 		}
 	});
+	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
 
+
+	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
+	//FORM ON SUBIMIT HANDLE
 	const onSubmit: SubmitHandler<FormValuesRegister> = data => {
 		console.log(data);
 		const value = schema.validate(data);
@@ -83,8 +129,7 @@ const signUp: React.FC<signUpProps> = ({}) => {
 			registerUser(data);
 		}
 	};
-
-	const defaultValue= true;
+	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
 	return(
 		<motion.div className={styles.maindiv}
 			initial={{y: "-40px"}}
@@ -111,18 +156,18 @@ const signUp: React.FC<signUpProps> = ({}) => {
 			</div>
 			<div className={styles.inpuetEl}>
 		 		<label className={styles.labelText}>Username :</label>
-				<input className={styles.inputText} autoComplete='no' value='XxAzrodxX' type="text" {...register("username", {required: true})} />
+				<input className={styles.inputText} autoComplete='no' type="text" {...register("username", {required: true})} />
 			</div>
 			<div className={styles.inpuetEl}>
 		 		<label className={styles.labelText}>Password :</label>
-				<input className={styles.inputText} type="password" value='test1' {...register("password", {required: true})} />
+				<input className={styles.inputText} type="password" {...register("password", {required: true})} />
 			</div>
 			<div className={styles.inpuetEl}>
 		 		<label className={styles.labelText}>Reapeat-password :</label>
-				<input className={styles.inputText} autoComplete='no' type="password" value='test1' {...register("passwordRepeat", {required: true})} />
+				<input className={styles.inputText} autoComplete='no' type="password" {...register("passwordRepeat", {required: true})} />
 			</div>
 
-				<input className={styles.inputButton} type="submit" value="Register" />
+				<input className={styles.inputButton} type="submit" />
     		</motion.form>
 			<p className={styles.noAcc}>You already have an account ?</p>
 			<Link className={styles.link} href="/auth/login">Login</Link>

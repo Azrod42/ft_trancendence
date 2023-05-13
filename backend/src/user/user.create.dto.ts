@@ -4,7 +4,7 @@ import { NONAME } from "dns";
 class CreateUserDto {
 	@IsString()
 	@IsNotEmpty()
-	@MinLength(7)
+	@MinLength(6)
 	password:string;
 	
 	@IsString()

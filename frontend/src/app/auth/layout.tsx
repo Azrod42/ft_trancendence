@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import AuthType from './authtype/authtype'
 import Api from '../api/api';
+import NavBar from '../(component)/navbarLanding/page';
 
 
 
@@ -11,10 +12,11 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-	<div>
+	<main>
+		<NavBar />
 		<AuthType />
 		{children}
-	</div>
+	</main>
 
   )
 }

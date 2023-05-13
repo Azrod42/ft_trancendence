@@ -9,7 +9,9 @@ import * as Joi from 'joi';
 import { motion } from "framer-motion"
 import { useMutation } from 'react-query'
 import Api from '@/app/api/api';
-import { FormValues, login } from '../auth.api';
+import { FormValues, UserAuthResponse, login } from '../auth.api';
+import { useRouter } from 'next/navigation';
+import { isUserLog } from '@/app/(common)/checkLog';
 
 //JOI SCHEMA FOR PASSWORD VALIDATION
 const schema = Joi.object ({
@@ -36,24 +38,60 @@ interface LoginProps {
 
 const Login: React.FC<LoginProps> = ({}) => {
 	const popUpDelay = 3000;
-	Api.init()
+	Api.init() //mandatory to do api call to backend
 
+	//FORM DATA HANDLE
+	const { register, handleSubmit } = useForm<FormValues>();
+	
+	//ERROR DIV DISPLAY
+	const [isDisplay, setDisplay] = useState(false);
+	function toggleDisplayOn() {setDisplay((isDisplay) => isDisplay = true);}
+	function toggleDisplayOff() {setDisplay((isDisplay) => isDisplay = false);}
+	
+	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
+	//CHECK IF USER IS LOG (REDIRECT DASHBOARD) 
+	const { push } = useRouter();
+	useEffect(() => {
+		const data = isUserLog();
+		data.then(function(data: UserAuthResponse | undefined) {
+			if (data !== undefined){
+				push('/dashboard');
+			}
+		})
+	})
+	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
+
+	
+	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
+	//CHANGE BACKGOUND LOGIN/SIGN-UP
 	useEffect(() => {
 		document.getElementById('authtype__left')?.classList.remove("divider__authtype--colorDark");
 		document.getElementById('authtype__right')?.classList.remove("divider__authtype--colorLight");
 		document.getElementById('authtype__left')?.classList.add("divider__authtype--colorLight");
 		document.getElementById('authtype__right')?.classList.add("divider__authtype--colorDark");
 	}, [])
+	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
 
-	const { register, handleSubmit } = useForm<FormValues>();
-	const [isDisplay, setDisplay] = useState(false);
-
-	function toggleDisplayOn() {setDisplay((isDisplay) => isDisplay = true);}
-	function toggleDisplayOff() {setDisplay((isDisplay) => isDisplay = false);}
-
+	
+	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
+	//LOGIN MUTATION CALL BY onsubmit to resolve api call login
 	const loginMutation = useMutation(login, {
-		onSuccess: () => {
+		onSuccess: (user) => {
+			console.log(user);
+			let errorEl: HTMLElement | null = document.getElementById("error")
+
 			console.log("Login Done");
+			toggleDisplayOn()
+			document.getElementById('alert-box')?.setAttribute("style", "background-color: green;");
+			if (errorEl)
+				errorEl.innerText = `Wellcome ${user.username}`;
+			setTimeout(() => {
+				toggleDisplayOff()
+				push('/');
+				setTimeout(() => {
+					document.getElementById('alert-box')?.setAttribute("style", "background-color: rgb(153, 14, 14);");
+				}, 50);
+			}, popUpDelay / 2);
 		},
 		onError: (e: any) => {
 			if ( e.response.status == 401) {
@@ -76,7 +114,11 @@ const Login: React.FC<LoginProps> = ({}) => {
 			}
 		}
 	});
+	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
 
+
+	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
+	//FORM ON SUBIMIT HANDLE
 	const onSubmit: SubmitHandler<FormValues> = data => {
 		const value = schema.validate(data);
 		if (value.error){
@@ -93,6 +135,8 @@ const Login: React.FC<LoginProps> = ({}) => {
 			toggleDisplayOff()
 			loginMutation.mutate(data);
 		}
+	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
+
 
 	};
 	return(
@@ -106,7 +150,7 @@ const Login: React.FC<LoginProps> = ({}) => {
 			animate={isDisplay ? "open" : "closed"}
 			variants={variants}
 		>
-			<div className={styles.errorMessage}>
+			<div className={styles.errorMessage} id="alert-box">
 				<span id="error">Incorrect format on </span><span id="error-type" ></span>
 			</div>
 		</motion.div>

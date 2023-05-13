@@ -31,7 +31,6 @@ export class AuthService {
 			user.password = undefined;
 			return user;
 		} catch (e) {
-			console.log(e);
 			if (e?.code === postgresErrorCode.UniqueViolation) {
 				throw new HttpException('Username is already taken', HttpStatus.BAD_REQUEST);
 			}
@@ -60,7 +59,7 @@ export class AuthService {
 	public getCookieWithJwtToken(user: User) {
 		const payload: TokenPayload = {user};
 		const token = this.jwtService.sign(payload);
-		return `Authentication=${token}; HttpOnly; Path=/; Max-Age:3600`
+		return `Authentication=${token}; domain: 'localhost'; HttpOnly; Path=/; Secure; Max-Age=3600`
 	}
 
 	public getCookieForLogout() {

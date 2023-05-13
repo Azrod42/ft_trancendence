@@ -1,5 +1,5 @@
 import { AuthService } from './auth.service';
-import { Controller, HttpCode, Post, Body, UseGuards, Req, Res } from '@nestjs/common';
+import { Controller, HttpCode, Post, Body, UseGuards, Req, Res, Get } from '@nestjs/common';
 import { LocalAuthenticationGuard } from './localAuth.guard';
 import RequestWithUser from './interface/requestWithUser.i';
 import { Response } from 'express';
@@ -32,5 +32,13 @@ export class AuthController {
 	async logOut(@Req() _request: RequestWithUser, @Res() response: Response) {
 		response.setHeader('Set-Cookie', this.authService.getCookieForLogout());
 		response.send();
+	}
+
+	@HttpCode(200)
+	@UseGuards(JwtAuthGuard)
+	@Get("logcheck")
+	async logcheck(@Req() request: RequestWithUser, @Res() response: Response) {
+		const { user } = request; 
+		return response.send(user);
 	}
 }

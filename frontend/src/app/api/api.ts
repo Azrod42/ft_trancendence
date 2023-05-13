@@ -11,10 +11,11 @@ class Api {
 	static init() {
 		this.axiosInstance = axios.create({
 			baseURL: 'http://localhost:4000',
+			withCredentials: true,
 		})
 	}
 	static async get<ResponseType>(url: string){
-		return Api.axiosInstance.get<ResponseType>(url);
+		return await Api.axiosInstance.get<ResponseType>(url);
 	}
 
 	static async post<ResponseType, DataType = undefined>({url, data}: PostArgs<DataType>){
