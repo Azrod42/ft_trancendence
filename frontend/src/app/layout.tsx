@@ -39,6 +39,7 @@ return (
 				backgroundSize: "cover",
 				backgroundPosition: "center",
 				backgroundRepeat: "no-repeat",
+				height: "96vh"
 				}}>
 
 				<QueryClientProvider client={queryClient2}>

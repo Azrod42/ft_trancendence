@@ -58,7 +58,7 @@ const Login: React.FC<LoginProps> = ({}) => {
 				push('/dashboard');
 			}
 		})
-	});
+	}), [];
 	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
 
 	
@@ -152,18 +152,20 @@ const Login: React.FC<LoginProps> = ({}) => {
 				<span id="error">Incorrect format on </span><span id="error-type" ></span>
 			</div>
 		</motion.div>
-		<motion.form className={styles.form} onSubmit={handleSubmit(onSubmit)}
+		<motion.form className={styles.form} name="login" onSubmit={handleSubmit(onSubmit)}
 			initial={{marginTop: "-66px"}}
 			animate={isDisplay ? "translateDown" : "translateUp"}
 			variants={variants}
 		>
 			<div className={styles.inpuetEl}>
-		 		<label className={styles.labelText}>Username :</label>
-    			<input className={styles.inputText} autoComplete='no' {...register("username")} />
+		 		<label className={styles.labelText}>Username :
+    				<input className={styles.inputText} autoComplete='no' {...register("username")} />
+				</label>
 			</div>
 			<div className={styles.inpuetEl}>
-				<label className={styles.labelText}>Password :</label>
-				<input className={styles.inputText}type="password" {...register("password")} />
+				<label className={styles.labelText}>Password :
+					<input className={styles.inputText}type="password" {...register("password")} />
+				</label>
 			</div>
     		<input className={styles.inputButton} type="submit" value="Connect"/>
    		</motion.form>
