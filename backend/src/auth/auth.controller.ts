@@ -28,7 +28,7 @@ export class AuthController {
 
 	@HttpCode(200)
 	@UseGuards(JwtAuthGuard)
-	@Post('logout')
+	@Get('logout')
 	async logOut(@Req() _request: RequestWithUser, @Res() response: Response) {
 		response.setHeader('Set-Cookie', this.authService.getCookieForLogout());
 		response.send();

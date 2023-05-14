@@ -82,10 +82,9 @@ const signUp: React.FC<signUpProps> = ({}) => {
 	//LOGIN MUTATION CALL BY onsubmit to resolve api call register
 	const {mutate: registerUser} = useMutation(regist, {
 		onSuccess: () => {
-			console.log("Register Done");
+			push('/auth/login');
 		},
 		onError: (e: any) => {
-			console.log(e.response.data.message)
 			if (e.response.status === 400){
 				toggleDisplayOn()
 				let errorEl: HTMLElement | null = document.getElementById("error")
@@ -112,7 +111,6 @@ const signUp: React.FC<signUpProps> = ({}) => {
 	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
 	//FORM ON SUBIMIT HANDLE
 	const onSubmit: SubmitHandler<FormValuesRegister> = data => {
-		console.log(data);
 		const value = schema.validate(data);
 		if (value.error){
 			toggleDisplayOn();

@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import AuthType from './authtype/authtype'
 import Api from '../api/api';
-import NavBar from '../(component)/navbarLanding/page';
+import NavBar from '../(component)/navbarLanding/navbarLanding';
 
 
 

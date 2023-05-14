@@ -77,10 +77,8 @@ const Login: React.FC<LoginProps> = ({}) => {
 	//LOGIN MUTATION CALL BY onsubmit to resolve api call login
 	const loginMutation = useMutation(login, {
 		onSuccess: (user) => {
-			console.log(user);
 			let errorEl: HTMLElement | null = document.getElementById("error")
 
-			console.log("Login Done");
 			toggleDisplayOn()
 			document.getElementById('alert-box')?.setAttribute("style", "background-color: green;");
 			if (errorEl)
@@ -88,10 +86,8 @@ const Login: React.FC<LoginProps> = ({}) => {
 			setTimeout(() => {
 				toggleDisplayOff()
 				push('/');
-				setTimeout(() => {
-					document.getElementById('alert-box')?.setAttribute("style", "background-color: rgb(153, 14, 14);");
-				}, 50);
-			}, popUpDelay / 2);
+				document.getElementById('alert-box')?.setAttribute("style", "background-color: rgb(153, 14, 14);");
+			}, popUpDelay / 1.5);
 		},
 		onError: (e: any) => {
 			if ( e.response.status == 401) {

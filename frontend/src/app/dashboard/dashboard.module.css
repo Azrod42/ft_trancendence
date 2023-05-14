@@ -1,4 +1,5 @@
 .container{
+	width: auto;
 	display: grid;
 	grid-template-columns: repeat(3, 1fr);
 	grid-auto-rows: minmax(100px, auto);
@@ -21,6 +22,10 @@
 	border-radius: 10px;
 	box-shadow: 0 0 15px rgb(255, 196, 4);
 	margin: 0 auto;
+}
+
+.layoutDiv {
+	width: 100%;
 }
 
 @media screen and (max-width: 1650px) {

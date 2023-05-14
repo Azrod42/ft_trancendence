@@ -41,3 +41,12 @@ export const islog = async() => {
 		return undefined;
 	}
 }
+
+export const logout = async() => {
+	try {
+	const { data } = await Api.get<UserAuthResponse>("/auth/logout",);
+		return (data);
+	} catch (e) {
+		return undefined;
+	}
+}

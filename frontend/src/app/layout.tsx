@@ -1,7 +1,7 @@
 "use client"
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from "react-query/devtools"
-import NavBar from './(component)/navbarLanding/page'
+import NavBar from './(component)/navbarLanding/navbarLanding'
 import './globals.css'
 import { Barlow } from 'next/font/google'
 import queryClient from '@/app/(common)/reactQueryClient';
@@ -39,10 +39,6 @@ return (
 				backgroundSize: "cover",
 				backgroundPosition: "center",
 				backgroundRepeat: "no-repeat",
-				width: '100%',
-				height: '98vh',
-				margin: '0',
-				border: 'none',
 				}}>
 
 				<QueryClientProvider client={queryClient2}>
