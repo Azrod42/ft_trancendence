@@ -1,0 +1,33 @@
+.container {
+	height: 50px;
+	background-color: #303030;
+	margin: 0;
+	padding: 0px 20px 0px 20px;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-between;
+	gap: 30px;
+}
+
+.navRight {
+	display: flex;
+	flex-direction: row;
+	gap: 30px;
+}
+
+.navLeft {
+	display: flex;
+	flex-direction: row;
+	gap: 30px;
+}
+
+
+.linkTxt {
+	color: white;
+}
+
+.linkTxt:hover {
+	text-decoration: none;
+	color: rgb(255, 196, 4);
+}

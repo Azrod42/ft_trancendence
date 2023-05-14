@@ -6,6 +6,7 @@ import { isPromise, isUserLog } from './(common)/checkLog';
 import NavBar from './(component)/navbarLanding/navbarLanding';
 import { useRouter } from 'next/navigation';
 import { UserAuthResponse } from './auth/auth.api';
+import Home3D from './(component)/homePage3D/home3dAsset';
 
 
 export let userData2 = createContext();
@@ -38,10 +39,15 @@ export default function Home() {
 
     <main>
 			<NavBar />
-			<div className={styles.container}>
-				<p>Welcome to ft_trancendence</p>
-				<p>by</p>
-				<p className={styles.name}>tsorabel lfantine alevasse</p>
+			<div className={styles.wrapper}>
+				<div className={styles.content}>
+					<p>Welcome to ft_trancendence</p>
+					<p>by</p>
+					<p className={styles.name}>tsorabel lfantine alevasse</p>
+				</div>
+				<div className={styles.backgroundDIV}>
+					<Home3D />
+				</div>
 			</div>
     </main>
   )
