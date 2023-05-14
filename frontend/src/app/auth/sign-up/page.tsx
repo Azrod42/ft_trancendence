@@ -41,12 +41,12 @@ const schema = Joi.object ({
 interface signUpProps {
 }
 
-const signUp: React.FC<signUpProps> = ({}) => {
+const useSignUp: React.FC<signUpProps> = ({}) => {
 	const popUpDelay = 3000;
 	Api.init(); //mandatory to do api call to backend
 
 	//FORM DATA HANDLE
-	const { register, handleSubmit, formState: { errors } } = useForm<FormValuesRegister>();
+	const Register = useForm<FormValuesRegister>();
 	
 	//ERROR DIV DISPLAY
 	const [isDisplay, setDisplay] = useState(false);
@@ -56,12 +56,12 @@ const signUp: React.FC<signUpProps> = ({}) => {
 
 	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
 	//CHECK IF USER IS LOG (REDIRECT DASHBOARD) 
-	const { push } = useRouter();
+	const Move = useRouter();
 	useEffect(() => {
 		const data = isUserLog();
 		data.then(function(data: UserAuthResponse | undefined) {
 			if (data !== undefined){
-				push('/dashboard');
+				Move.push('/dashboard');
 			}
 		})
 	}, [])
@@ -82,7 +82,7 @@ const signUp: React.FC<signUpProps> = ({}) => {
 	//LOGIN MUTATION CALL BY onsubmit to resolve api call register
 	const {mutate: registerUser} = useMutation(regist, {
 		onSuccess: () => {
-			push('/auth/login');
+			Move.push('/auth/login');
 		},
 		onError: (e: any) => {
 			if (e.response.status === 400){
@@ -143,29 +143,29 @@ const signUp: React.FC<signUpProps> = ({}) => {
 					<span id="error">Incorrect format on </span><span id="error-type" ></span>
 				</div>
 			</motion.div>
-			<motion.form className={styles.form} name="register" onSubmit={handleSubmit(onSubmit)}
+			<motion.form className={styles.form} name="register" onSubmit={Register.handleSubmit(onSubmit)}
 				initial={{marginTop: "-66px"}}
 				animate={isDisplay ? "translateDown" : "translateUp"}
 				variants={variants}
 			>
 			<div className={styles.inpuetEl}>
 		 		<label className={styles.labelText}>Email :
-					<input className={styles.inputText} autoComplete='no' value='default@email.com' type="text" {...register("email", {required: true})} />
+					<input className={styles.inputText} autoComplete='no' value='default@email.com' type="text" {...Register.register("email", {required: true})} />
 				</label>
 			</div>
 			<div className={styles.inpuetEl}>
 		 		<label className={styles.labelText}>Username :
-					<input className={styles.inputText} autoComplete='no' type="text" {...register("username", {required: true})} />
+					<input className={styles.inputText} autoComplete='no' type="text" {...Register.register("username", {required: true})} />
 				</label>
 			</div>
 			<div className={styles.inpuetEl}>
 		 		<label className={styles.labelText}>Password :
-					<input className={styles.inputText} type="password" {...register("password", {required: true})} />
+					<input className={styles.inputText} type="password" {...Register.register("password", {required: true})} />
 				</label>
 			</div>
 			<div className={styles.inpuetEl}>
 		 		<label className={styles.labelText}>Reapeat-password :
-					<input className={styles.inputText} autoComplete='no' type="password" {...register("passwordRepeat", {required: true})} />
+					<input className={styles.inputText} autoComplete='no' type="password" {...Register.register("passwordRepeat", {required: true})} />
 				</label>
 			</div>
 
@@ -177,4 +177,4 @@ const signUp: React.FC<signUpProps> = ({}) => {
 	)
 }
 
-export default signUp;
+export default useSignUp;

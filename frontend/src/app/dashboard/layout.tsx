@@ -8,10 +8,7 @@ import { createContext } from 'vm';
 import styles from './dashboard.module.css'
 import { Suspense } from 'react';
 import LoadinPage from '../(component)/loadingPage/loadingPage';
-
-
-export let userData = createContext();
-
+import { stringify } from 'querystring';
 
 export default function RootLayout({children,}: {children: React.ReactNode}) {
 
@@ -19,16 +16,18 @@ export default function RootLayout({children,}: {children: React.ReactNode}) {
 	// IF USER IS CONNECTED REDIRECT TO DASHBOARD
 	const [userDataIsSet, setUserDataIsSet] = useState<boolean>(false);
 	const { push } = useRouter();
+	let userData = {};
 
 	useEffect(() => {
 		if (!userDataIsSet){
-			userData = isUserLog();
-			userData.then(function(data: UserAuthResponse | undefined) {
+			const userDataI = isUserLog();
+			userDataI.then(function(data: UserAuthResponse | undefined) {
 				if (data === undefined){
 					push('/');
 				}
 				else{
-					userData = data;
+					localStorage.setItem('user', JSON.stringify(data));
+					userData = JSON.parse(localStorage.getItem('user')!);
 					setUserDataIsSet(true);
 				}
 			});

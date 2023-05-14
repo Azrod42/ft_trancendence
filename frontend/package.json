@@ -9,9 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@react-three/drei": "^9.68.3",
-    "@react-three/fiber": "^8.13.0",
-    "@react-three/rapier": "^0.15.1",
     "@types/axios": "^0.14.0",
     "@types/node": "20.1.2",
     "@types/react": "^18.2.6",
@@ -21,7 +18,7 @@
     "eslint-config-next": "13.4.1",
     "framer-motion": "^10.12.10",
     "joi": "^17.9.2",
-    "next": "13.4.1",
+    "next": "^13.4.2",
     "react": "^18.2.0",
     "react-dom": "18.2.0",
     "react-hook-form": "^7.43.9",
@@ -29,8 +26,6 @@
     "react-query-devtools": "^2.6.3",
     "react-router-dom": "^6.11.1",
     "react-router-hash-link": "^2.4.3",
-    "three": "^0.152.2",
-    "three-stdlib": "^2.21.11",
     "typescript": "5.0.4"
   }
 }
