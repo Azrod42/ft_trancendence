@@ -19,11 +19,15 @@ export interface UserAuthResponse {
 }
 
 export const login = async(loginInput: FormValues) => {
-	const { data } = await Api.post<UserAuthResponse, FormValues>({
-		url: "/auth/login",
-		data: loginInput,
-	});
-	return(data);
+	try {
+		const { data } = await Api.post<UserAuthResponse, FormValues>({
+			url: "/auth/login",
+			data: loginInput,
+		});
+		return(data);
+	} catch (e) {
+		return undefined;
+	}
 }
 
 export const register = async (registerInput: FormValuesRegister) => {

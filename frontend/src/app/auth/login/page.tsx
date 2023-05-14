@@ -58,7 +58,7 @@ const Login: React.FC<LoginProps> = ({}) => {
 				push('/dashboard');
 			}
 		})
-	})
+	});
 	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
 
 	
@@ -76,7 +76,8 @@ const Login: React.FC<LoginProps> = ({}) => {
 	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
 	//LOGIN MUTATION CALL BY onsubmit to resolve api call login
 	const loginMutation = useMutation(login, {
-		onSuccess: (user) => {
+		onSuccess: (user: any) => {
+			if (user !== undefined) {
 			let errorEl: HTMLElement | null = document.getElementById("error")
 
 			toggleDisplayOn()
@@ -85,29 +86,30 @@ const Login: React.FC<LoginProps> = ({}) => {
 				errorEl.innerText = `Wellcome ${user.username}`;
 			setTimeout(() => {
 				toggleDisplayOff()
-				push('/');
+				// push('/');
 				document.getElementById('alert-box')?.setAttribute("style", "background-color: rgb(153, 14, 14);");
 			}, popUpDelay / 1.5);
+		} else { //HANDLE API 401 error
+			toggleDisplayOn()
+			let errorEl: HTMLElement | null = document.getElementById("error")
+			let errorTypeEl: HTMLElement | null = document.getElementById("error-type")
+			setTimeout(() => {
+				if (errorTypeEl && errorEl){
+					errorTypeEl.innerText = "";
+					errorEl.innerText = "Sorry, the data you are using is invalid"
+				}
+				setTimeout(() => {
+					if (errorEl)
+						errorEl.innerText = "Incorrect format on"
+				}, popUpDelay + 1000)
+			}, 20);
+			setTimeout(() => {
+				toggleDisplayOff()
+			}, popUpDelay);
+		}
 		},
 		onError: (e: any) => {
-			if ( e.response.status == 401) {
-				toggleDisplayOn()
-				let errorEl: HTMLElement | null = document.getElementById("error")
-				let errorTypeEl: HTMLElement | null = document.getElementById("error-type")
-				setTimeout(() => {
-					if (errorTypeEl && errorEl){
-						errorTypeEl.innerText = "";
-						errorEl.innerText = "Sorry, the data you are using is invalid"
-					}
-					setTimeout(() => {
-						if (errorEl)
-							errorEl.innerText = "Incorrect format on"
-					}, popUpDelay + 1000)
-				}, 20);
-				setTimeout(() => {
-					toggleDisplayOff()
-				}, popUpDelay);
-			}
+			console.log("Login error", e);
 		}
 	});
 	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
@@ -172,12 +174,3 @@ const Login: React.FC<LoginProps> = ({}) => {
 }
 
 export default Login;
-
-//frontend\src\app\auth\login\page.tsx
-
-
-// Api.init();
-// setIsApiReady(true);
-// if (!isReady)
-// 	return (<div>Loading ...</div>)
-// const [isReady, setIsApiReady] = useState(false);

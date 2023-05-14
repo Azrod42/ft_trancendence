@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import styles from "./navbar.module.css"
-import Link from 'next/link';
+import styles from "./navbarDashboard.module.css"
 import { userData } from '@/app/dashboard/layout';
 import { logout } from '@/app/auth/auth.api';
-import { useMutation } from 'react-query';
 import { useRouter } from 'next/navigation';
 
 
