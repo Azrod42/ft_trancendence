@@ -25,7 +25,7 @@
     top: 0;
     left: 0;
 	z-index: -100;
-	/* background-color: black; */
+	background-color: black;
 }
 
 
@@ -38,8 +38,10 @@
 	margin-top: 0;
 	font-size: 3rem;
 	font-size: 100;
-	color: rgb(154, 245, 17);
+	color: rgb(255, 238, 4);
 	font-weight: 700;
+	text-shadow: 0 0 15px rgb(255, 196, 4);
+	text-decoration: none;
 }
 
 .div42Login {

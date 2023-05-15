@@ -17,7 +17,6 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
 			<p className={styles.linkTxt} id='username'></p>
 		</div>
 		<div className={styles.navRight}>
-			<p className={styles.linkTxt}>lalalalala</p>
 		</div>
 	</nav>
   )

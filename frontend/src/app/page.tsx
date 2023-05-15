@@ -45,13 +45,13 @@ export default function Home() {
 					>
 					<h1>trancendence</h1>
 					<div className={styles.div42Login}>
-						<p className={styles.name}>tsorabel </p>
-						<p className={styles.name}>lfantine</p>
-						<p className={styles.name}>alevasse</p>
+						<a className={styles.name} target='blank' href="https://profile.intra.42.fr/users/tsorabel">tsorabel</a>
+						<a className={styles.name} target='blank' href="https://profile.intra.42.fr/users/lfantine">lfantine</a>
+						<a className={styles.name} target='blank' href="https://profile.intra.42.fr/users/alevasse">alevasse</a>
 					</div>
 				</motion.div>
 				<div className={styles.backgroundDIV}>
-					<iframe className={styles.sketchfabembedwrapper} title="Ping Pong - (Photosensitivity)" frameBorder="0" allowFullScreen allow="autoplay; fullscreen; xr-spatial-tracking" xr-spatial-tracking execution-while-out-of-viewport execution-while-not-rendered web-share src="https://sketchfab.com/models/2ffc655793e44e2f962e8a12b9c7757c/embed?autostart=1&camera=0&ui_animations=0&ui_infos=0&ui_stop=0&ui_inspector=0&ui_watermark_link=0&ui_watermark=0&ui_hint=0&ui_ar=0&ui_help=0&ui_settings=0&preload=1&transparent=1&ui_vr=0&ui_fullscreen=0&ui_annotations=0"> </iframe>
+					<iframe className={styles.sketchfabembedwrapper} title="Ping Pong - (Photosensitivity)" frameBorder="0" allowFullScreen allow="autoplay; fullscreen; xr-spatial-tracking"  src="https://sketchfab.com/models/2ffc655793e44e2f962e8a12b9c7757c/embed?autostart=1&camera=0&ui_animations=0&ui_infos=0&ui_stop=0&ui_inspector=0&ui_watermark_link=0&ui_watermark=0&ui_hint=0&ui_ar=0&ui_help=0&ui_settings=0&preload=1&transparent=1&ui_vr=0&ui_fullscreen=0&ui_annotations=0"> </iframe>
 					</div>
 			</div>
     </main>

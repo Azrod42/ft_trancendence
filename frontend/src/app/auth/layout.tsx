@@ -1,6 +1,6 @@
 "use client"
 import { useState } from 'react';
-import AuthType from './authtype/authtype'
+import AuthType from '../(component)/navLoginRegister/authtype'
 import Api from '../api/api';
 import NavBar from '../(component)/navbarLanding/navbarLanding';
 

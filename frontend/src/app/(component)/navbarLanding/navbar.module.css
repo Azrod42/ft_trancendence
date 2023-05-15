@@ -8,18 +8,23 @@
 	align-items: center;
 	justify-content: space-between;
 	gap: 30px;
+	box-shadow: 0 0 15px rgb(255, 196, 4);
 }
 
 .navRight {
 	display: flex;
 	flex-direction: row;
 	gap: 30px;
+	align-items: center;
+	justify-content: center;
 }
 
 .navLeft {
 	display: flex;
 	flex-direction: row;
 	gap: 30px;
+	align-items: center;
+	justify-content: center;
 }
 
 
