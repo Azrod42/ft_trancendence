@@ -17,6 +17,7 @@ export interface UserAuthResponse {
 	id:string;
 	username: string;
 	email: string;
+	displayname: string;
 }
 
 export const login = async(loginInput: FormValues) => {

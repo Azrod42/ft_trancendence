@@ -9,6 +9,7 @@ import styles from './dashboard.module.css'
 import { Suspense } from 'react';
 import LoadinPage from '../(component)/loadingPage/loadingPage';
 import { stringify } from 'querystring';
+import { getUserData } from '../(common)/getUserData';
 
 export default function RootLayout({children,}: {children: React.ReactNode}) {
 
@@ -27,7 +28,7 @@ export default function RootLayout({children,}: {children: React.ReactNode}) {
 				}
 				else{
 					localStorage.setItem('user', JSON.stringify(data));
-					userData = JSON.parse(localStorage.getItem('user')!);
+					userData = getUserData();
 					setUserDataIsSet(true);
 				}
 			});

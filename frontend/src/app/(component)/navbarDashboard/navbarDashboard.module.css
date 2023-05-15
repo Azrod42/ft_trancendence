@@ -1,6 +1,6 @@
 .container {
 	height: 50px;
-	background-color: #303030;
+	background-color: rgba(0, 0, 0, 0.781);
 	margin: 0;
 	padding: 0px 20px 0px 20px;
 	display: flex;
@@ -8,6 +8,7 @@
 	align-items: center;
 	justify-content: space-between;
 	gap: 30px;
+	box-shadow: 0 0 15px rgb(255, 196, 4);
 }
 
 .navRight {
@@ -28,9 +29,10 @@
 
 .linktxt {
 	color: white;
+	text-decoration: none;
+	transition-duration: 1s;
 }
 
 .linktxt:hover {
-	text-decoration: none;
 	color: rgb(255, 196, 4);
 }

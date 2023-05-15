@@ -8,6 +8,9 @@ class User {
     @Column("text", {unique: true})
     username: string
 
+	@Column("text", {unique: true})
+    displayname: string
+
     @Column()
     email: string
 

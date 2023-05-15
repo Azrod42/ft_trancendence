@@ -1,4 +1,33 @@
-.container {
-	text-align: center;
+/* =-=-=-=-=-=-=-END OF SECTION-=-=-=-=-=-=-=- */
+/*      CHECK GRID MODULE FOR CONTAINER        */
+/* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- */
+
+.section_a_container {
+	background-color: #252525cc;
+	width: 100% auto;
+	height: 400px;
+	margin: 15px;
+	border-radius: 10px;
+	box-shadow: 0 0 5px rgb(255, 196, 4);
+	padding: 1px;
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+}
+.userHeader {
+	width: 100% auto;
+	height: 200px;
+	margin: 10px;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-around;
+	align-items: center;
+	/* background-color: rgba(165, 42, 42, 0.192); */
+}
+
+.userHeader_displayname {
 	color: white;
+	font-size: 2rem;
+	font-weight: 700;
+	font-family: "Barlow";
 }

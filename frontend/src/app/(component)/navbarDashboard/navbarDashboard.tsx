@@ -12,6 +12,8 @@ interface NavBarProps {
 
 const NavBar: React.FC<NavBarProps> = ({}) => {
 	const { push } = useRouter();
+	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
+	//GET USER DATA FROM LOCAL STORAGE
 	let [userData, setuserData] = useState<UserAuthResponse>();
 	const [isUserData, setIsUserData] = useState<boolean>(false);
 	useEffect(() => {
@@ -20,7 +22,7 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
 			setIsUserData(true);
 		}
 	})
-
+	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
 
 	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
 	//LOGOUT ON SUBIMIT HANDLE 
@@ -39,7 +41,7 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
 
 		</div>
 		<div className={styles.navRight}>
-			<Link className={styles.linktxt} href="/dashboard/profile">{userData?.username}</Link>
+			<Link className={styles.linktxt} href="/dashboard/profile">{userData?.displayname}</Link>
 			<p className={styles.linktxt} onClick={onSubmit}>Logout</p>
 		</div>
 	</nav>

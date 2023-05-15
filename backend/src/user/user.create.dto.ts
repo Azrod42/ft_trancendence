@@ -21,6 +21,8 @@ class CreateUserDto {
 	is2FOn: boolean;
 	
 	secret2F: string;
+
+	displayname: string;
 }
 
 export default CreateUserDto;

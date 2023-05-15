@@ -1,7 +1,8 @@
 import JwtAuthGuard from 'src/auth/jwtAuth.guard';
 import { UserService } from './user.service';
-import { Controller, Get, Param, UseGuards } from '@nestjs/common';
-
+import { Body, Controller, Get, HttpCode, Param, Post, Req, UseGuards } from '@nestjs/common';
+import ChangeDisplayNameDto from './dtos/user.changedisplay.dto';
+import RequestWithUser from 'src/auth/interface/requestWithUser.i';
 @Controller('user')
 export class UserController {
 
@@ -12,4 +13,9 @@ export class UserController {
 	// 	return await this.userService.findById(id);
 	// }
 
+	@HttpCode(200)
+	@Post('displayname')
+	async changeDisplayName(@Req() request: RequestWithUser, @Body() newData: ChangeDisplayNameDto) {
+		return this.userService.updateDisplayName(request.user.id, newData)
+	}
 }

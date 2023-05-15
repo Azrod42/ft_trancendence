@@ -8,9 +8,6 @@ interface CheckLoginProps {
 
 }
 
-export let userData2 = createContext();
-
-
 export  function isUserLog() {
 	Api.init();
 	let data = islog();
