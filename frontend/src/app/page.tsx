@@ -6,8 +6,9 @@ import { isPromise, isUserLog } from './(common)/checkLog';
 import NavBar from './(component)/navbarLanding/navbarLanding';
 import { useRouter } from 'next/navigation';
 import { UserAuthResponse } from './auth/auth.api';
+import { motion } from 'framer-motion'
 
-
+ 
 export default function Home() {
 	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 	// IF USER IS CONNECTED REDIRECT TO DASHBOARD
@@ -37,13 +38,21 @@ export default function Home() {
     <main>
 			<NavBar />
 			<div className={styles.wrapper}>
-				<div className={styles.content}>
-					<p>Welcome to ft_trancendence</p>
-					<p>by</p>
-					<p className={styles.name}>tsorabel lfantine alevasse</p>
-				</div>
+				<motion.div className={styles.content}
+					initial={{y: -40}}
+					animate={{y: 0}}
+					transition={{delay: 1.5}}
+					>
+					<h1>trancendence</h1>
+					<div className={styles.div42Login}>
+						<p className={styles.name}>tsorabel </p>
+						<p className={styles.name}>lfantine</p>
+						<p className={styles.name}>alevasse</p>
+					</div>
+				</motion.div>
 				<div className={styles.backgroundDIV}>
-				</div>
+					<iframe className={styles.sketchfabembedwrapper} title="Ping Pong - (Photosensitivity)" frameBorder="0" allowFullScreen allow="autoplay; fullscreen; xr-spatial-tracking" xr-spatial-tracking execution-while-out-of-viewport execution-while-not-rendered web-share src="https://sketchfab.com/models/2ffc655793e44e2f962e8a12b9c7757c/embed?autostart=1&camera=0&ui_animations=0&ui_infos=0&ui_stop=0&ui_inspector=0&ui_watermark_link=0&ui_watermark=0&ui_hint=0&ui_ar=0&ui_help=0&ui_settings=0&preload=1&transparent=1&ui_vr=0&ui_fullscreen=0&ui_annotations=0"> </iframe>
+					</div>
 			</div>
     </main>
   )

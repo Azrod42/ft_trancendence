@@ -4,7 +4,6 @@ import { ReactQueryDevtools } from "react-query/devtools"
 import NavBar from './(component)/navbarLanding/navbarLanding'
 import './globals.css'
 import { Barlow } from 'next/font/google'
-import queryClient from '@/app/(common)/reactQueryClient';
 import backgound from '../../public/background/bg-2.jpeg'
 import React from 'react';
 
@@ -44,7 +43,6 @@ return (
 
 				<QueryClientProvider client={queryClient2}>
 					{children}
-					<ReactQueryDevtools initialIsOpen={false}/>
 				</QueryClientProvider>
 			</body>
     </html>

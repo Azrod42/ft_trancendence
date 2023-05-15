@@ -139,8 +139,9 @@ const Login: React.FC<LoginProps> = ({}) => {
 	};
 	return(
 	<motion.div className={styles.maindiv}
-		initial={{y: "-40px"}}
-		animate={{y: "0px"}}
+		initial={{opacity: 0}}
+		animate={{opacity: 1}}
+		transition={{duration: 0.6}}
 	>
 		<Image src={loginImage} alt="nintendo" width={85} height={85} priority={true}/>
 		<motion.div 
