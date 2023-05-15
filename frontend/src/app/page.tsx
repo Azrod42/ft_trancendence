@@ -8,8 +8,6 @@ import { useRouter } from 'next/navigation';
 import { UserAuthResponse } from './auth/auth.api';
 
 
-export let userData2 = createContext();
-
 export default function Home() {
 	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 	// IF USER IS CONNECTED REDIRECT TO DASHBOARD
@@ -18,10 +16,10 @@ export default function Home() {
 
 	useState(() => {
 		if (!userDataIsSet){
-		userData2 = isUserLog();
-		userData2.then(function(data: UserAuthResponse | undefined) {
+		let userData: any = isUserLog();
+		userData.then(function(data: UserAuthResponse | undefined) {
 			if (data !== undefined){
-				userData2 = data;
+				userData = data;
 				setUserDataIsSet(true);
 				setTimeout(() => { 
 					push('/dashboard');
@@ -38,10 +36,14 @@ export default function Home() {
 
     <main>
 			<NavBar />
-			<div className={styles.container}>
-				<p>Welcome to ft_trancendence</p>
-				<p>by</p>
-				<p className={styles.name}>tsorabel lfantine alevasse</p>
+			<div className={styles.wrapper}>
+				<div className={styles.content}>
+					<p>Welcome to ft_trancendence</p>
+					<p>by</p>
+					<p className={styles.name}>tsorabel lfantine alevasse</p>
+				</div>
+				<div className={styles.backgroundDIV}>
+				</div>
 			</div>
     </main>
   )

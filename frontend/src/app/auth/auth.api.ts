@@ -16,6 +16,7 @@ export type FormValuesRegister = {
 export interface UserAuthResponse {
 	id:string;
 	username: string;
+	email: string;
 }
 
 export const login = async(loginInput: FormValues) => {

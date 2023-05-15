@@ -14,10 +14,10 @@ const font = Barlow({
 	subsets: ['latin']
 });
 
-export const metadata = {
-  title: 'ft_trancendence',
-  description: 'Last 42 project',
-}
+// export const metadata = {
+//   title: 'ft_trancendence',
+//   description: 'Last 42 project',
+// }
 
 //QUERY CLIENT dont touch for now
 const queryClient2 = new QueryClient({});
