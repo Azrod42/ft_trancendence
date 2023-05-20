@@ -1,5 +1,5 @@
 import Api from "../api/api";
-import Error from "next/error";
+import {FormDisplayName} from "@/app/dashboard/profile/page";
 
 export type FormValues = {
 	username: string;
@@ -33,7 +33,7 @@ export const login = async(loginInput: FormValues) => {
 }
 
 export const register = async (registerInput: FormValuesRegister) => {
-	const { data } = await Api.post<UserAuthResponse, FormValuesRegister>({
+	await Api.post<UserAuthResponse, FormValuesRegister>({
 		url: "/auth/register",
 		data: registerInput,
 	});
@@ -52,6 +52,28 @@ export const logout = async() => {
 	try {
 	const { data } = await Api.get<UserAuthResponse>("/auth/logout",);
 		return (data);
+	} catch (e) {
+		return undefined;
+	}
+}
+
+export  const changeDisplayName = async(registerInput: FormDisplayName) => {
+	let data;
+	try {
+		data = await Api.post<UserAuthResponse, FormDisplayName>({
+			url: '/users/displayname',
+			data: registerInput
+		});
+		return data;
+	} catch (e) {
+	}
+}
+
+export  const getUserInfo = async() => {
+	try {
+		const {data} = await Api.get<UserAuthResponse>('/users/getuserdata',);
+		// console.log(data);
+		return data;
 	} catch (e) {
 		return undefined;
 	}

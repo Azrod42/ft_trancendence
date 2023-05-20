@@ -3,9 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import User from "./user.entity";
 import { Repository} from 'typeorm';
 import CreateUserDto from './user.create.dto';
-import postgresErrorCode from 'src/database/postgresErrorCodes';
-import { error } from 'console';
-import ChangeDisplayNameDto from './dtos/user.changedisplay.dto';
+import {ChangeDisplayNameDto} from './dtos/user.changedisplay.dto';
 
 @Injectable()
 export class UserService {
@@ -14,8 +12,10 @@ export class UserService {
 
 	async findById (id: string){
 		const user = await this.userRepo.findOneBy({id});
-		if (user)
+		if (user) {
+			user.password = undefined;
 			return user;
+		}
 			throw new HttpException("User with this id does no exist", HttpStatus.NOT_FOUND,);
 	}
 	async findByUsername (username: string){
@@ -36,7 +36,6 @@ export class UserService {
 			(await user).displayname = registerData.displayname;
 			await this.userRepo.save(user);
 		} catch (e) {
-			console.log(e);
 			throw new HttpException('Somthing went fucking wrong', HttpStatus.INTERNAL_SERVER_ERROR,);
 
 		}

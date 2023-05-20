@@ -1,8 +1,7 @@
 'use client'
 import {useState} from 'react';
-import { createContext } from 'vm';
 import styles from './page.module.css'
-import { isPromise, isUserLog } from './(common)/checkLog';
+import { isUserLog } from './(common)/checkLog';
 import NavBar from './(component)/navbarLanding/navbarLanding';
 import { useRouter } from 'next/navigation';
 import { UserAuthResponse } from './auth/auth.api';
@@ -34,7 +33,6 @@ export default function Home() {
 	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
   return (
-
     <main>
 			<NavBar />
 			<div className={styles.wrapper}>

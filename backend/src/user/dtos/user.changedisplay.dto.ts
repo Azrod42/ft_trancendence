@@ -1,14 +1,13 @@
-import { IsEmail,IsString,IsNotEmpty,MinLength,IsBoolean } from "class-validator";
-import { NONAME } from "dns";
+import { IsString,IsNotEmpty,MinLength } from "class-validator";
 
-class ChangeDisplayNameDto {
+export class ChangeDisplayNameDto {
 	@IsString()
 	@IsNotEmpty()
 	@MinLength(3)
 	displayname: string;
-	
-	@IsNotEmpty()
-	id: string;
 }
 
-export default ChangeDisplayNameDto;
+
+export class ChangeDisplayName {
+	displayname: string;
+}

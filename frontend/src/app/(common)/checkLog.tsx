@@ -1,16 +1,10 @@
 'use client'
 import Api from '../api/api';
-import { createContext } from 'vm';
 import { islog } from '../auth/auth.api';
 
-
-interface CheckLoginProps {
-
-}
-
-export  function isUserLog() {
+export async function isUserLog() {
 	Api.init();
-	let data = islog();
+	let data = await islog();
 	return data;
 }
 

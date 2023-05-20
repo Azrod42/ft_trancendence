@@ -2,7 +2,6 @@
 import React, {useState, useEffect} from 'react';
 import Link from 'next/link';
 import styles from '../login/login.module.css';
-import styles2 from'./singup.module.css';
 import { motion } from "framer-motion";
 import Image from 'next/image';
 import logo_register from '/public/media/logo-register.png';
@@ -150,27 +149,26 @@ const useSignUp: React.FC<signUpProps> = ({}) => {
 				animate={isDisplay ? "translateDown" : "translateUp"}
 				variants={variants}
 			>
-			<div className={styles.inpuetEl}>
-		 		<label className={styles.labelText}>Email :
-					<input className={styles.inputText} autoComplete='no' value='default@email.com' type="text" {...Register.register("email", {required: true})} />
-				</label>
-			</div>
-			<div className={styles.inpuetEl}>
-		 		<label className={styles.labelText}>Username :
-					<input className={styles.inputText} autoComplete='no' type="text" {...Register.register("username", {required: true})} />
-				</label>
-			</div>
-			<div className={styles.inpuetEl}>
-		 		<label className={styles.labelText}>Password :
-					<input className={styles.inputText} type="password" {...Register.register("password", {required: true})} />
-				</label>
-			</div>
-			<div className={styles.inpuetEl}>
-		 		<label className={styles.labelText}>Reapeat-password :
-					<input className={styles.inputText} autoComplete='no' type="password" {...Register.register("passwordRepeat", {required: true})} />
-				</label>
-			</div>
-
+				<div className={styles.inpuetEl}>
+					<label className={styles.labelText}>Email :
+						<input className={styles.inputText} autoComplete='no' type="text" {...Register.register("email", {required: true})} />
+					</label>
+				</div>
+				<div className={styles.inpuetEl}>
+					<label className={styles.labelText}>Username :
+						<input className={styles.inputText} autoComplete='no' type="text" {...Register.register("username", {required: true})} />
+					</label>
+				</div>
+				<div className={styles.inpuetEl}>
+					<label className={styles.labelText}>Password :
+						<input className={styles.inputText} type="password" {...Register.register("password", {required: true})} />
+					</label>
+				</div>
+				<div className={styles.inpuetEl}>
+					<label className={styles.labelText}>Reapeat-password :
+						<input className={styles.inputText} autoComplete='no' type="password" {...Register.register("passwordRepeat", {required: true})} />
+					</label>
+				</div>
 				<input className={styles.inputButton} type="submit" />
     		</motion.form>
 			<p className={styles.noAcc}>You already have an account ?</p>

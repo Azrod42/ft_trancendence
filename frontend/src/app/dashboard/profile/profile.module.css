@@ -12,22 +12,117 @@
 	padding: 1px;
 	display: flex;
 	flex-direction: column;
-	gap: 20px;
+	gap: 5px;
 }
-.userHeader {
+.section_a_userHeader {
 	width: 100% auto;
-	height: 200px;
-	margin: 10px;
+	height: 130px;
+	margin-top: 10px;
 	display: flex;
 	flex-direction: row;
 	justify-content: space-around;
 	align-items: center;
-	/* background-color: rgba(165, 42, 42, 0.192); */
+	/*border: 1px solid red;*/
+
 }
 
 .userHeader_displayname {
 	color: white;
-	font-size: 2rem;
+	font-size: 3vw;
 	font-weight: 700;
-	font-family: "Barlow";
+	/*border: 1px solid red;*/
+	max-width: 200px;
+	word-break: break-all;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.hr {
+	margin: 5px auto;
+	width: 80%;
+	box-shadow: 0 0 2px rgb(255, 196, 4);
+	border: 0.1px solid rgb(255, 196, 4);
+}
+
+.userHeader_profileInfo {
+	width: 100%;
+	height: 250px;
+	/*border: 1px solid red;*/
+	display: flex;
+	flex-direction: column;
+	align-items: self-start;
+	justify-content: center;
+	gap: 20px;
+}
+
+.itemProfileInfo {
+	margin-left: 10px;
+	display: flex;
+	flex-direction: row;
+	gap: 15px;
+	color: whitesmoke;
+	align-items: center;
+	justify-content: center;
+}
+
+.itemTitleProfileInfo{
+	width: 110px;
+}
+
+.AiOutlineEdit {
+	transform: translateY(3px);
+
+}
+
+.AiOutlineEdit:hover {
+	color: rgb(255, 196, 4);
+}
+
+.flexRow {
+	display: flex;
+	flex-direction: row;
+}
+
+.section_d_container {
+	width: 90%;
+	height: 94%;
+	background-color: #252525cc;
+	border-radius: 10px;
+	box-shadow: 0 0 5px rgb(255, 196, 4);
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+
+}
+.section_d_h1 {
+	text-align: center;
+	color: whitesmoke;
+	font-weight: 400;
+}
+
+.section_d_games {
+	/*border: 1px solid red;*/
+	width: 90%;
+	height: 85%;
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+	justify-content: start;
+	align-items: center;
+	gap: 8px;
+	padding-top: 10px;
+}
+
+.section_d_gamesitems {
+	/*border: 1px solid green;*/
+	width: 90%;
+	height: 50px;
+	border-radius: 5px;
+	background-color: #202020;
+	box-shadow: 0 0 3px rgb(255, 196, 4);
+	color: whitesmoke;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }

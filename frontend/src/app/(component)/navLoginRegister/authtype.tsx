@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react'
+import React from 'react'
 import './authtype.css'
 import Link from 'next/link';
 
@@ -14,7 +14,7 @@ const AuthType: React.FC<AuthTypeProps> = () => {
 			<Link className='link__authtype--txt' href='/auth/login'>Login</Link>
 		</div>
 		<div className='divider__authtype' id="authtype__right">
-			<Link className='link__authtype--txt' href="/auth/sign-up">Sign-up</Link>
+			<Link className='link__authtype--txt' href="/auth/sign-up">Register</Link>
 		</div>
 	</div>
   )

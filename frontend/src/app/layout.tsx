@@ -1,7 +1,6 @@
 "use client"
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from "react-query/devtools"
-import NavBar from './(component)/navbarLanding/navbarLanding'
 import './globals.css'
 import { Barlow } from 'next/font/google'
 import backgound from '../../public/background/bg-2.jpeg'
@@ -22,8 +21,6 @@ const font = Barlow({
 const queryClient2 = new QueryClient({});
 
 //
-export var MyContext = React.createContext("pas log");
-
 
 export default function RootLayout({
 	children,
@@ -33,16 +30,17 @@ export default function RootLayout({
 
 return (
     <html lang="en">
-			<body className={font.className} style={{
+			<body style={{
 				backgroundImage: `url(${backgound.src})`,
 				backgroundSize: "cover",
 				backgroundPosition: "center",
 				backgroundRepeat: "no-repeat",
 				height: "96vh"
-				}}>
+				}} className={font.className}>
 
 				<QueryClientProvider client={queryClient2}>
 					{children}
+					<ReactQueryDevtools />
 				</QueryClientProvider>
 			</body>
     </html>

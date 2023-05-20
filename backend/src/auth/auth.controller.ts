@@ -38,7 +38,6 @@ export class AuthController {
 	@UseGuards(JwtAuthGuard)
 	@Get("logcheck")
 	async logcheck(@Req() request: RequestWithUser, @Res() response: Response) {
-		const { user } = request; 
-		return response.send(user);
+		return response.send(request.user);
 	}
 }
