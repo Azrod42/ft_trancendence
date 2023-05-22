@@ -27,7 +27,7 @@ export class AuthService {
 				passwordRepeat: "",
 				is2FOn: false,
 				secret2F: "undefine",
-				avatar: "undefine",
+				avatar: "notset",
 			});
 			user.password = undefined;
 			return user;

@@ -1,5 +1,6 @@
 import Api from "../api/api";
 import {FormDisplayName} from "@/app/dashboard/profile/page";
+import {blob} from "stream/consumers";
 
 export type FormValues = {
 	username: string;
@@ -73,6 +74,22 @@ export  const getUserInfo = async() => {
 	try {
 		const {data} = await Api.get<UserAuthResponse>('/users/getuserdata',);
 		// console.log(data);
+		return data;
+	} catch (e) {
+		return undefined;
+	}
+}
+
+export const uploadProfilePicture = async (profilePicture:  FormData) => {
+	await Api.post<UserAuthResponse, FormData>({
+		url: "/users/upload",
+		data: profilePicture,
+	});
+}
+
+export const getProfilePicture = async () => {
+	try {
+		const data = await Api.get<any>('/users/profile-picture',)
 		return data;
 	} catch (e) {
 		return undefined;

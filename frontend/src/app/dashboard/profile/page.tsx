@@ -1,19 +1,20 @@
 "use client"
-import React, { useEffect, useState } from 'react'
+import React, {ChangeEvent, useEffect, useState} from 'react'
 import styles from "./profile.module.css"
 import stylesGrid from "./grid.module.css"
-import Image from 'next/image'
+import Image, {ImageProps} from 'next/image'
 import {
-	changeDisplayName,
-	getUserInfo,
+	changeDisplayName, getProfilePicture,
+	getUserInfo, uploadProfilePicture,
 	UserAuthResponse
 } from '@/app/auth/auth.api'
 import {AiOutlineEdit} from 'react-icons/ai'
-import {FiCheck} from 'react-icons/fi'
+import {FiCheck, FiUpload} from 'react-icons/fi'
 import {SubmitHandler, useForm} from "react-hook-form";
 import {useMutation, useQuery} from "react-query";
 import Api from "@/app/api/api";
 import {useRouter} from "next/navigation";
+
 
 export type FormDisplayName = {
 	displayname: string;
@@ -23,6 +24,23 @@ interface ProfileProps {
 }
 
 const Profile: React.FC<ProfileProps> = ({}) => {
+	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	//GET PROFILE IMAGE
+	const [profilePicture, setProfilePicture] = useState<string>('');
+	const [ppGet, setPpGet] = useState<boolean>(false);
+	if (!ppGet) {
+		const getPP = getProfilePicture().then(
+		res => {
+			setProfilePicture('data:image/png;base64, ' + res?.data);
+			}
+		);
+		setPpGet(true);
+	}
+	useEffect(() => {
+		// console.log(profilePicture);
+	}, [profilePicture])
+	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
+
 	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
 	//GET USER DATA FROM BACKEND AND STORE IN useState
 	let [userData, setuserData] = useState<UserAuthResponse>();
@@ -72,13 +90,49 @@ const Profile: React.FC<ProfileProps> = ({}) => {
 		}
 	})
 	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==
+	//UPLOAD FILE ON USER ADD ONE
+	const onFileUploadChange = (e: ChangeEvent<HTMLInputElement>) => {
+		const fileInput = e.target;
+
+		if (!fileInput.files) {
+			alert("No file was chosen");
+			return;
+		}
+		if (!fileInput.files || fileInput.files.length === 0) {
+			alert("Files list is empty");
+			return;
+		}
+		const file = fileInput.files[0];
+
+		if (!file.type.startsWith("image")) {
+			alert("Please select a valide image");
+			return;
+		}
+		const formData = new FormData();
+		formData.append('file', file);
+		mutationProfilePicture.mutate(formData);
+	};
+	const mutationProfilePicture = useMutation({
+		mutationFn: (data:  FormData) => {
+			Api.init();
+			return uploadProfilePicture(data);
+		},
+		onSuccess: (rep) => {
+			setTimeout(() => {
+				refetch();
+				setPpGet(false);
+			}, 100);
+		}
+	})
+	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 	return (
 	<div className={stylesGrid.container}>
 		<div className={stylesGrid.section_a}>
 			<div className={styles.section_a_container}>
 				<div className={styles.section_a_userHeader}>
-					<Image src="/media/logo-login.png" alt="profile-picture" width={128} height={128} priority={true}/>
+					{profilePicture && (<Image className={styles.section_a_userHeaderImg} src={!ppGet ? "/media/logo-login.png" : profilePicture} alt="profile-picture" width={128} height={128} priority={true}/>)}
 					<p className={styles.userHeader_displayname}>{userData?.displayname}</p>
+
 				</div>
 				<hr className={styles.hr}/>
 				<div className={styles.userHeader_profileInfo}>
@@ -103,7 +157,12 @@ const Profile: React.FC<ProfileProps> = ({}) => {
 						<span className={styles.itemTitleProfileInfo}>Email :</span>
 						<span>{userData?.email}</span>
 					</span>
-
+					<span className={styles.itemProfileInfo}>
+						<span className={styles.itemTitleProfileInfo}>Change avatar:</span>
+						<form action="">
+							<input className={styles.itemFileInputProfileInfo} name="file" type="file" onChange={onFileUploadChange}  />
+						</form>
+					</span>
 				</div>
 			</div>
 		</div>

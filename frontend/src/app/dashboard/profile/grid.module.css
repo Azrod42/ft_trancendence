@@ -13,7 +13,7 @@
 	height: 100%;
 	grid-column: 1;
 	grid-row: 1 / 4;
-	 border: 1px solid blue;
+	 /*border: 1px solid blue;*/
 }
 .section_b {
 	width: 100%;
@@ -34,7 +34,7 @@
 	height: 100%;
 	grid-column: 3;
 	grid-row: 1 / 6;
-	border: 1px solid violet;
+	/*border: 1px solid violet;*/
 	display: flex;
 	justify-content: center;
 	align-items: center;
