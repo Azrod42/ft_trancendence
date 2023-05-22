@@ -44,7 +44,6 @@ export default function Home() {
 					<h1>trancendence</h1>
 					<div className={styles.div42Login}>
 						<a className={styles.name} target='blank' href="https://profile.intra.42.fr/users/tsorabel">tsorabel</a>
-						<a className={styles.name} target='blank' href="https://profile.intra.42.fr/users/lfantine">lfantine</a>
 						<a className={styles.name} target='blank' href="https://profile.intra.42.fr/users/alevasse">alevasse</a>
 					</div>
 				</motion.div>

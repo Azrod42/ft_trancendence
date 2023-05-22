@@ -109,7 +109,7 @@ const Login: React.FC<LoginProps> = ({}) => {
 		}
 		},
 		onError: (e: any) => {
-			console.log("Login error", e);
+			 console.log("Login error", e);
 		}
 	});
 	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-

@@ -2,14 +2,14 @@
 import React, {ChangeEvent, useEffect, useState} from 'react'
 import styles from "./profile.module.css"
 import stylesGrid from "./grid.module.css"
-import Image, {ImageProps} from 'next/image'
+import Image from 'next/image'
 import {
 	changeDisplayName, getProfilePicture,
 	getUserInfo, uploadProfilePicture,
 	UserAuthResponse
 } from '@/app/auth/auth.api'
 import {AiOutlineEdit} from 'react-icons/ai'
-import {FiCheck, FiUpload} from 'react-icons/fi'
+import {FiCheck} from 'react-icons/fi'
 import {SubmitHandler, useForm} from "react-hook-form";
 import {useMutation, useQuery} from "react-query";
 import Api from "@/app/api/api";
@@ -24,12 +24,14 @@ interface ProfileProps {
 }
 
 const Profile: React.FC<ProfileProps> = ({}) => {
+	Api.init();
+
 	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 	//GET PROFILE IMAGE
 	const [profilePicture, setProfilePicture] = useState<string>('');
 	const [ppGet, setPpGet] = useState<boolean>(false);
 	if (!ppGet) {
-		const getPP = getProfilePicture().then(
+		getProfilePicture().then(
 		res => {
 			setProfilePicture('data:image/png;base64, ' + res?.data);
 			}
@@ -45,7 +47,6 @@ const Profile: React.FC<ProfileProps> = ({}) => {
 	//GET USER DATA FROM BACKEND AND STORE IN useState
 	let [userData, setuserData] = useState<UserAuthResponse>();
 	const { push } = useRouter();
-	Api.init();
 	const { isLoading, error, data, refetch } = useQuery('getUserInfo', () =>
 		getUserInfo().then(res => {
 			if (res == undefined)
@@ -132,7 +133,6 @@ const Profile: React.FC<ProfileProps> = ({}) => {
 				<div className={styles.section_a_userHeader}>
 					{profilePicture && (<Image className={styles.section_a_userHeaderImg} src={!ppGet ? "/media/logo-login.png" : profilePicture} alt="profile-picture" width={128} height={128} priority={true}/>)}
 					<p className={styles.userHeader_displayname}>{userData?.displayname}</p>
-
 				</div>
 				<hr className={styles.hr}/>
 				<div className={styles.userHeader_profileInfo}>
