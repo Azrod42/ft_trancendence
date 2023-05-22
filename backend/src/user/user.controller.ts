@@ -99,7 +99,7 @@ export class UserController {
 		try {
 			 bitmaps = fs.readFileSync(process.cwd() + '/' + id);
 		}catch (e) {
-			 bitmaps = fs.readFileSync(process.cwd() + '/uploads/profileimage/default-avatar.jpeg');
+			 bitmaps = fs.readFileSync(process.cwd() + '/uploads/default-avatar.jpeg');
 		}
 		return res.send(((bitmaps).toString('base64')));
 	}
