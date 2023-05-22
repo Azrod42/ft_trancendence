@@ -4,6 +4,7 @@ import User from "./user.entity";
 import { Repository} from 'typeorm';
 import CreateUserDto from './user.create.dto';
 import {ChangeDisplayNameDto} from './dtos/user.changedisplay.dto';
+import * as fs from 'fs'
 
 @Injectable()
 export class UserService {
@@ -39,5 +40,27 @@ export class UserService {
 			throw new HttpException('Somthing went fucking wrong', HttpStatus.INTERNAL_SERVER_ERROR,);
 
 		}
+	}
+
+	async updateAvatar(id: string, path: string) {
+		try {
+			const user = await this.findById(id);
+			(await user).avatar = path;
+			await this.userRepo.save(user);
+			return user;
+		} catch (e) {
+			throw new HttpException('Somthing went fucking wrong', HttpStatus.INTERNAL_SERVER_ERROR,);
+		}
+		return undefined;
+	}
+
+	async getAvatarID(id: string) {
+		try {
+			const user = await this.findById(id);
+			return user.avatar;
+		} catch (e) {
+			throw new HttpException('Somthing went fucking wrong', HttpStatus.INTERNAL_SERVER_ERROR,);
+		}
+		return undefined;
 	}
 }

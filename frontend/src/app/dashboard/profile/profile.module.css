@@ -38,6 +38,10 @@
 	text-overflow: ellipsis;
 }
 
+.section_a_userHeaderImg {
+	border-radius: 100%;
+}
+
 .hr {
 	margin: 5px auto;
 	width: 80%;
@@ -125,4 +129,8 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
+}
+
+.itemFileInputProfileInfo {
+	color: rgb(2,2,2,0%);
 }
