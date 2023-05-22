@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import styles from "./navbarDashboard.module.css"
-import {UserAuthResponse, logout, getUserInfo} from '@/app/auth/auth.api';
+import {UserAuthResponse, logout, getUserInfo, getProfilePicture} from '@/app/auth/auth.api';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {useQuery} from "react-query";
 import Api from "@/app/api/api";
+import Image from "next/image";
+import { motion } from "framer-motion"
 
 
 
@@ -13,11 +15,35 @@ interface NavBarProps {
 }
 
 const NavBar: React.FC<NavBarProps> = ({}) => {
+	Api.init();
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+	//MENU OPEN CLOSE
+	const [open, setOpen] = useState<boolean>(false);
+	function oncMenu(){
+		setOpen(!open)
+	};
+	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	//GET PROFILE IMAGE
+	const [profilePicture, setProfilePicture] = useState<string>('');
+	const [ppGet, setPpGet] = useState<boolean>(false);
+	useEffect(() => {
+	if (!ppGet) {
+		const getPP = getProfilePicture().then(
+			res => {
+				setProfilePicture('data:image/png;base64, ' + res?.data);
+			}
+		);
+		setPpGet(true);
+	}},[])
+	useEffect(() => {
+		// console.log(profilePicture);
+	}, [profilePicture])
+	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
+
 	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
 	//GET USER DATA FROM BACKEND AND STORE IN useState
 	let [userData, setuserData] = useState<UserAuthResponse>();
 	const { push } = useRouter();
-	Api.init();
 	const { isLoading, error, data, refetch } = useQuery('getUserInfo', () =>
 		getUserInfo().then(res => {
 			if (res == undefined)
@@ -37,6 +63,7 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
 	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
 	//LOGOUT ON SUBIMIT HANDLE 
 	function onSubmit() {
+		oncMenu();
 		logout();
 		push('/');
 	}
@@ -52,8 +79,16 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
 			<Link className={styles.linktxt} href="/dashboard/leaderboard">Leaderboard</Link>
 		</div>
 		<div className={styles.navRight}>
-			<Link className={styles.linktxt} href="/dashboard/profile">{userData?.displayname}</Link>
-			<p className={styles.linktxt} onClick={onSubmit}>Logout</p>
+			<p className={styles.displaynametxt}>{userData?.displayname}</p>
+			{profilePicture && (<Image className={styles.profilePicture} src={!ppGet ? "/media/logo-login.png" : profilePicture} alt="profile-picture" width={64} height={64} priority={true} onClick={oncMenu}/>)}
+			{open && <motion.div className={styles.menu}
+								 initial={{opacity: 0}}
+								 animate={{opacity: 1}}
+								 transition={{duration: 0.4}}
+					>
+				<Link className={styles.linktxt} href="/dashboard/profile" onClick={oncMenu}>Profile</Link>
+				<p className={styles.linktxt} onClick={onSubmit}>Logout</p>
+			</motion.div>}
 		</div>
 	</nav>
   )
