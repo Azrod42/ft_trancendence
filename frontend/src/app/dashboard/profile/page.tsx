@@ -31,7 +31,7 @@ const Profile: React.FC<ProfileProps> = ({}) => {
 	const [profilePicture, setProfilePicture] = useState<string>('');
 	const [ppGet, setPpGet] = useState<boolean>(false);
 	if (!ppGet) {
-		const getPP = getProfilePicture().then(
+		getProfilePicture().then(
 		res => {
 			setProfilePicture('data:image/png;base64, ' + res?.data);
 			}

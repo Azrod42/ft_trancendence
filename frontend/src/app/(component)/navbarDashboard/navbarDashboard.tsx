@@ -28,7 +28,7 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
 	const [ppGet, setPpGet] = useState<boolean>(false);
 	useEffect(() => {
 	if (!ppGet) {
-		const getPP = getProfilePicture().then(
+		getProfilePicture().then(
 			res => {
 				setProfilePicture('data:image/png;base64, ' + res?.data);
 			}
@@ -37,7 +37,9 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
 	}},[])
 	useEffect(() => {
 		// console.log(profilePicture);
-	}, [profilePicture])
+		// if (open)
+		// 	setPpGet(false);
+	}, [open])
 	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
 
 	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
