@@ -175,5 +175,4 @@ const Login: React.FC<LoginProps> = ({}) => {
 	</motion.div>
 	)
 }
-
 export default Login;
