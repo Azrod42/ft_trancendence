@@ -52,7 +52,7 @@ const Profile: React.FC<ProfileProps> = ({}) => {
 			if (res == undefined)
 				push('/');
 			setuserData(res);
-		}), { staleTime: 5000, }
+		}), { staleTime: 5000 }
 	);
 	useEffect(() => {
 		if (userData == undefined) {

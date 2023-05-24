@@ -1,35 +1,56 @@
 'use client'
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import styles from './page.module.css'
 import { isUserLog } from './(common)/checkLog';
 import NavBar from './(component)/navbarLanding/navbarLanding';
 import { useRouter } from 'next/navigation';
 import { UserAuthResponse } from './auth/auth.api';
 import { motion } from 'framer-motion'
+import {useQuery} from "react-query";
 
  
 export default function Home() {
 	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 	// IF USER IS CONNECTED REDIRECT TO DASHBOARD
-	const [userDataIsSet, setUserDataIsSet] = useState<boolean>(false);
-	const { push } = useRouter();
+	// const [userDataIsSet, setUserDataIsSet] = useState<boolean>(false);
+	// const { push } = useRouter();
 
-	useState(() => {
-		if (!userDataIsSet){
-		let userData: any = isUserLog();
-		userData.then(function(data: UserAuthResponse | undefined) {
-			if (data !== undefined){
-				userData = data;
-				setUserDataIsSet(true);
-				setTimeout(() => { 
-					push('/dashboard');
-				}, 20);
-			}
-		})
-		}else {
-			push('/dashboard');
-		}
-	});
+	// useState(() => {
+	// 	if (!userDataIsSet){
+	// 	let userData: any = isUserLog();
+	// 	userData.then(function(data: UserAuthResponse | undefined) {
+	// 		if (data !== undefined){
+	// 			userData = data;
+	// 			setUserDataIsSet(true);
+	// 			setTimeout(() => {
+	// 				push('/dashboard');
+	// 			}, 20);
+	// 		}
+	// 	})
+	// 	}else {
+	// 		push('/dashboard');
+	// 	}
+	// });
+	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
+	//GET USER DATA FROM BACKEND AND STORE IN useState
+	let [userData, setuserData] = useState<UserAuthResponse>();
+	const { push } = useRouter();
+	const { isLoading, error, data, refetch } = useQuery('getUserInfo', () =>
+		isUserLog().then(res => {
+			if (res !== undefined)
+				push('/dashboard');
+			setuserData(res);
+		}), { refetchInterval: 1000 * 5, refetchOnWindowFocus: false, staleTime: 5000 }
+	);
+	// useEffect(() => {
+	// 	if (userData == undefined) {
+	// 		refetch()
+	// 	}
+	// })
+	useEffect(() => {
+		//for setup action on userData refresh ?
+	},[userData])
+	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
 	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
   return (

@@ -53,8 +53,8 @@ const Login: React.FC<LoginProps> = ({}) => {
 	const { push } = useRouter();
 	useEffect(() => {
 		const data = isUserLog();
-		data.then(function(data: UserAuthResponse | undefined) {
-			if (data !== undefined){
+		data.then(function (data: UserAuthResponse | undefined) {
+			if (data !== undefined) {
 				push('/dashboard');
 			}
 		})

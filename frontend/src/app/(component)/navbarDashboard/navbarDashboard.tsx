@@ -32,7 +32,7 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
 			res => {
 				setProfilePicture('data:image/png;base64, ' + res?.data);
 			}
-		);
+		), {refetchInterval: 1000 * 1};
 		setPpGet(true);
 	}},[])
 	useEffect(() => {
@@ -51,7 +51,7 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
 			if (res == undefined)
 				push('/');
 			setuserData(res);
-		}), {refetchInterval: 1000 * 15, refetchOnWindowFocus: false}
+		}), {refetchInterval: 1000 * 60 * 2, refetchOnWindowFocus: false}
 	);
 	useEffect(() => {
 		if (userData == undefined) {
