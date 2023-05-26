@@ -129,7 +129,7 @@ const Profile: React.FC<ProfileProps> = ({}) => {
 	return (
 	<div className={stylesGrid.container}>
 		<div className={stylesGrid.section_a}>
-			<div className={styles.section_a_container}>
+			<div className={styles.section_a_containerTop}>
 				<div className={styles.section_a_userHeader}>
 					{profilePicture && (<Image className={styles.section_a_userHeaderImg} src={!ppGet ? "/media/logo-login.png" : profilePicture} alt="profile-picture" width={128} height={128} priority={true}/>)}
 					<p className={styles.userHeader_displayname}>{userData?.displayname}</p>
@@ -164,6 +164,11 @@ const Profile: React.FC<ProfileProps> = ({}) => {
 						</form>
 					</span>
 				</div>
+			</div>
+			<div className={styles.section_a_containerBottom}>
+				<h1 className={styles.h1_section_a}>Rank:</h1>
+				<Image className={styles.img_section_a} src='/media/logo-login.png' alt='rank-image' width={128} height={128}/>
+				<p className={styles.p_section_a}>ADD SOME STATS HERE</p>
 			</div>
 		</div>
 		<div className={stylesGrid.section_b}>

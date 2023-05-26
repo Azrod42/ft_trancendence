@@ -47,17 +47,37 @@ const Login: React.FC<LoginProps> = ({}) => {
 	const [isDisplay, setDisplay] = useState(false);
 	function toggleDisplayOn() {setDisplay((isDisplay) => isDisplay = true);}
 	function toggleDisplayOff() {setDisplay((isDisplay) => isDisplay = false);}
-	
+
+	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
 	//CHECK IF USER IS LOG (REDIRECT DASHBOARD) 
 	const { push } = useRouter();
 	useEffect(() => {
+
+
 		const data = isUserLog();
 		data.then(function (data: UserAuthResponse | undefined) {
 			if (data !== undefined) {
 				push('/dashboard');
 			}
-		})
+		});
 	}), [];
 	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
 
@@ -143,7 +163,7 @@ const Login: React.FC<LoginProps> = ({}) => {
 		animate={{opacity: 1}}
 		transition={{duration: 0.6}}
 	>
-		<Image src={loginImage} alt="nintendo" width={85} height={85} priority={true}/>
+		<Image src={loginImage} alt="logo-login" width={85} height={85} priority={true}/>
 		<motion.div 
 			initial={{opacity:0}}
 			animate={isDisplay ? "open" : "closed"}
@@ -165,13 +185,16 @@ const Login: React.FC<LoginProps> = ({}) => {
 			</div>
 			<div className={styles.inpuetEl}>
 				<label className={styles.labelText}>Password :
-					<input className={styles.inputText}type="password" {...register("password")} />
+					<input className={styles.inputText} type="password" {...register("password")} />
 				</label>
 			</div>
     		<input className={styles.inputButton} type="submit" value="Connect"/>
    		</motion.form>
 		<p className={styles.noAcc}>You do not have an account ?</p>
 		<Link className={styles.link} href="/auth/sign-up">Create an account</Link>
+		<button onClick={() => {
+			console.log(`${process.env.AUTH42_LINK1}${process.env.AUTH42_UID}${process.env.AUTH42_LINK2}`);
+			window.open(`${process.env.AUTH42_LINK1}${process.env.AUTH42_UID}${process.env.AUTH42_LINK2}`, '_self')}}>Login With 42</button>
 	</motion.div>
 	)
 }

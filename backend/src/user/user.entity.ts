@@ -11,7 +11,7 @@ class User {
 	@Column("text", {unique: true})
     displayname: string
 
-    @Column()
+    @Column("text", {unique: true})
     email: string
 
     @Column()

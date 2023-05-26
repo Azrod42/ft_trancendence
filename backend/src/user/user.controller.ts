@@ -4,7 +4,7 @@ import {
 	Body,
 	Controller,
 	Get,
-	HttpCode, HttpException, HttpStatus, Param,
+	HttpCode, HttpException, HttpStatus,
 	Post,
 	Req,
 	Res,
@@ -14,7 +14,7 @@ import {
 } from '@nestjs/common';
 import {ChangeDisplayName, ChangeDisplayNameDto} from './dtos/user.changedisplay.dto';
 import RequestWithUser from 'src/auth/interface/requestWithUser.i';
-import {response, Response} from "express";
+import { Response} from "express";
 import {validate} from "class-validator";
 import {FileInterceptor} from "@nestjs/platform-express";
 import {diskStorage} from "multer";
@@ -47,7 +47,7 @@ export class UserController {
 	@Post('displayname')
 	async changeDisplayName(@Req() request: RequestWithUser, @Body() newData: ChangeDisplayName) {
 		let ret = {};
-		let data: ChangeDisplayNameDto = new ChangeDisplayNameDto;
+		const data: ChangeDisplayNameDto = new ChangeDisplayNameDto;
 		data.displayname = newData.displayname;
 		 await validate(data).then(errors => {
 			console.log(errors)
@@ -85,8 +85,7 @@ export class UserController {
 		// } catch (e) {
 		// 	console.error(e);
 		// }
-		const user: Promise<User> = this.userService.updateAvatar(request.user.id, file.path);
-		return user;
+		return this.userService.updateAvatar(request.user.id, file.path);
 	}
 	@HttpCode(200)
 	@UseGuards(JwtAuthGuard)
@@ -95,7 +94,7 @@ export class UserController {
 		if (!request.user)
 			throw new HttpException('Somthing went fucking wrong', HttpStatus.INTERNAL_SERVER_ERROR,);
 		const id: string = await this.userService.getAvatarID(request.user.id)
-		var bitmaps;
+		let bitmaps;
 		try {
 			 bitmaps = fs.readFileSync(process.cwd() + '/' + id);
 		}catch (e) {

@@ -2,7 +2,7 @@
 /*      CHECK GRID MODULE FOR CONTAINER        */
 /* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- */
 
-.section_a_container {
+.section_a_containerTop {
 	background-color: #252525cc;
 	width: 100% auto;
 	height: 400px;
@@ -14,6 +14,22 @@
 	flex-direction: column;
 	gap: 5px;
 }
+
+.section_a_containerBottom {
+	background-color: #252525cc;
+	width: 100% auto;
+	height: 355px;
+	margin: 15px;
+	border-radius: 10px;
+	box-shadow: 0 0 5px rgb(255, 196, 4);
+	padding: 1px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-start;
+	gap: 20px;
+}
+
 .section_a_userHeader {
 	width: 100% auto;
 	height: 130px;
@@ -40,6 +56,7 @@
 
 .section_a_userHeaderImg {
 	border-radius: 100%;
+	object-fit: cover;
 }
 
 .hr {
@@ -112,7 +129,7 @@
 	overflow: hidden;
 	display: flex;
 	flex-direction: column;
-	justify-content: start;
+	justify-content: flex-start;
 	align-items: center;
 	gap: 8px;
 	padding-top: 10px;
@@ -133,4 +150,17 @@
 
 .itemFileInputProfileInfo {
 	color: rgb(2,2,2,0%);
+}
+
+.h1_section_a {
+	color: whitesmoke;
+}
+
+.img_section_a {
+	border-radius: 100%;
+	object-fit: cover;
+}
+
+.p_section_a {
+	color: whitesmoke;
 }

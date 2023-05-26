@@ -1,15 +1,17 @@
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
-import { UserModule } from './../user/user.module';
+import { UserModule } from '../user/user.module';
 import { Module } from '@nestjs/common';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { LocalStrategy } from './local.strategy';
 import { PassportModule } from '@nestjs/passport';
 import JwtStrategy from './interface/jwt.strategy';
+import {Auth42Module} from "./42auth/42auth.module";
+import {HttpModule} from "@nestjs/axios";
 
 @Module({
-imports: [UserModule, PassportModule, ConfigModule, JwtModule.registerAsync({
+imports: [UserModule,HttpModule ,Auth42Module ,PassportModule, ConfigModule, JwtModule.registerAsync({
 		imports: [ConfigModule],
 		inject: [ConfigService],
 		useFactory: async(configService: ConfigService) => ({

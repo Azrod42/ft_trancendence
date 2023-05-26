@@ -1,18 +1,27 @@
 import { ConfigService } from '@nestjs/config';
-import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
+import {HttpException, HttpStatus, Injectable, Res} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import User from 'src/user/user.entity';
 import { UserService } from 'src/user/user.service';
 import TokenPayload from './interface/tokenPayload.i';
 import * as bcrypt from 'bcrypt';
 import CreateUserDto from 'src/user/user.create.dto';
+import { Response } from "express";
 import postgresErrorCode from 'src/database/postgresErrorCodes';
+import {HttpService} from "@nestjs/axios";
+import {v4 as uuidv4} from 'uuid';
+import * as fs from "fs";
+import * as process from "process";
+
 
 
 
 @Injectable()
 export class AuthService {
-	constructor(private usersService: UserService, private jwtService: JwtService, 	private readonly configService: ConfigService) {}
+	constructor(private usersService: UserService,
+				private jwtService: JwtService,
+				private readonly configService: ConfigService,
+				private readonly httpService: HttpService) {}
 
 
 	async register(registerData: CreateUserDto) {
@@ -65,5 +74,23 @@ export class AuthService {
 
 	public getCookieForLogout() {
 		return ('Authentication=; HttpOnly; Path=/; Max-Age:0')
+	}
+
+	async redirectUserAuth(@Res() response: Response) {
+			response.redirect(301, `http://localhost:3000/`);
+	}
+
+	async downloadImage(url: string) {
+		const imgLink: string = `/uploads/profileimage/${uuidv4()}.png` as string;
+		const writer = fs.createWriteStream(process.cwd() + imgLink);
+
+		const response = await  this.httpService.axiosRef({
+			url: url,
+			method: 'GET',
+			responseType: 'stream',
+		});
+
+		response.data.pipe(writer);
+		return imgLink;
 	}
 }
