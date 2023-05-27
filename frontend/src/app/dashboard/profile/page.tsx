@@ -186,7 +186,6 @@ const Profile: React.FC<ProfileProps> = ({}) => {
 					<div className={styles.section_d_gamesitems}>Game 2</div>
 					<div className={styles.section_d_gamesitems}>Game 3</div>
 					<div className={styles.section_d_gamesitems}>Game 4</div>
-
 				</div>
 			</div>
 		</div>

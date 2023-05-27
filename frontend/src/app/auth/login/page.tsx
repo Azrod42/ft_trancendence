@@ -188,13 +188,14 @@ const Login: React.FC<LoginProps> = ({}) => {
 					<input className={styles.inputText} type="password" {...register("password")} />
 				</label>
 			</div>
-    		<input className={styles.inputButton} type="submit" value="Connect"/>
+    		<input className={styles.inputButton} type="submit" value="Login"/>
    		</motion.form>
+		<button className={styles.loginAuth42} onClick={() => {
+			console.log(`${process.env.AUTH42_LINK1}${process.env.AUTH42_UID}${process.env.AUTH42_LINK2}`);
+			window.open(`${process.env.AUTH42_LINK1}${process.env.AUTH42_UID}${process.env.AUTH42_LINK2}`, '_self')}}>Login With <Image src='/media/logo42.svg' alt='logo42' width={30} height={30} />
+		</button>
 		<p className={styles.noAcc}>You do not have an account ?</p>
 		<Link className={styles.link} href="/auth/sign-up">Create an account</Link>
-		<button onClick={() => {
-			console.log(`${process.env.AUTH42_LINK1}${process.env.AUTH42_UID}${process.env.AUTH42_LINK2}`);
-			window.open(`${process.env.AUTH42_LINK1}${process.env.AUTH42_UID}${process.env.AUTH42_LINK2}`, '_self')}}>Login With 42</button>
 	</motion.div>
 	)
 }

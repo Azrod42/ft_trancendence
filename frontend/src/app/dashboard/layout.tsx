@@ -13,30 +13,6 @@ import { getUserData } from '../(common)/getUserData';
 import {useQuery} from "react-query";
 
 export default function RootLayout({children,}: {children: React.ReactNode}) {
-
-	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-	// IF USER IS CONNECTED REDIRECT TO DASHBOARD
-	// const [userDataIsSet, setUserDataIsSet] = useState<boolean>(false);
-	// const { push } = useRouter();
-	// let userData = {};
-
-	// useEffect(() => {
-	// 	if (!userDataIsSet){
-		// 		const userDataI = isUserLog();
-	// 		userDataI.then(function(data: UserAuthResponse | undefined) {
-	// 			if (data === undefined){
-	// 				push('/');
-	// 			}
-	// 			else{
-	// 				localStorage.setItem('user', JSON.stringify(data));
-	// 				userData = getUserData();
-	// 				setUserDataIsSet(true);
-	// 			}
-	// 		});
-	// 	};
-	// }, []);
-	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-
 	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
 	//GET USER DATA FROM BACKEND AND STORE IN useState
 	let [userData, setuserData] = useState<UserAuthResponse>();

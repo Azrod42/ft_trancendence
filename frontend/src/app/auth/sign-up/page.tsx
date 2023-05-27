@@ -169,8 +169,12 @@ const useSignUp: React.FC<signUpProps> = ({}) => {
 						<input className={styles.inputText} autoComplete='no' type="password" {...Register.register("passwordRepeat", {required: true})} />
 					</label>
 				</div>
-				<input className={styles.inputButton} type="submit" />
+				<input className={styles.inputButton} type="submit" value='Register' />
     		</motion.form>
+			<button className={styles.loginAuth42} onClick={() => {
+				console.log(`${process.env.AUTH42_LINK1}${process.env.AUTH42_UID}${process.env.AUTH42_LINK2}`);
+				window.open(`${process.env.AUTH42_LINK1}${process.env.AUTH42_UID}${process.env.AUTH42_LINK2}`, '_self')}}>Register With <Image src='/media/logo42.svg' alt='logo42' width={30} height={30} />
+			</button>
 			<p className={styles.noAcc}>You already have an account ?</p>
 			<Link className={styles.link} href="/auth/login">Login</Link>
 		</motion.div>

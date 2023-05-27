@@ -53,8 +53,28 @@
 	transition-duration: 0.10s;
 	font-weight: 700;
 }
-
 .inputButton:hover {
+	transform: scale(1.02);
+}
+
+
+.loginAuth42 {
+	background-color: #202020;
+	margin-bottom: 20px;
+	font-weight: 700;
+	color: whitesmoke;
+	width: 40%;
+	box-shadow: 0 0 10px rgb(255, 196, 4);
+	height: 30px;
+	border: none;
+	border-radius: 5px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 5px;
+}
+
+.loginAuth42:hover {
 	transform: scale(1.02);
 }
 
@@ -99,3 +119,4 @@
 .green {
 	background-color: greenyellow;
 }
+

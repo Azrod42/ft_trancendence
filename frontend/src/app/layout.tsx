@@ -17,7 +17,7 @@ const font = Barlow({
 //   description: 'Last 42 project',
 // }
 
-//QUERY CLIENT dont touch for now
+//QUERY CLIENT don't touch for now
 const queryClient2 = new QueryClient({});
 
 //
