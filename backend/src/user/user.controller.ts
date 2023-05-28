@@ -29,9 +29,9 @@ export class UserController {
 
 	constructor(private readonly userService: UserService) {}
 
-	// @Get(":id")
-	// async findUser(@Param('id') id: string) {
-	// 	return await this.userService.findById(id);
+	// @Get(":name")
+	// async findUser(@Param('name') id: string) {
+	// 	return await this.userService.findById(name);
 	// }
 
 	@HttpCode(200)
@@ -78,13 +78,14 @@ export class UserController {
 	async uploadFile(@Req() request: RequestWithUser, @UploadedFile() file) {
 		if (!request.user || !file)
 			return;
-		//TODO
-		// try {
-		// 	const userProfile = await this.userService.findById(request.user.id)
-		// 	fs.unlinkSync('/uploads/profileimage/' + userProfile.avatar)
-		// } catch (e) {
-		// 	console.error(e);
-		// }
+		//remove image if user already have one
+		const userProfile = await this.userService.findById(request.user.id)
+		fs.unlink(process.cwd() + '\\' + userProfile.avatar, (err) => {
+			if (err) {
+				console.log(err);
+			}
+		})
+		//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 		return this.userService.updateAvatar(request.user.id, file.path);
 	}
 	@HttpCode(200)
@@ -92,14 +93,16 @@ export class UserController {
 	@Get('profile-picture')
 	async findProfileImage(@Req() request: RequestWithUser, @Res() res) {
 		if (!request.user)
-			throw new HttpException('Somthing went fucking wrong', HttpStatus.INTERNAL_SERVER_ERROR,);
+			throw new HttpException('Somthing went wrong', HttpStatus.INTERNAL_SERVER_ERROR,);
 		const id: string = await this.userService.getAvatarID(request.user.id)
+		//transform img to base64 (see frontend profile page use)
 		let bitmaps;
 		try {
 			 bitmaps = fs.readFileSync(process.cwd() + '/' + id);
 		}catch (e) {
 			 bitmaps = fs.readFileSync(process.cwd() + '/uploads/default-avatar.jpeg');
 		}
+		//-=-=-=-=-=-=-=-=-=-=-=-=
 		return res.send(((bitmaps).toString('base64')));
 	}
 }
