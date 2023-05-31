@@ -4,7 +4,7 @@ import {
 	Body,
 	Controller,
 	Get,
-	HttpCode, HttpException, HttpStatus,
+	HttpCode, HttpException, HttpStatus, Param,
 	Post,
 	Req,
 	Res,
@@ -29,9 +29,9 @@ export class UserController {
 
 	constructor(private readonly userService: UserService) {}
 
-	// @Get(":name")
-	// async findUser(@Param('name') id: string) {
-	// 	return await this.userService.findById(name);
+	// @Get("hello")
+	// async findUser() {
+	// 	return "hello world";
 	// }
 
 	@HttpCode(200)
@@ -43,7 +43,7 @@ export class UserController {
 	}
 
 	@HttpCode(200)
-	@UseGuards(JwtAuthGuard)
+	// @UseGuards(JwtAuthGuard)
 	@Post('displayname')
 	async changeDisplayName(@Req() request: RequestWithUser, @Body() newData: ChangeDisplayName) {
 		let ret = {};
