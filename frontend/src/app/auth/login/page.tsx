@@ -31,7 +31,7 @@ const schema = Joi.object ({
 	  translateUp: {marginTop: "-66px"},
 	  translateDown: {marginTop: "0px"}
 	}
-	
+
 //REACT FUNCTIONAL COMPONENT INTERFACE	
 interface LoginProps {
 }
@@ -49,22 +49,6 @@ const Login: React.FC<LoginProps> = ({}) => {
 	function toggleDisplayOff() {setDisplay((isDisplay) => isDisplay = false);}
 
 	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
 	//CHECK IF USER IS LOG (REDIRECT DASHBOARD) 
@@ -191,7 +175,7 @@ const Login: React.FC<LoginProps> = ({}) => {
     		<input className={styles.inputButton} type="submit" value="Login"/>
    		</motion.form>
 		<button className={styles.loginAuth42} onClick={() => {
-			console.log(`${process.env.AUTH42_LINK1}${process.env.AUTH42_UID}${process.env.AUTH42_LINK2}`);
+			//console.log(`${process.env.AUTH42_LINK1}${process.env.AUTH42_UID}${process.env.AUTH42_LINK2}`);
 			window.open(`${process.env.AUTH42_LINK1}${process.env.AUTH42_UID}${process.env.AUTH42_LINK2}`, '_self')}}>Login With <Image src='/media/logo42.svg' alt='logo42' width={30} height={30} />
 		</button>
 		<p className={styles.noAcc}>You do not have an account ?</p>
