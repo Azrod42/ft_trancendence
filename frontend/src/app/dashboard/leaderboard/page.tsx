@@ -11,10 +11,8 @@ interface LeaderboardProps {
 }
 
 const Leaderboard: React.FC<LeaderboardProps> = ({}) => {
-
-	// Move.push('/dashboard');
-//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
-	//GET DATA FROM BACKEND AND STORE IN useState
+	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
+	// GET DATA FROM BACKEND AND STORE IN useState
 	let [userData, setuserData] = useState<any>();
 	const { push } = useRouter();
 	const { isLoading, error, data, refetch } = useQuery('getUserInfo', () =>
@@ -42,9 +40,6 @@ const Leaderboard: React.FC<LeaderboardProps> = ({}) => {
 		}
 		document.getElementById('data-table-users')!.innerHTML = html;
 	},[userData])
-
-	// <td className={styles.username}>${userData[i].displayname}</td>
-
 	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
 
 	return (
