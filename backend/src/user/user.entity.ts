@@ -25,6 +25,9 @@ class User {
 
 	@Column()
     secret2F: string
+
+    @Column()
+    elo: number
 }
 
 export default User;

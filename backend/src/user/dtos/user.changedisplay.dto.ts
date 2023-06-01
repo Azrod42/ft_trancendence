@@ -11,3 +11,7 @@ export class ChangeDisplayNameDto {
 export class ChangeDisplayName {
 	displayname: string;
 }
+
+export class UserId {
+	id: string;
+}

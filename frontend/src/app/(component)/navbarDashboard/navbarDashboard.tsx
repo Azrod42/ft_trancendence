@@ -79,6 +79,8 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
 			<Link className={styles.linktxt} href="/dashboard/game">Game</Link>
 			<Link className={styles.linktxt} href="/dashboard/social">Social</Link>
 			<Link className={styles.linktxt} href="/dashboard/leaderboard">Leaderboard</Link>
+			{/*<Link className={styles.linktxt} href="/dashboard/users">users</Link>*/}
+
 		</div>
 		<div className={styles.navRight}>
 			<p className={styles.displaynametxt}>{userData?.displayname}</p>

@@ -37,6 +37,7 @@ export class AuthService {
 				is2FOn: false,
 				secret2F: "undefine",
 				avatar: "notset",
+				elo: 800,
 			});
 			user.password = undefined;
 			return user;
@@ -69,7 +70,7 @@ export class AuthService {
 	public getCookieWithJwtToken(user: User) {
 		const payload: TokenPayload = {user};
 		const token = this.jwtService.sign(payload);
-		return `Authentication=${token}; domain: 'localhost'; HttpOnly; Path=/; Secure; Max-Age=3600`
+		return `Authentication=${token}; domain: 'localhost'; HttpOnly; Path=/; Secure; Max-Age=7200`
 	}
 
 	public getCookieForLogout() {

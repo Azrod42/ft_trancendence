@@ -16,13 +16,17 @@ class CreateUserDto {
 
 	avatar: string;
 
+	@IsNotEmpty()
 	passwordRepeat: string;
 
 	is2FOn: boolean;
-	
+
 	secret2F: string;
 
+	elo: number;
+
 	displayname: string;
+
 }
 
 export default CreateUserDto;

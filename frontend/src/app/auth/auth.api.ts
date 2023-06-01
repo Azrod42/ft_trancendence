@@ -14,6 +14,10 @@ export type FormValuesRegister = {
 	passwordRepeat: string;
 };
 
+export type UserId = {
+	id: string;
+};
+
 export interface UserAuthResponse {
 	id:string;
 	username: string;
@@ -80,6 +84,19 @@ export  const getUserInfo = async() => {
 	}
 }
 
+export const getPublicUserInfo = async (id: string) => {
+	try {
+		const userId: UserId = { id: id};
+		const data = await Api.post<string, UserId>({
+			url: '/users/post-public-userdata',
+			data: userId
+		},)
+		return data;
+	} catch (e) {
+		return undefined;
+	}
+}
+
 export const uploadProfilePicture = async (profilePicture:  FormData) => {
 	await Api.post<UserAuthResponse, FormData>({
 		url: "/users/upload",
@@ -90,6 +107,27 @@ export const uploadProfilePicture = async (profilePicture:  FormData) => {
 export const getProfilePicture = async () => {
 	try {
 		const data = await Api.get<any>('/users/profile-picture',)
+		return data;
+	} catch (e) {
+		return undefined;
+	}
+}
+
+export const postProfilePicture = async (id: string) => {
+	try {
+		const userId: UserId = { id: id};
+		const data = await Api.post<string, UserId>({
+			url: '/users/post-profile-picture',
+			data: userId
+		},)
+		return data;
+	} catch (e) {
+		return undefined;
+	}
+}
+export const getAllUsers = async () => {
+	try {
+		const data = await Api.get<any>('/users/get-all-user',)
 		return data;
 	} catch (e) {
 		return undefined;

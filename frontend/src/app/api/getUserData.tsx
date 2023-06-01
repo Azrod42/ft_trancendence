@@ -7,7 +7,7 @@ export default function GetUserData() {
     Api.init();
     const data = useMutation(islog, {
         onSuccess: () => {
-            console.log(data);
+            // console.log(data);
         }
     })
     return data;

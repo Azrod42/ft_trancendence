@@ -63,4 +63,18 @@ export class UserService {
 		}
 		return undefined;
 	}
+
+	async GetAllUserFromDB (){
+		const user = await this.userRepo.query(`SELECT displayname, id, elo FROM public."user"`)
+		if (user)
+			return user;
+		throw new HttpException("User with this username does no exist", HttpStatus.NOT_FOUND,);
+	}
+
+	async getPublicUserData (userID: string) {
+		const user = await this.userRepo.query(`SELECT displayname, id, elo FROM public."user" WHERE id = userID`)
+		if (user)
+			return user;
+		throw new HttpException("User with this username does no exist", HttpStatus.NOT_FOUND,);
+	}
 }

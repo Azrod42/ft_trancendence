@@ -34,31 +34,4 @@ export class Auth42Service {
         return null;
     }
 
-//     async createDataBase42User(
-//         user42: any,
-//         token: string,
-//         name: string,
-//         isRegistered: boolean
-//     ) {
-//         try {
-//             const user = await this.prisma.user.create({
-//                 data: {
-//                     coalition: user42.coalition,
-//                     achievements: [],
-//                     accessToken: token,
-//                     isRegistered: isRegistered,
-//                     user42Name: user42.login,
-//                     name: name,
-//                     email: user42.email,
-//                 },
-//             });
-//             return user;
-//         } catch (error) {
-//             throw new HttpException(
-//                 {
-//                     status: HttpStatus.BAD_REQUEST,
-//                     error: "Error to create the user to the database"
-//                 }, HttpStatus.BAD_REQUEST);
-//         };
-//     }
 }

@@ -12,7 +12,7 @@ import {
 	UseGuards,
 	UseInterceptors
 } from '@nestjs/common';
-import {ChangeDisplayName, ChangeDisplayNameDto} from './dtos/user.changedisplay.dto';
+import {ChangeDisplayName, ChangeDisplayNameDto, UserId} from './dtos/user.changedisplay.dto';
 import RequestWithUser from 'src/auth/interface/requestWithUser.i';
 import { Response} from "express";
 import {validate} from "class-validator";
@@ -104,5 +104,35 @@ export class UserController {
 		}
 		//-=-=-=-=-=-=-=-=-=-=-=-=
 		return res.send(((bitmaps).toString('base64')));
+	}
+
+	@HttpCode(200)
+	@UseGuards(JwtAuthGuard)
+	@Post('post-profile-picture')
+	async postProfilePicture(@Req() request: RequestWithUser, @Res() res, @Body() userId: UserId) {
+		const id: string = await this.userService.getAvatarID(userId?.id);
+		//transform img to base64 (see frontend profile page use)
+		let bitmaps;
+		try {
+			bitmaps = fs.readFileSync(process.cwd() + '/' + id);
+		}catch (e) {
+			bitmaps = fs.readFileSync(process.cwd() + '/uploads/default-avatar.jpeg');
+		}
+		//-=-=-=-=-=-=-=-=-=-=-=-=
+		return res.send(((bitmaps).toString('base64')));
+	}
+
+	@HttpCode(200)
+	@UseGuards(JwtAuthGuard)
+	@Get('get-all-user')
+	async getAllUser(@Req() request: RequestWithUser, @Res() res) {
+		return res.send(await this.userService.GetAllUserFromDB());
+	}
+
+	@HttpCode(200)
+	@Post('post-public-userdata')
+	// @UseGuards(JwtAuthGuard)
+	async getPublicUserData(@Req() request: RequestWithUser, @Res() res) {
+		return res.send(await this.userService.GetAllUserFromDB());
 	}
 }

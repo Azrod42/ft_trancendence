@@ -44,7 +44,7 @@ const Profile: React.FC<ProfileProps> = ({}) => {
 	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
 
 	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
-	//GET USER DATA FROM BACKEND AND STORE IN useState
+	//GET USERS DATA FROM BACKEND AND DISPLAY IT
 	let [userData, setuserData] = useState<UserAuthResponse>();
 	const { push } = useRouter();
 	const { isLoading, error, data, refetch } = useQuery('getUserInfo', () =>
@@ -60,7 +60,7 @@ const Profile: React.FC<ProfileProps> = ({}) => {
 		}
 	})
 	useEffect(() => {
-		//for setup action on userData refresh ?
+			//for setup action on userData refresh ?
 	},[userData])
 	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
 

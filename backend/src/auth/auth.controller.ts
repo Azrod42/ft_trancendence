@@ -67,6 +67,7 @@ export class AuthController {
 				is2FOn: false,
 				secret2F: 'notset',
 				displayname: userInformation['login'],
+				elo: 800
 			}
 			await this.authService.register(newUser);
 			const user = await this.userService.findByUsername(userInformation['login']);

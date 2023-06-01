@@ -37,6 +37,7 @@ export default function Home() {
 					<div className={styles.div42Login}>
 						<a className={styles.name} target='blank' href="https://profile.intra.42.fr/users/tsorabel">tsorabel</a>
 						<a className={styles.name} target='blank' href="https://profile.intra.42.fr/users/alevasse">alevasse</a>
+						<a className={styles.name} target='blank' href="https://profile.intra.42.fr/users/rthomas">rthomas</a>
 					</div>
 				</motion.div>
 				<div className={styles.backgroundDIV}>
