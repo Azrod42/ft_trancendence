@@ -4,7 +4,7 @@ import styles from "./profile.module.css"
 import stylesGrid from "./grid.module.css"
 import Image from 'next/image'
 import {
-	changeDisplayName, getProfilePicture,
+	changeDisplayName, disable2fa, getProfilePicture,
 	getUserInfo, uploadProfilePicture,
 	UserAuthResponse
 } from '@/app/auth/auth.api'
@@ -162,6 +162,11 @@ const Profile: React.FC<ProfileProps> = ({}) => {
 						<form action="">
 							<input className={styles.itemFileInputProfileInfo} name="file" type="file" onChange={onFileUploadChange}  />
 						</form>
+					</span>
+					<span className={styles.itemProfileInfo}>
+						<span className={styles.itemTitleProfileInfo}>Enable 2fa:</span>
+						{!userData?.is2FOn ? <input name="2fa" type="button" value='Turn on' onClick={() => { push('/dashboard/profile/enable-2fa')}}/>
+											:<input name="2fa" type="button" value='Turn off'onClick={() => { disable2fa().then(() => {refetch()})}}/>}
 					</span>
 				</div>
 			</div>

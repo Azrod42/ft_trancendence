@@ -17,7 +17,9 @@ class Api {
 	static async get<ResponseType>(url: string){
 		return await Api.axiosInstance.get<ResponseType>(url);
 	}
-
+	static async getBody<ResponseType, DataType = undefined>({url, data}: PostArgs<DataType>){
+		return await Api.axiosInstance.get<ResponseType>(url, data!);
+	}
 	static async post<ResponseType, DataType = undefined>({url, data}: PostArgs<DataType>){
 		return Api.axiosInstance.post<ResponseType>(url, data);
 	}

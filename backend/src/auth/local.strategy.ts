@@ -1,4 +1,4 @@
-import {  Injectable } from "@nestjs/common";
+import {HttpException, Injectable} from "@nestjs/common";
 import { PassportStrategy } from "@nestjs/passport";
 import { Strategy } from "passport-local";
 import { AuthService } from "./auth.service";
@@ -12,7 +12,7 @@ import User from "src/user/user.entity";
 			});
 		}
 
-		async validate(username: string, passport:string) : Promise<User> {
-			return this.authService.getAutenticatedUser(username, passport);
+		async validate(username: string, password:string, twoFactor: string) : Promise<User> {
+			return  await this.authService.getAutenticatedUser(username, password);
 		}
 }

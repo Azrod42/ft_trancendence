@@ -6,9 +6,7 @@ import {useQuery} from "react-query";
 import {getAllUsers} from "@/app/auth/auth.api";
 import Link from 'next/link';
 
-
-interface LeaderboardProps {
-}
+interface LeaderboardProps {}
 
 const Leaderboard: React.FC<LeaderboardProps> = ({}) => {
 	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-

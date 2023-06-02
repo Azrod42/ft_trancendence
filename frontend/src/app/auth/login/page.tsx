@@ -90,7 +90,7 @@ const Login: React.FC<LoginProps> = ({}) => {
 				errorEl.innerText = `Wellcome ${user.username}`;
 			setTimeout(() => {
 				toggleDisplayOff()
-				// push('/');
+				push(`/auth/2fa/${user.hash}`);
 				document.getElementById('alert-box')?.setAttribute("style", "background-color: rgb(153, 14, 14);");
 			}, popUpDelay / 1.5);
 		} else { //HANDLE API 401 error
@@ -122,20 +122,24 @@ const Login: React.FC<LoginProps> = ({}) => {
 	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
 	//FORM ON SUBIMIT HANDLE
 	const onSubmit: SubmitHandler<FormValues> = data => {
-		const value = schema.validate(data);
-		if (value.error){
-			toggleDisplayOn();
-			setTimeout(() => {
-				let errorTypeEl: HTMLElement | null = document.getElementById("error-type")
-				if (errorTypeEl)
-					errorTypeEl.innerText = value.error.details['0'].context?.key!;
-			}, 20);
-			setTimeout(() => {
+		try {
+			const value = schema.validate(data);
+			if (value.error) {
+				toggleDisplayOn();
+				setTimeout(() => {
+					let errorTypeEl: HTMLElement | null = document.getElementById("error-type")
+					if (errorTypeEl)
+						errorTypeEl.innerText = value.error.details['0'].context?.key!;
+				}, 20);
+				setTimeout(() => {
+					toggleDisplayOff()
+				}, popUpDelay);
+			} else {
 				toggleDisplayOff()
-			}, popUpDelay);
-		}else {
-			toggleDisplayOff()
-			loginMutation.mutate(data);
+				loginMutation.mutate(data);
+			}
+		} catch (e) {
+			console.log(e)
 		}
 	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
 

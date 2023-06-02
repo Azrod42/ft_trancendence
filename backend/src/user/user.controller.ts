@@ -43,22 +43,21 @@ export class UserController {
 	}
 
 	@HttpCode(200)
-	// @UseGuards(JwtAuthGuard)
+	@UseGuards(JwtAuthGuard)
 	@Post('displayname')
 	async changeDisplayName(@Req() request: RequestWithUser, @Body() newData: ChangeDisplayName) {
 		let ret = {};
 		const data: ChangeDisplayNameDto = new ChangeDisplayNameDto;
 		data.displayname = newData.displayname;
 		 await validate(data).then(errors => {
-			console.log(errors)
 			if (errors.length > 0) {
 				console.log(errors)
 				ret = errors;
-			} else {
-				ret = data;
-				this.userService.updateDisplayName(request?.user.id, newData);
+				return ret;
 			}
+			ret = data;
 		})
+		await this.userService.updateDisplayName(request?.user.id, newData);
 		return ret;
 	}
 
@@ -131,7 +130,7 @@ export class UserController {
 
 	@HttpCode(200)
 	@Post('post-public-userdata')
-	// @UseGuards(JwtAuthGuard)
+	@UseGuards(JwtAuthGuard)
 	async getPublicUserData(@Req() request: RequestWithUser, @Res() res) {
 		return res.send(await this.userService.GetAllUserFromDB());
 	}

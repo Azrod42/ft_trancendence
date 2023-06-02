@@ -18,11 +18,21 @@ export type UserId = {
 	id: string;
 };
 
+export type FormOtp = {
+	twoFactorAuthenticationCode: string;
+};
+
+export type FormOtpPost = {
+	twoFactorAuthenticationCode: string;
+	uniqueIdentifier: string;
+};
+
 export interface UserAuthResponse {
 	id:string;
 	username: string;
 	email: string;
 	displayname: string;
+	is2FOn: boolean;
 }
 
 export const login = async(loginInput: FormValues) => {
@@ -128,6 +138,60 @@ export const postProfilePicture = async (id: string) => {
 export const getAllUsers = async () => {
 	try {
 		const data = await Api.get<any>('/users/get-all-user',)
+		return data;
+	} catch (e) {
+		return undefined;
+	}
+}
+
+export const generateQr = async () => {
+	try {
+		const data = await Api.get<any>('/auth/2fa/generate',)
+		return data;
+	} catch (e) {
+		return undefined;
+	}
+}
+
+export const activate2fa = async (form: FormOtp) => {
+	try {
+		const data = await Api.post<string, FormOtp>({
+			url: '/auth/2fa/turn-on',
+			data: form
+		},)
+		return data;
+	} catch (e) {
+		return undefined;
+	}
+}
+
+export const login2fa = async (form: FormOtpPost) => {
+	try {
+		const data = await Api.post<string, FormOtpPost>({
+			url: '/auth/2fa/login',
+			data: form
+		},)
+		return data;
+	} catch (e) {
+		return undefined;
+	}
+}
+
+export const login2faNeeded = async (hash: any) => {
+	try {
+		const data = await Api.post<string, any>({
+			url: '/auth/2fa/check-on',
+			data: hash
+		},)
+		return data;
+	} catch (e) {
+		return undefined;
+	}
+}
+
+export const disable2fa = async () => {
+	try {
+		const data = await Api.get<any>('/auth/2fa/disable',)
 		return data;
 	} catch (e) {
 		return undefined;

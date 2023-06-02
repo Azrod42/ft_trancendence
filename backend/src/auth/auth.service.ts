@@ -12,6 +12,7 @@ import {HttpService} from "@nestjs/axios";
 import {v4 as uuidv4} from 'uuid';
 import * as fs from "fs";
 import * as process from "process";
+import {authenticator} from 'otplib'
 
 
 
@@ -77,8 +78,9 @@ export class AuthService {
 		return ('Authentication=; HttpOnly; Path=/; Max-Age:0')
 	}
 
-	async redirectUserAuth(@Res() response: Response) {
-			response.redirect(301, `http://localhost:3000/`);
+	async redirectUserAuth(@Res() response: Response, hash: string) {
+			const hash64 = Buffer.from(hash, 'binary').toString('base64');
+			response.redirect(301, `http://localhost:3000/auth/2fa/${hash64}`);
 	}
 
 	async downloadImage(url: string) {
@@ -93,5 +95,36 @@ export class AuthService {
 
 		response.data.pipe(writer);
 		return imgLink;
+	}
+
+	async generateTwoFactorAuthenticationSecret(user: User) {
+		const secret = authenticator.generateSecret();
+
+		const otpauthUrl = authenticator.keyuri(user.email, 'ft_transcendence', secret);
+
+		await this.usersService.setTwoFactorAuthenticationSecret(secret, user.id);
+		return {
+			secret,
+			otpauthUrl
+		}
+	}
+
+	isTwoFactorAuthenticationCodeValid(twoFactorAuthenticationCode: string, user: User) {
+		return authenticator.verify({
+			token: twoFactorAuthenticationCode,
+			secret: user.secret2F,
+		});
+	}
+
+	async loginWith2fa(userWithoutPsw: Partial<User>) {
+		const payload = {
+			username: userWithoutPsw.username,
+			isTwoFactorAuthenticationEnabled: !!userWithoutPsw.is2FOn,
+			isTwoFactorAuthenticated: true,
+		};
+		return {
+			email: payload.username,
+			access_token: this.jwtService.sign(payload),
+		};
 	}
 }
