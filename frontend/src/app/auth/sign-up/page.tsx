@@ -1,10 +1,8 @@
 "use client"
 import React, {useState, useEffect} from 'react';
-import Link from 'next/link';
 import styles from '../login/login.module.css';
 import { motion } from "framer-motion";
 import Image from 'next/image';
-import logo_register from '/public/media/logo-register.png';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import Joi from 'joi';
 import { FormValuesRegister, UserAuthResponse, register as regist } from '../auth.api'

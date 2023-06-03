@@ -1,10 +1,5 @@
 "use client"
-import { useState } from 'react';
 import AuthType from '../(component)/navLoginRegister/authtype'
-import Api from '../api/api';
-import NavBar from '../(component)/navbarLanding/navbarLanding';
-
-
 
 export default function RootLayout({
   children,
@@ -13,7 +8,6 @@ export default function RootLayout({
 }) {
   return (
 	<main>
-		{/*<NavBar />*/}
 		<AuthType />
 		{children}
 	</main>

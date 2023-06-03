@@ -3,8 +3,6 @@ import React, {useEffect, useState} from 'react';
 import styles from './login.module.css';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import Image from 'next/image';
-import loginImage from '/public/media/logo-login.png'
-import Link from 'next/link';
 import * as Joi from 'joi';
 import { motion } from "framer-motion"
 import { useMutation } from 'react-query'

@@ -1,24 +1,18 @@
-.ldsdualring {
+.ldshourglass {
 	display: inline-block;
+	position: relative;
 	width: 80px;
 	height: 80px;
 }
-.ldsdualring:after {
+.ldshourglass:after {
 	content: " ";
 	display: block;
-	width: 64px;
-	height: 64px;
-	margin: 8px;
 	border-radius: 50%;
-	border: 6px solid #fff;
+	width: 0;
+	height: 0;
+	margin: 8px;
+	box-sizing: border-box;
+	border: 32px solid #fff;
 	border-color: #fff transparent #fff transparent;
-	animation: lds-dual-ring 1.2s linear infinite;
-}
-@keyframes ldsdualring {
-	0% {
-		transform: rotate(0deg);
-	}
-	100% {
-		transform: rotate(360deg);
-	}
+	animation: lds-hourglass 1.2s infinite;
 }

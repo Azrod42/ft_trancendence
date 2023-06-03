@@ -2,9 +2,10 @@
 import React, {useState} from 'react'
 import styles from "./2fa.module.css"
 import {SubmitHandler, useForm} from "react-hook-form";
-import {activate2fa, FormOtp, FormOtpPost, login2fa, login2faNeeded} from "@/app/auth/auth.api";
+import { FormOtpPost, login2fa, login2faNeeded} from "@/app/auth/auth.api";
 import Api from "@/app/api/api";
-import {usePathname, useRouter, useParams} from "next/navigation";
+import {useRouter, useParams} from "next/navigation";
+import LoadingComponent from "@/app/(component)/loadingPage/loadingPage";
 
 
 interface TowFaProps {
@@ -34,7 +35,7 @@ const TowFa: React.FC<TowFaProps> = ({}) => {
     return (
         <div className={styles.container}>
             {!redirect ?
-                <div>Loading ...</div>
+                <LoadingComponent />
                 :
                 <form onSubmit={handleSubmit(onSubmitForm)} className={styles.form}>
                 <div className={styles.inpuetEl}>
