@@ -28,7 +28,8 @@ return (
 				backgroundImage: `url(${backgound.src})`,
 				backgroundSize: "cover",
 				backgroundPosition: "center",
-				backgroundRepeat: "no-repeat",
+				backgroundRepeat: "repeat",
+				backgroundAttachment: "fixed",
 				height: "96vh"
 				}} className={font.className}>
 
