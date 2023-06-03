@@ -1,10 +1,11 @@
 "use client"
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from "react-query/devtools"
-import './globals.css'
+import styles from './globals.module.css'
 import { Barlow } from 'next/font/google'
-import backgound from '../../public/background/bg-2.jpeg'
+import backgound from '../../public/background/main-backgound.jpg'
 import React from 'react';
+import {inspect} from "util";
 
 const font = Barlow({ 
 	weight: ['400', '700', '100', '200'],
@@ -18,13 +19,11 @@ const font = Barlow({
 // }
 
 //QUERY CLIENT don't touch for now
-const queryClient2 = new QueryClient({});
-
-//
+const queryClient = new QueryClient({});
 
 export default function RootLayout({children}: { children: React.ReactNode }) {
 return (
-    <html lang="en">
+    <html lang="en" className={styles.html}>
 			<body style={{
 				backgroundImage: `url(${backgound.src})`,
 				backgroundSize: "cover",
@@ -33,7 +32,7 @@ return (
 				height: "96vh"
 				}} className={font.className}>
 
-				<QueryClientProvider client={queryClient2}>
+				<QueryClientProvider client={queryClient}>
 					{children}
 					<ReactQueryDevtools />
 				</QueryClientProvider>

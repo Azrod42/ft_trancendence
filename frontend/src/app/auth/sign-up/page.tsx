@@ -129,13 +129,12 @@ const useSignUp: React.FC<signUpProps> = ({}) => {
 	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
 	return(
 		<motion.div className={styles.maindiv}
-			initial={{opacity: 0}}
+			initial={{opacity: 1}}
 			animate={{opacity: 1}}
 			transition={{duration: 0.6}}
 		
 		>
-			<Image src={logo_register} alt="nintendo" width={85} height={85} priority={true}/>
-			<motion.div 
+			<motion.div
 				initial={{opacity:0}}
 				animate={isDisplay ? "open" : "closed"}
 				variants={variants}
@@ -150,33 +149,43 @@ const useSignUp: React.FC<signUpProps> = ({}) => {
 				variants={variants}
 			>
 				<div className={styles.inpuetEl}>
-					<label className={styles.labelText}>Email :
+					<span className={styles.txt}>Email</span>
+					<label className={styles.labelText}>
 						<input className={styles.inputText} autoComplete='no' type="text" {...Register.register("email", {required: true})} />
 					</label>
 				</div>
 				<div className={styles.inpuetEl}>
-					<label className={styles.labelText}>Username :
+					<span className={styles.txt}>Username</span>
+					<label className={styles.labelText}>
 						<input className={styles.inputText} autoComplete='no' type="text" {...Register.register("username", {required: true})} />
 					</label>
 				</div>
 				<div className={styles.inpuetEl}>
-					<label className={styles.labelText}>Password :
+					<span className={styles.txt}>Password</span>
+					<label className={styles.labelText}>
 						<input className={styles.inputText} type="password" {...Register.register("password", {required: true})} />
 					</label>
 				</div>
 				<div className={styles.inpuetEl}>
-					<label className={styles.labelText}>Reapeat-password :
+					<span className={styles.txt}>Reapeat-password</span>
+					<label className={styles.labelText}>
 						<input className={styles.inputText} autoComplete='no' type="password" {...Register.register("passwordRepeat", {required: true})} />
 					</label>
 				</div>
-				<input className={styles.inputButton} type="submit" value='Register' />
+				<div className={styles.footercontainer}>
+					<input className={styles.inputButton} type="submit" value='Register' />
+					<div className={styles.orContainer}>
+						<div className={styles.orBarre} />
+						<span className={styles.orText}>or</span>
+						<div className={styles.orBarre} />
+					</div>
+					<div className={styles.loginAuth42} onClick={() => {
+						window.open(`${process.env.AUTH42_LINK1}${process.env.AUTH42_UID}${process.env.AUTH42_LINK2}`, '_self')}}>Register With <Image src='/media/logo42.svg' alt='logo42' width={30} height={30} />
+					</div>
+				</div>
     		</motion.form>
-			<button className={styles.loginAuth42} onClick={() => {
-				//console.log(`${process.env.AUTH42_LINK1}${process.env.AUTH42_UID}${process.env.AUTH42_LINK2}`);
-				window.open(`${process.env.AUTH42_LINK1}${process.env.AUTH42_UID}${process.env.AUTH42_LINK2}`, '_self')}}>Register With <Image src='/media/logo42.svg' alt='logo42' width={30} height={30} />
-			</button>
-			<p className={styles.noAcc}>You already have an account ?</p>
-			<Link className={styles.link} href="/auth/login">Login</Link>
+			{/*<p className={styles.noAcc}>You already have an account ?</p>*/}
+			{/*<Link className={styles.link} href="/auth/login">Login</Link>*/}
 		</motion.div>
 	)
 }

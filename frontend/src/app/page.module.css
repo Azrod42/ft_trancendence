@@ -15,7 +15,7 @@
 	justify-content: center;
 	align-items: center;
 	flex-direction: column;
-	gap: 10px;
+	gap: 50px;
 }
 
 .backgroundDIV {
@@ -25,19 +25,17 @@
     top: 0;
     left: 0;
 	z-index: -100;
-	background-color: black;
 }
 
 
 .sketchfabembedwrapper {
-	width: 100%;
-	height: 100%;
+	width: 1024px;
+	height: 720px;
 }
 
 .name {
 	margin-top: 0;
 	font-size: 3rem;
-	font-size: 100;
 	color: rgb(255, 238, 4);
 	font-weight: 700;
 	text-shadow: 0 0 15px rgb(255, 196, 4);
@@ -50,4 +48,46 @@
 	justify-content: center;
 	align-items: center;
 	gap: 80px;
+}
+
+.containerLoginRegister {
+	width: 420px;
+	height: 68px;
+	background-color: #18055A;
+	border-radius: 100px;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-around;
+	font-size: 19px;
+	font-weight: 700;
+}
+
+.loginBtn {
+	background-color: #18055A;
+	width: 49%;
+	height: 100%;
+	margin: 0 auto;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 100px;
+	transition-duration: 0.5s;
+}
+
+.loginBtn:hover, .registerBtn:hover {
+	background-color: #2C0FB1;
+	width: 65%;
+}
+
+.registerBtn {
+	background-color: #18055A;
+	width: 49%;
+	height: 100%;
+	margin: 0 auto;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 100px;
+	transition-duration: 0.5s;
 }

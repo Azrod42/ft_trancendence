@@ -13,7 +13,7 @@ export default function RootLayout({
 }) {
   return (
 	<main>
-		<NavBar />
+		{/*<NavBar />*/}
 		<AuthType />
 		{children}
 	</main>

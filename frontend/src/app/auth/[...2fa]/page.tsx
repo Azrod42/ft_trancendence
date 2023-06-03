@@ -1,5 +1,5 @@
 'use client'
-import React from 'react'
+import React, {useState} from 'react'
 import styles from "./2fa.module.css"
 import {SubmitHandler, useForm} from "react-hook-form";
 import {activate2fa, FormOtp, FormOtpPost, login2fa, login2faNeeded} from "@/app/auth/auth.api";
@@ -15,11 +15,14 @@ const TowFa: React.FC<TowFaProps> = ({}) => {
     const uniqueIdentifier = useParams()['2fa'].slice(4);
     const { register, handleSubmit, formState: { errors } } = useForm<FormOtpPost>();
     const { push } = useRouter();
+    const [redirect, setRedirect] = useState<boolean>(false)
 
 
     login2faNeeded({hash: uniqueIdentifier}).then((res) => {
         if (!res?.data)
             push('/dashboard/')
+        else
+            setRedirect(true);
     })
     const onSubmitForm: SubmitHandler<FormOtpPost> = data => {
         data.uniqueIdentifier = uniqueIdentifier;
@@ -30,12 +33,21 @@ const TowFa: React.FC<TowFaProps> = ({}) => {
     }
     return (
         <div className={styles.container}>
-            <h1>2fa</h1>
-            <form onSubmit={handleSubmit(onSubmitForm)}>
-                <input type="text" placeholder="XXXXXX" {...register("twoFactorAuthenticationCode", {})} />
+            {!redirect ?
+                <div>Loading ...</div>
+                :
+                <form onSubmit={handleSubmit(onSubmitForm)} className={styles.form}>
+                <div className={styles.inpuetEl}>
+                    <span className={styles.txt}>2FA code</span>
+                    <label className={styles.labelText}>
+                        <input className={styles.inputText} type="text"
+                               placeholder="XXXXXX" {...register("twoFactorAuthenticationCode", {})} />
+                    </label>
+                    <input type="submit" className={styles.inputButton}/>
+                </div>
 
-                <input type="submit" />
             </form>
+            }
         </div>
     )
 }

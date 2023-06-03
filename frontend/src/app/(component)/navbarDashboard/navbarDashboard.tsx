@@ -84,7 +84,7 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
 		</div>
 		<div className={styles.navRight}>
 			<p className={styles.displaynametxt}>{userData?.displayname}</p>
-			{profilePicture && (<Image className={styles.profilePicture} src={!ppGet ? "/media/logo-login.png" : profilePicture} alt="profile-picture" width={64} height={64} priority={true} onClick={oncMenu}/>)}
+			{profilePicture && (<Image className={styles.profilePicture} src={!ppGet ? "/media/logo-login.png" : profilePicture} alt="profile-picture" width={32} height={32} priority={true} onClick={oncMenu}/>)}
 			{open && <motion.div className={styles.menu}
 								 initial={{opacity: 0}}
 								 animate={{opacity: 1}}

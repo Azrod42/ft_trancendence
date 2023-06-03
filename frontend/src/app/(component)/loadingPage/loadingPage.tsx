@@ -1,19 +1,17 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import styles from "./loadingPage.module.css"
 
 
 
-interface LoadinPageProps {
+interface LoadingComponentProps {
 
 }
 
-const LoadinPage: React.FC<LoadinPageProps> = ({}) => {
+const LoadingComponent: React.FC<LoadingComponentProps> = ({}) => {
 
   return (
-	<div className={styles.loadingDiv} >
-		Loading ...
-	</div>
+	  <div className={styles.ldsdualring}></div>
   )
 }
 
-export default LoadinPage;
+export default LoadingComponent;

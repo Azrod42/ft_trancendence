@@ -1,57 +1,77 @@
 .maindiv {
-	margin: 0px auto;
-	width: 100%;
-	max-width: 400px;
+	margin: 0 auto;
+	width: 80%;
+	max-width: 780px;
+	min-width: 350px;
 	height: 100%;
-	background-color: #121212;
+	background-color: rgba(11, 4, 45, 0.85);
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	padding: 20px;
-	border-radius: 15px;
-	box-shadow: 0 0 10px rgb(255, 196, 4);
+	border-radius: 0 0 15px 15px;
 }
 
 .form {
+	width: 100%;
 	display: flex;
 	flex-direction: column;
-	gap: 30px;
+	gap: 15px;
 }
 
 .labelText {
+	width: 80%;
 	color: white;
-	margin: 0;
+	margin: 0 auto;
+	font-size: 15px;
+}
+
+.txt {
+	color: white;
+	width: 80%;
+	max-width: 420px;
 }
 
 .inpuetEl {
+	width: 100%;
 	display: flex;
 	flex-direction: column;
-	gap: 5px;
+	align-items: center;
+	gap: 1px;
 }
 
 .inputText {
-	width: 300px;
-	height: 25px;
+	width: 80%;
+	max-width: 420px;
+	height: 45px;
 	margin: 5px auto;
 	border-radius: 5px;
-	border: none;
+	border: 1px solid white;
 	display: flex;
 	flex-direction: column;
+	background-color: rgba(11, 4, 45, 0.0);
+	color: white;
+	font-size: 1.1rem;
+}
+
+.footercontainer {
+	display: flex;
+	flex-direction: row;
+	gap: 20px;
+	align-items: center;
+	justify-content: center;
 }
 
 .inputButton {
 	border: none;
-	border-radius: 5px;
-	box-shadow: 0 0 10px rgb(255, 196, 4);
-	width: 50%;
-	height: 26px;
-	margin: 30px auto;
-	margin-top: 10px;
-	background: #202020;
+	width: 134px;
+	height: 64px;
+	background: linear-gradient(102.27deg, #2C0EB0 4.93%, #925ED2 125.19%);
+	border-radius: 4px;
 	color: white;
 	transition-duration: 0.10s;
 	font-weight: 700;
+	font-size: 24px;
 }
 .inputButton:hover {
 	transform: scale(1.02);
@@ -59,13 +79,12 @@
 
 
 .loginAuth42 {
-	background-color: #202020;
-	margin-bottom: 20px;
+	background: linear-gradient(102.27deg, #2C0EB0 4.93%, #925ED2 125.19%);
 	font-weight: 700;
+	font-size: 24px;
 	color: whitesmoke;
-	width: 40%;
-	box-shadow: 0 0 10px rgb(255, 196, 4);
-	height: 30px;
+	width: 227px;
+	height: 64px;
 	border: none;
 	border-radius: 5px;
 	display: flex;
@@ -83,14 +102,13 @@
 }
 
 .noAcc {
-	margin: 0;
-	margin-top: 2px;
+	margin: 2px 0 0;
 	color: white;
 	font-size: 0.9rem;
 }
 
 .link {
-	margin: 0;
+	margin: 0 0 20px;
 	color: white;
 	font-size: 0.9rem;
 	text-decoration: underline;
@@ -120,3 +138,23 @@
 	background-color: greenyellow;
 }
 
+.orContainer {
+	width: 17px;
+	height: 64px;
+	color: white;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	margin: 30px 0;
+}
+
+.orBarre {
+	width: 1px;
+	height: 20px;
+	border-right: 1px solid white;
+}
+
+.orText {
+	margin-bottom: 4px;
+}
