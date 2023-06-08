@@ -132,9 +132,13 @@ const Profile: React.FC<ProfileProps> = ({}) => {
 			<div className={styles.section_a_containerTop}>
 				<div className={styles.section_a_userHeader}>
 					{profilePicture && (<Image className={styles.section_a_userHeaderImg} src={!ppGet ? "/media/logo-login.png" : profilePicture} alt="profile-picture" width={128} height={128} priority={true}/>)}
-					<p className={styles.userHeader_displayname}>{userData?.displayname}</p>
+					<div className={styles.imageLeft}>
+						<div className={styles.tophr}>
+							<p className={styles.userHeader_displayname}>{userData?.displayname}</p>
+						</div>
+						<hr className={styles.hr}/>
+					</div>
 				</div>
-				<hr className={styles.hr}/>
 				<div className={styles.userHeader_profileInfo}>
 					<span className={styles.itemProfileInfo}>
 						<span className={styles.itemTitleProfileInfo}>Display Name :</span>

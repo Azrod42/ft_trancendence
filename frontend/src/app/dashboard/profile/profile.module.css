@@ -3,12 +3,13 @@
 /* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- */
 
 .section_a_containerTop {
-	background-color: #252525cc;
+	background-color: #060B26cc;
 	width: 100% auto;
 	height: 400px;
 	margin: 15px;
 	border-radius: 10px;
-	box-shadow: 0 0 5px rgb(255, 196, 4);
+	box-shadow: 0 0 3px #EF5DA8;
+	border: 1px solid #EF5DA8;
 	padding: 1px;
 	display: flex;
 	flex-direction: column;
@@ -32,7 +33,7 @@
 
 .section_a_userHeader {
 	width: 100% auto;
-	height: 130px;
+	height: 150px;
 	margin-top: 10px;
 	display: flex;
 	flex-direction: row;
@@ -41,7 +42,13 @@
 	/*border: 1px solid red;*/
 
 }
-
+.imageLeft {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	width: 340px;
+}
 .userHeader_displayname {
 	color: white;
 	font-size: 2rem;
@@ -59,11 +66,17 @@
 	object-fit: cover;
 }
 
+.tophr {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-around;
+	align-items: center;
+}
 .hr {
 	margin: 5px auto;
 	width: 80%;
-	box-shadow: 0 0 2px rgb(255, 196, 4);
-	border: 0.1px solid rgb(255, 196, 4);
+	box-shadow: 0 0 2px #EF5DA8;
+	border: 0.1px solid #EF5DA8;
 }
 
 .userHeader_profileInfo {
