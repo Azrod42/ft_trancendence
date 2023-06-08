@@ -201,4 +201,5 @@ const Profile: React.FC<ProfileProps> = ({}) => {
 	</div>
   )
 }
+
 export default Profile;
