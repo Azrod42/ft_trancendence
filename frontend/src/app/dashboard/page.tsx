@@ -10,11 +10,11 @@ const Dashboard: React.FC<DashboardProps> = ({}) => {
 	
   return (
 	<div className={styles.container}>
-		<div className={styles.containerchild}>content</div>
-		<div className={styles.containerchild}>content</div>
-		<div className={styles.containerchild}>content</div>
-		<div className={styles.containerchild}>content</div>
-		<div className={styles.containerchild}>content</div>
+		<div className={styles.containerchild}>Need Game and Chat</div>
+		<div className={styles.containerchild}>Need Game and Chat</div>
+		<div className={styles.containerchild}>Need Game and Chat</div>
+		<div className={styles.containerchild}>Need Game and Chat</div>
+		<div className={styles.containerchild}>Need Game and Chat</div>
 	</div>
   )
 }

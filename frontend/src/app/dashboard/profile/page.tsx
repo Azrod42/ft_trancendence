@@ -189,10 +189,12 @@ const Profile: React.FC<ProfileProps> = ({}) => {
 		</div>
 		<div className={stylesGrid.section_b}>
 			<div className={styles.section_b_container}>
+				<p className={styles.section_d_gamesitems}>Need Game and Chat</p>
 			</div>
 		</div>
 		<div className={stylesGrid.section_c}>
 			<div className={styles.section_c_container}>
+				<p className={styles.section_d_gamesitems}>Need Game and Chat</p>
 			</div>
 		</div>
 		<div className={stylesGrid.section_d}>
@@ -200,10 +202,10 @@ const Profile: React.FC<ProfileProps> = ({}) => {
 				<h1 className={styles.section_d_h1}>Last games</h1>
                 <hr className={styles.hr} />
 				<div className={styles.section_d_games}>
-					<div className={styles.section_d_gamesitems}>Game 1</div>
-					<div className={styles.section_d_gamesitems}>Game 2</div>
-					<div className={styles.section_d_gamesitems}>Game 3</div>
-					<div className={styles.section_d_gamesitems}>Game 4</div>
+					<div className={styles.section_d_gamesitems}>Game 1 Need Game and Chat</div>
+					<div className={styles.section_d_gamesitems}>Game 2 Need Game and Chat</div>
+					<div className={styles.section_d_gamesitems}>Game 3 Need Game and Chat</div>
+					<div className={styles.section_d_gamesitems}>Game 4 Need Game and Chat</div>
 				</div>
 			</div>
 		</div>

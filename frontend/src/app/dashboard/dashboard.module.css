@@ -10,7 +10,7 @@
 }
 
 .containerchild {
-	background-color: #303030b0;
+	background-color: rgba(29, 30, 78, 1);
 	width: 400px;
 	height: 300px;
 	text-align: center;
@@ -19,7 +19,7 @@
 	align-items: center;
 	justify-content: center;
 	border-radius: 10px;
-	box-shadow: 0 0 5px rgb(255, 196, 4);
+	box-shadow: 0 0 5px #EF5DA8;
 	margin: 10px auto;
 }
 

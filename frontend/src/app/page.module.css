@@ -36,9 +36,9 @@
 .name {
 	margin-top: 0;
 	font-size: 3rem;
-	color: rgb(255, 238, 4);
+	color: #EF5DA8;
 	font-weight: 700;
-	text-shadow: 0 0 15px rgb(255, 196, 4);
+	text-shadow: 0 0 15px #EF5DA8;
 	text-decoration: none;
 }
 
