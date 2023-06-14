@@ -14,6 +14,7 @@ import {SubmitHandler, useForm} from "react-hook-form";
 import {useMutation, useQuery} from "react-query";
 import Api from "@/app/api/api";
 import {useRouter} from "next/navigation";
+import LoadingComponent from "@/app/(component)/loadingPage/loadingPage";
 
 
 export type FormDisplayName = {
@@ -25,6 +26,8 @@ interface ProfileProps {
 
 const Profile: React.FC<ProfileProps> = ({}) => {
 	Api.init();
+	const [loading, setLoading] = useState<boolean>(true)
+
 
 	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 	//GET PROFILE IMAGE
@@ -61,6 +64,7 @@ const Profile: React.FC<ProfileProps> = ({}) => {
 	})
 	useEffect(() => {
 			//for setup action on userData refresh ?
+		setLoading(false);
 	},[userData])
 	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
 
@@ -129,6 +133,7 @@ const Profile: React.FC<ProfileProps> = ({}) => {
 	return (
 	<div className={stylesGrid.container}>
 		<div className={stylesGrid.section_a}>
+			{loading ? <LoadingComponent /> :
 			<div className={styles.section_a_containerTop}>
 				<div className={styles.section_a_userHeader}>
 					{profilePicture && (<Image className={styles.section_a_userHeaderImg} src={!ppGet ? "/media/logo-login.png" : profilePicture} alt="profile-picture" width={128} height={128} priority={true}/>)}
@@ -174,17 +179,21 @@ const Profile: React.FC<ProfileProps> = ({}) => {
 					</span>
 				</div>
 			</div>
+			}
 			<div className={styles.section_a_containerBottom}>
 				<h1 className={styles.h1_section_a}>Rank:</h1>
+				<hr className={styles.hr} />
 				<Image className={styles.img_section_a} src='/media/logo-login.png' alt='rank-image' width={128} height={128}/>
 				<p className={styles.p_section_a}>ADD SOME STATS HERE</p>
 			</div>
 		</div>
 		<div className={stylesGrid.section_b}>
-
+			<div className={styles.section_b_container}>
+			</div>
 		</div>
 		<div className={stylesGrid.section_c}>
-
+			<div className={styles.section_c_container}>
+			</div>
 		</div>
 		<div className={stylesGrid.section_d}>
 			<div className={styles.section_d_container}>

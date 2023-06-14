@@ -74,17 +74,18 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
 	// setInterval(refetch, 3000);
   return (
 	<nav className={styles.container}>
+		<div >
+		</div>
 		<div className={styles.navLeft}>
 			<Link className={styles.linktxt} href="/dashboard/">Home</Link>
 			<Link className={styles.linktxt} href="/dashboard/game">Game</Link>
 			<Link className={styles.linktxt} href="/dashboard/social">Social</Link>
 			<Link className={styles.linktxt} href="/dashboard/leaderboard">Leaderboard</Link>
 			{/*<Link className={styles.linktxt} href="/dashboard/users">users</Link>*/}
-
 		</div>
 		<div className={styles.navRight}>
 			<p className={styles.displaynametxt}>{userData?.displayname}</p>
-			{profilePicture && (<Image className={styles.profilePicture} src={!ppGet ? "/media/logo-login.png" : profilePicture} alt="profile-picture" width={64} height={64} priority={true} onClick={oncMenu}/>)}
+			{profilePicture && (<Image className={styles.profilePicture} src={!ppGet ? "/media/logo-login.png" : profilePicture} alt="profile-picture" width={56} height={56} priority={true} onClick={oncMenu}/>)}
 			{open && <motion.div className={styles.menu}
 								 initial={{opacity: 0}}
 								 animate={{opacity: 1}}

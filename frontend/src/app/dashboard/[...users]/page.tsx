@@ -79,10 +79,12 @@ const User: React.FC<UserProps> = ({}) => {
 			  </div>
 		  </div>
 		  <div className={stylesGrid.section_b}>
-
+			  <div className={styles.section_b_container}>
+			  </div>
 		  </div>
 		  <div className={stylesGrid.section_c}>
-
+			  <div className={styles.section_c_container}>
+			  </div>
 		  </div>
 		  <div className={stylesGrid.section_d}>
 			  <div className={styles.section_d_container}>

@@ -29,10 +29,10 @@ export class UserController {
 
 	constructor(private readonly userService: UserService) {}
 
-	// @Get("hello")
-	// async findUser() {
-	// 	return "hello world";
-	// }
+	@Get("hello")
+	async findUser() {
+		return "hello world";
+	}
 
 	@HttpCode(200)
 	@UseGuards(JwtAuthGuard)
