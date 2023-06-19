@@ -1,0 +1,122 @@
+.layout {
+	display: flex;
+}
+  
+.sidebar {
+	width: 458px;
+	height: calc(100vh - 60px);
+	position: fixed;
+	top: 71px;
+	background-color: #060B42;
+	color: white;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	overflow-y: auto;
+	padding-top: 20px;
+}
+
+.staticTop {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.socialTitle {
+	@font-face {
+		font-family: 'modernwarfare';
+		src: url('/font/ModernWarfare-OV7KP.ttf') format('truetype'); 
+	}
+	font-family: 'modernwarfare';
+	width: 159px;
+	font-style: normal;
+	font-weight: 400;
+	font-size: 36px;
+	line-height: 41px;
+	text-align: center;
+	color: #FFFFFF;
+	margin-bottom: 30px;
+}
+
+.content {
+	flex-grow: 1;
+	margin-left: 458px;
+}
+
+.buttonContainer {
+	width: 312px;
+	height: 50.51px;
+	display: flex;
+	background: #18055A;
+	box-shadow: inset 0px 3px 20px rgba(0, 0, 0, 0.15);
+	border-radius: 100px;
+	justify-content: space-between;
+}
+
+.buttonWrapper {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 0px;
+	gap: 1px;
+}
+
+.buttonActiveChat,
+.buttonActiveChannels {
+	width: 155.53px;
+	height: 50.51px;
+	background: #2C0FB1;
+	box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.35);
+	border-radius: 100px;
+	border: none;
+	text-align: center;
+	line-height: 50.51px;
+}
+
+.buttonInactiveChat {
+	width: 155.53px;
+	height: 50.51px;
+	background: #18055A;
+	box-shadow: none;
+	border-radius: 100px 0 0 100px;
+	border: none;
+	text-align: center;
+	line-height: 50.51px;
+}
+
+.buttonInactiveChannels {
+	width: 155.53px;
+	height: 50.51px;
+	background: #18055A;
+	box-shadow: none;
+	border-radius: 0 100px 100px 0;
+	border: none;
+	text-align: center;
+	line-height: 50.51px;
+}
+
+.buttonText {
+	font-family: 'Inter', sans-serif;
+	font-style: normal;
+	font-weight: 700;
+	font-size: 16px;
+	line-height: 18px;
+	text-align: center;
+	color: #E7E7E7;
+	text-shadow: 0px 0px 3px rgba(0, 0, 0, 0.4); 
+}
+
+.searchBar {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	padding: 0px 16px;
+	gap: 4px;
+	width: 458px;
+	height: 70px;
+	flex: none;
+	order: 1;
+	flex-grow: 0;
+}
