@@ -1,9 +1,9 @@
 .layout {
 	display: flex;
 }
-  
+
 .sidebar {
-	width: 458px;
+	width: 30%;
 	height: calc(100vh - 60px);
 	position: fixed;
 	top: 71px;
@@ -45,16 +45,17 @@
 }
 
 .buttonContainer {
-	width: 312px;
-	height: 50.51px;
+	width: 100%;
+	max-width: 320px;
 	display: flex;
 	background: #18055A;
 	box-shadow: inset 0px 3px 20px rgba(0, 0, 0, 0.15);
 	border-radius: 100px;
-	justify-content: space-between;
+	justify-content: space-around;
 }
 
 .buttonWrapper {
+	width: 85%;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -64,8 +65,9 @@
 
 .buttonActiveChat,
 .buttonActiveChannels {
-	width: 155.53px;
-	height: 50.51px;
+	flex-grow: 1;
+	flex-basis: 0;
+	height: auto;
 	background: #2C0FB1;
 	box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.35);
 	border-radius: 100px;
@@ -75,8 +77,9 @@
 }
 
 .buttonInactiveChat {
-	width: 155.53px;
-	height: 50.51px;
+	flex-grow: 1;
+	flex-basis: 0;
+	height: auto;
 	background: #18055A;
 	box-shadow: none;
 	border-radius: 100px 0 0 100px;
@@ -86,8 +89,9 @@
 }
 
 .buttonInactiveChannels {
-	width: 155.53px;
-	height: 50.51px;
+	flex-grow: 1;
+	flex-basis: 0;
+	height: auto;
 	background: #18055A;
 	box-shadow: none;
 	border-radius: 0 100px 100px 0;
@@ -104,19 +108,56 @@
 	line-height: 18px;
 	text-align: center;
 	color: #E7E7E7;
-	text-shadow: 0px 0px 3px rgba(0, 0, 0, 0.4); 
+	text-shadow: 0px 0px 3px rgba(0, 0, 0, 0.4);
 }
 
 .searchBar {
 	display: flex;
 	flex-direction: row;
-	justify-content: center;
+	justify-content: space-between;
 	align-items: center;
-	padding: 0px 16px;
-	gap: 4px;
-	width: 458px;
-	height: 70px;
+	padding: 8px 52px 8px 12px;
+	box-sizing: border-box;
+	isolation: isolate;
+	gap: 8px;
+	width: 90%;
+	height: 40px;
 	flex: none;
 	order: 1;
-	flex-grow: 0;
+	flex-grow: 1;
+	background: transparent;
+	box-shadow: 0 0 0 2px #7848c9;
+	border-radius: 100px;
+	margin-top: 40px;
+}
+
+.searchBar input {
+	width: 100%;
+	min-width: 200px;
+	height: 24px;
+	font-family: 'Source Sans Pro', sans-serif;
+	font-style: normal;
+	font-weight: 600;
+	font-size: 16px;
+	line-height: 24px;
+	display: flex;
+	color: #FFFFFF;
+	background: transparent;
+	border: none;
+}
+
+.searchBar input::placeholder {
+    color: #FFFFFF;
+}
+
+.searchBar img {
+	width: 20px;
+	height: 20px;
+	margin-right: 10px;
+}
+
+@media (max-width: 600px) {
+	.socialTitle {
+		font-size: 6vw;
+	}
 }

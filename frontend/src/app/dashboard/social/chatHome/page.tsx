@@ -1,6 +1,6 @@
 import React from 'react'
-import styles from "./social.module.css"
-import Layout from "./layout/SocialLayout"
+import styles from "./chatHome.module.css"
+import Layout from "../layout/SocialLayout"
 
 
 interface SocialProps {

@@ -8,9 +8,9 @@ interface DashboardProps {
 
 export const Header: React.FC = () => {
 	return (
-	<div className={styles.staticTop}>
-		<h1 className={styles.socialTitle}>Social</h1>
-	</div>
+		<div className={styles.staticTop}>
+			<h1 className={styles.socialTitle}>Social</h1>
+		</div>
 	);
 };
 
@@ -25,28 +25,31 @@ export const ButtonGroup: React.FC = () => {
 	: styles.buttonInactiveChannels;
 
 	return (
-	<div className={styles.buttonWrapper}>
-		<div className={styles.buttonContainer}>
-		<button
-			className={chatButton}
-			onClick={() => setActiveButton('chat')}
-		>
-			<span className={styles.buttonText}>Chat</span>
-		</button>
-		<button
-			className={channelsButton}
-			onClick={() => setActiveButton('channels')}
-		>
-			<span className={styles.buttonText}>Channels</span>
-		</button>
+		<div className={styles.buttonWrapper}>
+			<div className={styles.buttonContainer}>
+			<button
+				className={chatButton}
+				onClick={() => setActiveButton('chat')}
+			>
+				<span className={styles.buttonText}>Chat</span>
+			</button>
+			<button
+				className={channelsButton}
+				onClick={() => setActiveButton('channels')}
+			>
+				<span className={styles.buttonText}>Channels</span>
+			</button>
+			</div>
 		</div>
-	</div>
 	);
 };
 
 export const SearchBar: React.FC = () => {
 	return (
-	<input className={styles.searchBar} type="search" placeholder="Search" />
+		<div className={styles.searchBar}>
+			<img src="/media/Vector.png" alt="icon" />
+			<input type="search" placeholder="Search" />
+		</div>
 	);
 };
 
@@ -62,9 +65,9 @@ export const TopBar: React.FC = () => {
 
 export const Sidebar: React.FC<DashboardProps> = ({ children }) => {
 	return (
-	<div className={styles.sidebar}>
-		<TopBar />
-		<div className={styles.contacts}>{children}</div>
-	</div>
+		<div className={styles.sidebar}>
+			<TopBar />
+			<div className={styles.contacts}>{children}</div>
+		</div>
 	);
 };
