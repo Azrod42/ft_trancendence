@@ -1,6 +1,6 @@
 import React from 'react';
-import { Category } from '../chatHome/chatHomeComponent';
-import styles from "../chatHome/chatHome.module.css"
+import { Category } from '@/app/dashboard/social/chat-home/chatHomeComponent';
+import styles from "@/app/dashboard/social/chat-home/chatHome.module.css"
 
 export const ChannelCategory: React.FC = () => {
 	return (

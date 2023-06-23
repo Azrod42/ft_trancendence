@@ -1,7 +1,7 @@
 import React from 'react';
-import Layout from "../../layout/SocialLayout"
-import { ChannelCategory } from '../../channelHome/channelHomeComponent'
-import styles from "../../chatHome/chatHome.module.css"
+import Layout from "@/app/dashboard/social/(layout)/SocialLayout"
+import { ChannelCategory } from '@/app/dashboard/social/channel-home/channelHomeComponent'
+import styles from "@/app/dashboard/social/chat-home/chatHome.module.css"
 
 interface ChannelSearchPublicProps {
 }

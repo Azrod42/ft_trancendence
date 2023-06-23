@@ -43,14 +43,14 @@ interface ButtonsProps {
 }
 
 export const HomeButtons: React.FC<ButtonsProps> = ({ firstButtonText, firstButtonUrl, secondButtonText, secondButtonUrl }) => {
-	const	router = useRouter();
+	const { push } = useRouter();
 
 	const	handleFirstButton = () => {
-		router.push(firstButtonUrl)
+		push(firstButtonUrl)
 	}
 
 	const	handleSecondButton = () => {
-		router.push(secondButtonUrl)
+		push(secondButtonUrl)
 	}
 
 	return (

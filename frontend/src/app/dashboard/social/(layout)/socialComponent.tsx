@@ -36,7 +36,7 @@ export const ButtonGroup: React.FC = () => {
 
 	const handleButtonClick = (route: string) => {
 		setActiveButton(route);
-		router.push(`/dashboard/social/${route}Home`);
+		router.push(`/dashboard/social/${route}-home`);
 	};
 	
 	return (

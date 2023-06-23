@@ -79,7 +79,7 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
 		<div className={styles.navLeft}>
 			<Link className={styles.linktxt} href="/dashboard/">Home</Link>
 			<Link className={styles.linktxt} href="/dashboard/game">Game</Link>
-			<Link className={styles.linktxt} href="/dashboard/social/chatHome">Social</Link>
+			<Link className={styles.linktxt} href="/dashboard/social/chat-home">Social</Link>
 			<Link className={styles.linktxt} href="/dashboard/leaderboard">Leaderboard</Link>
 			{/*<Link className={styles.linktxt} href="/dashboard/users">users</Link>*/}
 		</div>
