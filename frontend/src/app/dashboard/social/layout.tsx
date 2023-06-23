@@ -6,11 +6,15 @@ import {ChannelCategory} from "@/app/dashboard/social/channel-home/channelHomeCo
 import {ChatCategory} from "@/app/dashboard/social/chat-home/chatHomeComponent";
 import { useRouter } from 'next/router'
 import {usePathname} from "next/navigation";
+import {UserAuthResponse} from "@/app/auth/auth.api";
+import {useQuery} from "react-query";
+import {isUserLog} from "@/app/(common)/checkLog";
 
 
 export default function RootLayout({children,}: {children: React.ReactNode}) {
     let param: string = usePathname()
     param = param.substring(18);
+
     return (
         <div>
             <Layout>
