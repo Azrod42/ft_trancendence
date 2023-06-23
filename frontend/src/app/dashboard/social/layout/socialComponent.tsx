@@ -1,5 +1,6 @@
 'use client'
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
 import styles from './SocialLayout.module.css';
 
 interface DashboardProps {
@@ -15,30 +16,44 @@ export const Header: React.FC = () => {
 };
 
 export const ButtonGroup: React.FC = () => {
+	const router = useRouter();
+	const pathname = usePathname();
 	const [activeButton, setActiveButton] = useState('chat');
 
-	const chatButton = activeButton === 'chat'
-	? styles.buttonActiveChat
-	: styles.buttonInactiveChat;
-	const channelsButton = activeButton === 'channels'
-	? styles.buttonActiveChannels
-	: styles.buttonInactiveChannels;
+	useEffect(() => {
+		const lastSection = pathname.split('/').pop();
+		if (lastSection) {
+			setActiveButton(lastSection.startsWith('chat') ? 'chat' : 'channel');
+		}
+	}, [pathname]);
 
+	const chatButton = activeButton === 'chat'
+		? styles.buttonActiveChat
+		: styles.buttonInactiveChat;
+	const channelsButton = activeButton === 'channel'
+		? styles.buttonActiveChannels
+		: styles.buttonInactiveChannels;
+
+	const handleButtonClick = (route: string) => {
+		setActiveButton(route);
+		router.push(`/dashboard/social/${route}Home`);
+	};
+	
 	return (
 		<div className={styles.buttonWrapper}>
 			<div className={styles.buttonContainer}>
-			<button
-				className={chatButton}
-				onClick={() => setActiveButton('chat')}
-			>
-				<span className={styles.buttonText}>Chat</span>
-			</button>
-			<button
-				className={channelsButton}
-				onClick={() => setActiveButton('channels')}
-			>
-				<span className={styles.buttonText}>Channels</span>
-			</button>
+				<button
+					className={chatButton}
+					onClick={() => handleButtonClick('chat')}
+				>
+					<span className={styles.buttonText}>Chat</span>
+				</button>
+				<button
+					className={channelsButton}
+					onClick={() => handleButtonClick('channel')}
+				>
+					<span className={styles.buttonText}>Channels</span>
+				</button>
 			</div>
 		</div>
 	);
@@ -47,7 +62,7 @@ export const ButtonGroup: React.FC = () => {
 export const SearchBar: React.FC = () => {
 	return (
 		<div className={styles.searchBar}>
-			<img src="/media/Vector.png" alt="icon" />
+			<img src="/media/search.png" alt="icon" />
 			<input type="search" placeholder="Search" />
 		</div>
 	);
