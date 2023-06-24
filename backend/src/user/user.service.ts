@@ -6,6 +6,7 @@ import CreateUserDto from './user.create.dto';
 import {ChangeDisplayNameDto} from './dtos/user.changedisplay.dto';
 import { toDataURL } from 'qrcode';
 import * as bcrypt from 'bcrypt';
+import {response} from "express";
 
 
 
@@ -131,4 +132,24 @@ export class UserService {
 		return toDataURL(otpAuthUrl);
 	}
 
+	async updateChatList(id: string, data: string) {
+		try {
+			const user = await this.findById(id);
+			(await user).chat = data;
+			await this.userRepo.save(user);
+		} catch (e) {
+			throw new HttpException('Somthing went wrong', HttpStatus.INTERNAL_SERVER_ERROR,);
+		}
+	}
+
+	async checkUserIn(id: string, dataI: string) : Promise<boolean> {
+		const data = JSON.parse(dataI);
+		let i = 0;
+		while (i < data.length){
+			if (data[i]?.id == id)
+				return true;
+			i++;
+		}
+		return false;
+	}
 }

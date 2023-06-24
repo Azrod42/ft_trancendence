@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import {useQuery} from "react-query";
 import {getAllUsers} from "@/app/auth/auth.api";
 import Link from 'next/link';
+import {stringify} from "querystring";
 
 interface LeaderboardProps {}
 
@@ -15,7 +16,8 @@ const Leaderboard: React.FC<LeaderboardProps> = ({}) => {
 	const { push } = useRouter();
 	const { isLoading, error, data, refetch } = useQuery('getUserInfo', () =>
 		getAllUsers().then(res => {
-			setuserData(res?.data)
+			setuserData(res?.data);
+			// console.log(JSON.stringify(res?.data));
 		}), { staleTime: 1000 * 60 * 2}
 	);
 	useEffect(() => {

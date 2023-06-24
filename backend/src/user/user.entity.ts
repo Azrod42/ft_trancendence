@@ -28,6 +28,16 @@ class User {
 
     @Column()
     elo: number
+
+    @Column()
+    friends: string;
+
+    @Column()
+    blocked: string;
+
+    @Column()
+    chat: string;
+
 }
 
 export default User;

@@ -27,6 +27,12 @@ class CreateUserDto {
 
 	displayname: string;
 
+	friends: string;
+
+	blocked: string;
+
+	chat: string;
+
 }
 
 export default CreateUserDto;

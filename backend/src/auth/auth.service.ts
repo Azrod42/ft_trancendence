@@ -39,6 +39,9 @@ export class AuthService {
 				secret2F: "undefine",
 				avatar: "notset",
 				elo: 800,
+				chat: '',
+				blocked: '',
+				friends: ''
 			});
 			user.password = undefined;
 			return user;

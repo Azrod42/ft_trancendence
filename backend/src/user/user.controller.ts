@@ -14,7 +14,7 @@ import {
 } from '@nestjs/common';
 import {ChangeDisplayName, ChangeDisplayNameDto, UserId} from './dtos/user.changedisplay.dto';
 import RequestWithUser from 'src/auth/interface/requestWithUser.i';
-import { Response} from "express";
+import {response, Response} from "express";
 import {validate} from "class-validator";
 import {FileInterceptor} from "@nestjs/platform-express";
 import {diskStorage} from "multer";
@@ -133,5 +133,25 @@ export class UserController {
 	@UseGuards(JwtAuthGuard)
 	async getPublicUserData(@Req() request: RequestWithUser, @Res() res) {
 		return res.send(await this.userService.GetAllUserFromDB());
+	}
+
+	@HttpCode(200)
+	@Post('add-chat')
+	@UseGuards(JwtAuthGuard)
+	async addUserChat(@Req() request: RequestWithUser, @Res() res, @Body() userId: UserId) {
+		const user = await this.userService.findById(request.user.id);
+		const data = JSON.parse(user.chat);
+		if (await this.userService.checkUserIn(userId.id, user.chat)
+			|| await this.userService.checkUserIn(userId.id, user.friends)
+			|| await this.userService.checkUserIn(userId.id, user.blocked))
+				return response.send(false);
+		const userAdd = await this.userService.findById(userId.id);
+		const dataAdd = {
+			id: userAdd.id,
+			displayname: userAdd.displayname,
+		}
+		data.push(dataAdd);
+		await this.userService.updateChatList(userAdd.id, JSON.stringify(data));
+		return response.send(true);
 	}
 }
