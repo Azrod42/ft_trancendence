@@ -155,3 +155,4 @@ export class UserController {
 		return response.send(true);
 	}
 }
+
