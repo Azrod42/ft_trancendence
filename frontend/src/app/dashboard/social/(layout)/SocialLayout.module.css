@@ -1,0 +1,163 @@
+.layout {
+	display: flex;
+}
+
+.sidebar {
+	width: 30%;
+	min-width: 200px;
+	height: calc(100vh - 60px);
+	position: fixed;
+	top: 71px;
+	background-color: #060B42;
+	color: white;
+	display: flex;
+	flex-direction: column;
+	overflow-y: auto;
+	padding-top: 15px;
+}
+
+.staticTop {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.socialTitle {
+	@font-face {
+		font-family: 'modernwarfare';
+		src: url('/font/ModernWarfare-OV7KP.ttf') format('truetype'); 
+	}
+	font-family: 'modernwarfare';
+	width: 159px;
+	font-style: normal;
+	font-weight: 400;
+	font-size: 36px;
+	line-height: 41px;
+	text-align: center;
+	color: #FFFFFF;
+	margin-bottom: 30px;
+}
+
+.content {
+	flex-grow: 1;
+	margin-left: 458px;
+}
+
+.buttonContainer {
+	width: 100%;
+	max-width: 320px;
+	display: flex;
+	background: #18055A;
+	box-shadow: inset 0px 3px 20px rgba(0, 0, 0, 0.15);
+	border-radius: 100px;
+	justify-content: space-around;
+}
+
+.buttonWrapper {
+	width: 85%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 0px;
+	gap: 1px;
+}
+
+.buttonActiveChat,
+.buttonActiveChannels {
+	flex-grow: 1;
+	flex-basis: 0;
+	height: auto;
+	background: #2C0FB1;
+	box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.35);
+	border-radius: 100px;
+	border: none;
+	text-align: center;
+	line-height: 50.51px;
+}
+
+.buttonInactiveChat {
+	flex-grow: 1;
+	flex-basis: 0;
+	height: auto;
+	background: #18055A;
+	box-shadow: none;
+	border-radius: 100px 0 0 100px;
+	border: none;
+	text-align: center;
+	line-height: 50.51px;
+}
+
+.buttonInactiveChannels {
+	flex-grow: 1;
+	flex-basis: 0;
+	height: auto;
+	background: #18055A;
+	box-shadow: none;
+	border-radius: 0 100px 100px 0;
+	border: none;
+	text-align: center;
+	line-height: 50.51px;
+}
+
+.buttonText {
+	font-family: 'Inter', sans-serif;
+	font-style: normal;
+	font-weight: 700;
+	font-size: 16px;
+	line-height: 18px;
+	text-align: center;
+	color: #E7E7E7;
+	text-shadow: 0px 0px 3px rgba(0, 0, 0, 0.4);
+}
+
+.searchBar {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	padding: 8px 52px 8px 12px;
+	box-sizing: border-box;
+	isolation: isolate;
+	gap: 8px;
+	width: 90%;
+	height: 40px;
+	flex: none;
+	order: 1;
+	flex-grow: 1;
+	background: transparent;
+	box-shadow: 0 0 0 2px #7848c9;
+	border-radius: 100px;
+	margin-top: 40px;
+}
+
+.searchBar input {
+	width: calc(100% + 100px);
+	margin: 0 -30px 0 -10px;
+	height: 24px;
+	font-family: 'Source Sans Pro', sans-serif;
+	font-style: normal;
+	font-weight: 600;
+	font-size: 16px;
+	line-height: 24px;
+	display: flex;
+	color: #FFFFFF;
+	background: transparent;
+	border: none;
+}
+
+.searchBar input::placeholder {
+	color: #FFFFFF;
+}
+
+.searchBar img {
+	width: 20px;
+	height: 20px;
+	margin-right: 10px;
+}
+
+@media (max-width: 600px) {
+	.socialTitle {
+		font-size: 6vw;
+	}
+}
