@@ -4,12 +4,7 @@ import { useRouter } from 'next/navigation';
 import {getUserInfo, UserAuthResponse} from '../auth/auth.api';
 import { isUserLog } from '../(common)/checkLog';
 import NavBar from '../(component)/navbarDashboard/navbarDashboard';
-import { createContext } from 'vm';
 import styles from './dashboard.module.css'
-import { Suspense } from 'react';
-import LoadinPage from '../(component)/loadingPage/loadingPage';
-import { stringify } from 'querystring';
-import { getUserData } from '../(common)/getUserData';
 import {useQuery} from "react-query";
 
 export default function RootLayout({children,}: {children: React.ReactNode}) {
@@ -40,5 +35,4 @@ export default function RootLayout({children,}: {children: React.ReactNode}) {
 			{children}
 		</main>
 	)
-
 }
