@@ -94,7 +94,7 @@ export  const getUserInfo = async() => {
 	}
 }
 
-export const getPublicUserInfo = async (id: string) => {
+export const getPublicUserInfo = async (id: any) => {
 	try {
 		const userId: UserId = { id: id};
 		const data = await Api.post<string, UserId>({
@@ -240,6 +240,57 @@ export const removeFriend = async (id: any) => {
 			url: '/users/remove-friend-list',
 			data: id
 		},)
+		return data;
+	} catch (e) {
+		return undefined;
+	}
+}
+
+export const addBlock = async (id: any) => {
+	try {
+		const data = await Api.post<string, any>({
+			url: '/users/add-block-list',
+			data: id
+		},)
+		return data;
+	} catch (e) {
+		return undefined;
+	}
+}
+
+export const removeBlock = async (id: any) => {
+	try {
+		const data = await Api.post<string, any>({
+			url: '/users/remove-block-list',
+			data: id
+		},)
+		return data;
+	} catch (e) {
+		return undefined;
+	}
+}
+
+export const getChatList = async () => {
+	try {
+		const data = await Api.get<any>('/users/get-chat-list',)
+		return data;
+	} catch (e) {
+		return undefined;
+	}
+}
+
+export const getFriendList = async () => {
+	try {
+		const data = await Api.get<any>('/users/get-friend-list',)
+		return data;
+	} catch (e) {
+		return undefined;
+	}
+}
+
+export const getBlockList = async () => {
+	try {
+		const data = await Api.get<any>('/users/get-block-list',)
 		return data;
 	} catch (e) {
 		return undefined;

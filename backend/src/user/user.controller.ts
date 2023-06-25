@@ -27,7 +27,8 @@ import User from "./user.entity";
 @Controller('users')
 export class UserController {
 
-	constructor(private readonly userService: UserService) {}
+	constructor(private readonly userService: UserService) {
+	}
 
 	@Get("hello")
 	async findUser() {
@@ -49,7 +50,7 @@ export class UserController {
 		let ret = {};
 		const data: ChangeDisplayNameDto = new ChangeDisplayNameDto;
 		data.displayname = newData.displayname;
-		 await validate(data).then(errors => {
+		await validate(data).then(errors => {
 			if (errors.length > 0) {
 				console.log(errors)
 				ret = errors;
@@ -87,6 +88,7 @@ export class UserController {
 		//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 		return this.userService.updateAvatar(request.user.id, file.path);
 	}
+
 	@HttpCode(200)
 	@UseGuards(JwtAuthGuard)
 	@Get('profile-picture')
@@ -97,9 +99,9 @@ export class UserController {
 		//transform img to base64 (see frontend profile page use)
 		let bitmaps;
 		try {
-			 bitmaps = fs.readFileSync(process.cwd() + '/' + id);
-		}catch (e) {
-			 bitmaps = fs.readFileSync(process.cwd() + '/uploads/default-avatar.jpeg');
+			bitmaps = fs.readFileSync(process.cwd() + '/' + id);
+		} catch (e) {
+			bitmaps = fs.readFileSync(process.cwd() + '/uploads/default-avatar.jpeg');
 		}
 		//-=-=-=-=-=-=-=-=-=-=-=-=
 		return res.send(((bitmaps).toString('base64')));
@@ -114,7 +116,7 @@ export class UserController {
 		let bitmaps;
 		try {
 			bitmaps = fs.readFileSync(process.cwd() + '/' + id);
-		}catch (e) {
+		} catch (e) {
 			bitmaps = fs.readFileSync(process.cwd() + '/uploads/default-avatar.jpeg');
 		}
 		//-=-=-=-=-=-=-=-=-=-=-=-=
@@ -131,8 +133,13 @@ export class UserController {
 	@HttpCode(200)
 	@Post('post-public-userdata')
 	@UseGuards(JwtAuthGuard)
-	async getPublicUserData(@Req() request: RequestWithUser, @Res() res) {
-		return res.send(await this.userService.GetAllUserFromDB());
+	async getPublicUserData(@Req() request: RequestWithUser, @Res() res, @Body() userId: UserId) {
+		const data = await this.userService.GetAllUserFromDB();
+		for (let i = 0; i < data.length; i++) {
+			if (data[i].id == userId.id)
+				return res.send(data[i]);
+		}
+		return res.send({error: 'user not found'});
 	}
 
 	@HttpCode(200)
@@ -152,6 +159,7 @@ export class UserController {
 		const dataAdd = {
 			id: userAdd.id,
 			displayname: userAdd.displayname,
+			avatar: userAdd.avatar,
 		}
 		data.push(dataAdd);
 		await this.userService.updateChatList(user.id, JSON.stringify(data));
@@ -161,7 +169,7 @@ export class UserController {
 	@HttpCode(200)
 	@Post('remove-chat-list')
 	@UseGuards(JwtAuthGuard)
-	async removeUserChat(@Req() request: RequestWithUser, @Res() res, @Body() userId: UserId, intern: boolean = false) {
+	async removeUserChat(@Req() request: RequestWithUser, @Res() res, @Body() userId: UserId, intern = false) {
 		const user = await this.userService.findById(request.user.id);
 		let data = [];
 		if (user.chat == '' && !intern)
@@ -169,10 +177,10 @@ export class UserController {
 		else if (user.chat == '')
 			return false
 		data = JSON.parse(user.chat);
-		for (let i = 0; i < data.length; i++){
-			if (data[i].id == userId.id){
+		for (let i = 0; i < data.length; i++) {
+			if (data[i].id == userId.id) {
 				data.splice(i, 1);
-				this.userService.updateChatList(user.id, JSON.stringify(data));
+				await this.userService.updateChatList(user.id, JSON.stringify(data));
 				if (!intern)
 					return res.send(true);
 				else
@@ -184,45 +192,49 @@ export class UserController {
 		return false
 	}
 
-@HttpCode(200)
-@Post('add-friend-list')
-@UseGuards(JwtAuthGuard)
-async addUserFriend(@Req() request: RequestWithUser, @Res() res, @Body() userId: UserId) {
-	const user = await this.userService.findById(request.user.id);
-	let data = [];
-	if (user.friends != '')
-		data = await JSON.parse(user.friends);
-	if (await this.userService.checkUserIn(userId.id, user.chat)){
-		await this.removeUserChat(request, res, userId, true);
-	}
-	if (await this.userService.checkUserIn(userId.id, user.friends)
-		|| await this.userService.checkUserIn(userId.id, user.blocked)
-		|| user.id == userId.id)
-		return res.send(false);
-	const userAdd = await this.userService.findById(userId.id);
-	const dataAdd = {
-		id: userAdd.id,
-		displayname: userAdd.displayname,
-	}
-	data.push(dataAdd);
-	await this.userService.updateFriendList(user.id, await JSON.stringify(data));
-	return res.send(true);
+	@HttpCode(200)
+	@Post('add-friend-list')
+	@UseGuards(JwtAuthGuard)
+	async addUserFriend(@Req() request: RequestWithUser, @Res() res, @Body() userId: UserId) {
+		const user = await this.userService.findById(request.user.id);
+		let data = [];
+		if (user.friends != '')
+			data = await JSON.parse(user.friends);
+		if (await this.userService.checkUserIn(userId.id, user.chat)) {
+			await this.removeUserChat(request, res, userId, true);
+		}
+		if (await this.userService.checkUserIn(userId.id, user.friends)
+			|| await this.userService.checkUserIn(userId.id, user.blocked)
+			|| user.id == userId.id)
+			return res.send(false);
+		const userAdd = await this.userService.findById(userId.id);
+		const dataAdd = {
+			id: userAdd.id,
+			displayname: userAdd.displayname,
+			avatar: userAdd.avatar
+		}
+		data.push(dataAdd);
+		await this.userService.updateFriendList(user.id, await JSON.stringify(data));
+		return res.send(true);
 	}
 
 	@HttpCode(200)
 	@Post('remove-friend-list')
 	@UseGuards(JwtAuthGuard)
-	async removeUserFriend(@Req() request: RequestWithUser, @Res() res, @Body() userId: UserId) {
+	async removeUserFriend(@Req() request: RequestWithUser, @Res() res, @Body() userId: UserId, intern = false) {
 		const user = await this.userService.findById(request.user.id);
 		let data = [];
-		if (user.friends == '')
+		if (user.friends == '' && !intern)
 			return res.send(false);
+		else if (user.friends == '')
+			return false;
 		data = await JSON.parse(user.friends);
-		for (let i = 0; i < data.length; i++){
-			if (data[i].id == userId.id){
+		for (let i = 0; i < data.length; i++) {
+			if (data[i].id == userId.id) {
 				const dataChat = {
 					id: data[i].id,
-					displayname: data[i].displayname
+					displayname: data[i].displayname,
+					avatar: data[i].avatar
 				};
 				data.splice(i, 1);
 				await this.userService.updateFriendList(user.id, JSON.stringify(data));
@@ -231,9 +243,81 @@ async addUserFriend(@Req() request: RequestWithUser, @Res() res, @Body() userId:
 					data = await JSON.parse(user.chat);
 				data.push(dataChat);
 				await this.userService.updateChatList(user.id, JSON.stringify(data));
+				if (!intern)
+					return res.send(true);
+				return true
+			}
+		}
+		if (!intern)
+			return res.send(false)
+		return false
+	}
+
+	@HttpCode(200)
+	@Post('add-block-list')
+	@UseGuards(JwtAuthGuard)
+	async addUserBlocked(@Req() request: RequestWithUser, @Res() res, @Body() userId: UserId) {
+		const user = await this.userService.findById(request.user.id);
+		let data = [];
+		if (user.blocked != '')
+			data = await JSON.parse(user.blocked);
+		if (await this.userService.checkUserIn(userId.id, user.chat)) {
+			await this.removeUserChat(request, res, userId, true);
+		}
+		if (await this.userService.checkUserIn(userId.id, user.friends)) {
+			await this.removeUserFriend(request, res, userId, true);
+		}
+		if (await this.userService.checkUserIn(userId.id, user.blocked)
+			|| user.id == userId.id)
+			return res.send(false);
+		const userAdd = await this.userService.findById(userId.id);
+		const dataAdd = {
+			id: userAdd.id,
+			displayname: userAdd.displayname,
+			avatar: userAdd.avatar
+		}
+		data.push(dataAdd);
+		await this.userService.updateBlockedList(user.id, JSON.stringify(data));
+		return res.send(true);
+	}
+
+	@HttpCode(200)
+	@Post('remove-block-list')
+	@UseGuards(JwtAuthGuard)
+	async removeUserBlocked(@Req() request: RequestWithUser, @Res() res, @Body() userId: UserId) {
+		const user = await this.userService.findById(request.user.id);
+		let data = [];
+		if (user.blocked == '')
+			return res.send(false);
+		data = JSON.parse(user.blocked);
+		for (let i = 0; i < data.length; i++) {
+			if (data[i].id == userId.id) {
+				data.splice(i, 1);
+				await this.userService.updateBlockedList(user.id, JSON.stringify(data));
 				return res.send(true);
 			}
 		}
 		return res.send(false)
+	}
+
+	@HttpCode(200)
+	@UseGuards(JwtAuthGuard)
+	@Get('get-chat-list')
+	async getChatList(@Req() request: RequestWithUser, @Res() res) {
+		return res.send(await this.userService.getChatList(request.user.id));
+	}
+
+	@HttpCode(200)
+	@UseGuards(JwtAuthGuard)
+	@Get('get-friend-list')
+	async getFriendList(@Req() request: RequestWithUser, @Res() res) {
+		return res.send(await this.userService.getFriendList(request.user.id));
+	}
+
+	@HttpCode(200)
+	@UseGuards(JwtAuthGuard)
+	@Get('get-block-list')
+	async getBlockList(@Req() request: RequestWithUser, @Res() res) {
+		return res.send(await this.userService.getBlockList(request.user.id));
 	}
 }

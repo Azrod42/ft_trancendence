@@ -4,19 +4,15 @@ import styles from "./users.module.css"
 import {useMutation, useQuery} from "react-query";
 import Api from "@/app/api/api";
 import {
-	addChat, addFriend,
-	getAllUsers, getPublicUserInfo,
+	addBlock,
+	addChat, addFriend, getBlockList, getChatList, getFriendList,
+	getPublicUserInfo,
 	getUserInfo,
-	postProfilePicture, removeChat, removeFriend,
-	uploadProfilePicture,
+	postProfilePicture, removeBlock, removeChat, removeFriend,
 	UserAuthResponse
 } from "@/app/auth/auth.api";
-import {useRouter} from "next/router";
 import Image from "next/image";
-import {FiCheck} from "react-icons/fi";
-import {AiOutlineEdit} from "react-icons/ai";
-import {GetServerSideProps} from "next";
-import {usePathname} from "next/navigation";
+import {usePathname, useRouter} from "next/navigation";
 import stylesGrid from "./grid.module.css"
 
 
@@ -29,7 +25,8 @@ interface MyPageProps {
 
 
 const User: React.FC<UserProps> = ({}) => {
-	const [self, setself] = useState<boolean>(false)
+
+	const [self, setself] = useState<boolean>(true)
 	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 	//GET PROFILE IMAGE
 	const urlParam: string = usePathname().split('/').pop()!;
@@ -50,16 +47,37 @@ const User: React.FC<UserProps> = ({}) => {
 	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
 	//GET PUBLIC USERS DATA FROM BACKEND AND DISPLAY IT
 	let [userData, setuserData] = useState<any>();
-	const { isLoading, error, data, refetch } = useQuery('getUserInfo', () =>
+	const { isLoading, error, data, refetch } = useQuery('getUserInfo', () => {
+		const userID = {id: urlParam};
 		getPublicUserInfo(urlParam).then(res => {
-			setuserData(res?.data['0']);
-		}), { staleTime: 5000 }
-	);
+			setuserData(res?.data);
+		}), {staleTime: 5000}
+	});
 	useEffect(() => {
 		if (userData == undefined) {
 			refetch()
 		}
 	})
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
+	//GET USERS DATA FROM BACKEND AND DISPLAY IT
+	let [selfData, setselfData] = useState<UserAuthResponse>();
+	const { push } = useRouter();
+	useEffect(() => {
+		getUserInfo().then(res => {
+			if (res == undefined)
+				push('/');
+			setselfData(res);
+		});
+	}, [userData]);
+	useEffect(() => {
+		if (selfData?.id == urlParam) {
+			setself(true);
+		} else {
+			setself(false);
+		}
+	},[selfData])
+	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
 	useEffect(() => {
 		if (userData?.id == urlParam) {
 			setself(true);
@@ -93,6 +111,37 @@ const User: React.FC<UserProps> = ({}) => {
 			console.log(res);
 		});
 	}
+
+	function onClickAddBlock() {
+		const dtoId = {id: urlParam};
+		addBlock(dtoId).then( (res) => {
+			console.log(res);
+		});
+	}
+	function onClickRemoveBlock() {
+		const dtoId = {id: urlParam};
+		removeBlock(dtoId).then( (res) => {
+			console.log(res);
+		});
+	}
+	function onClickgetChatList() {
+		getChatList().then( (res) => {
+			console.log(res?.data)
+			alert(JSON.stringify(res?.data));
+		});
+	}
+	function onClickgetFriendList() {
+		getFriendList().then( (res) => {
+			console.log(res?.data)
+			alert(JSON.stringify(res?.data));
+		});
+	}
+	function onClickgetBlockList() {
+		getBlockList().then( (res) => {
+			console.log(res?.data)
+			alert(JSON.stringify(res?.data));
+		});
+	}
 	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
   return (
 	  <div className={stylesGrid.container}>
@@ -103,16 +152,29 @@ const User: React.FC<UserProps> = ({}) => {
 					  <p className={styles.userHeader_displayname}>{userData?.displayname}</p>
 				  </div>
 				  <hr className={styles.hr}/>
-				  {self ?
+				  {! self ?
 					  <>
 						  <div className={styles.containerChatWith}>
-							  <div className={styles.chatWith} onClick={onClickAddChat}>Chat with</div>
-							  <div className={styles.chatWith} onClick={onClickAddFriend}>Add Friend</div>
+							  <div className={styles.chatWith} onClick={onClickAddChat}>Add chat</div>
+							  <div className={styles.chatWith} onClick={onClickAddFriend}>Add friend</div>
+							  <div className={styles.chatWith} onClick={onClickAddBlock}>Block user</div>
+
 						  </div>
 						  <div className={styles.containerChatWith}>
 							  <div className={styles.removeChatWith} onClick={onClickRemoveChat}>Remove-chat</div>
-							  <div className={styles.removeChatWith} onClick={onClickRemoveFriend}>Remove-Friend</div>
+							  <div className={styles.removeChatWith} onClick={onClickRemoveFriend}>Remove-friend</div>
+							  <div className={styles.removeChatWith} onClick={onClickRemoveBlock}>Remove-block</div>
 						  </div>
+						  <div className={styles.containerChatWith}>
+							  <div className={styles.chatWith} onClick={onClickgetChatList}>Get my chat list</div>
+						  </div>
+						  <div className={styles.containerChatWith}>
+							  <div className={styles.chatWith} onClick={onClickgetFriendList}>Get my friend list</div>
+						  </div>
+						  <div className={styles.containerChatWith}>
+							  <div className={styles.chatWith} onClick={onClickgetBlockList}>Get my block list</div>
+						  </div>
+
 				 	 </>
 					  :
 					  <div></div>

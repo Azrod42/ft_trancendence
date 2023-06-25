@@ -152,6 +152,16 @@ export class UserService {
 		}
 	}
 
+	async updateBlockedList(idTriger: string, data: string) {
+		try {
+			const user = await this.findById(idTriger);
+			(await user).blocked = data;
+			await this.userRepo.save(user);
+		} catch (e) {
+			throw new HttpException('Somthing went wrong', HttpStatus.INTERNAL_SERVER_ERROR,);
+		}
+	}
+
 	async checkUserIn(id: string, dataI: string) : Promise<boolean> {
 		if (dataI == '')
 			return false;
@@ -163,5 +173,34 @@ export class UserService {
 			i++;
 		}
 		return false;
+	}
+	async getChatList (id: string){
+		try {
+			const user = await this.findById(id);
+			return (await user).chat;
+		} catch (e) {
+			throw new HttpException('Somthing went fucking wrong', HttpStatus.INTERNAL_SERVER_ERROR,);
+		}
+		return undefined;
+	}
+
+	async getFriendList (id: string){
+		try {
+			const user = await this.findById(id);
+			return (await user).friends;
+		} catch (e) {
+			throw new HttpException('Somthing went fucking wrong', HttpStatus.INTERNAL_SERVER_ERROR,);
+		}
+		return undefined;
+	}
+
+	async getBlockList (id: string){
+		try {
+			const user = await this.findById(id);
+			return (await user).blocked;
+		} catch (e) {
+			throw new HttpException('Somthing went fucking wrong', HttpStatus.INTERNAL_SERVER_ERROR,);
+		}
+		return undefined;
 	}
 }
