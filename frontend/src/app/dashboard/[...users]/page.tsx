@@ -74,7 +74,6 @@ const User: React.FC<UserProps> = ({}) => {
 			console.log(res);
 		})
 	}
-
 	function onClickRemoveChat() {
 		const dtoId = {id: urlParam};
 		removeChat(dtoId).then( (res) => {
