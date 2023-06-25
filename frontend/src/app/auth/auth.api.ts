@@ -197,3 +197,51 @@ export const disable2fa = async () => {
 		return undefined;
 	}
 }
+
+export const addChat = async (id: any) => {
+	try {
+		const data = await Api.post<string, any>({
+			url: '/users/add-chat-list',
+			data: id
+		},)
+		return data;
+	} catch (e) {
+		return undefined;
+	}
+}
+
+export const removeChat = async (id: any) => {
+	try {
+		const data = await Api.post<string, any>({
+			url: '/users/remove-chat-list',
+			data: id
+		},)
+		return data;
+	} catch (e) {
+		return undefined;
+	}
+}
+
+export const addFriend = async (id: any) => {
+	try {
+		const data = await Api.post<string, any>({
+			url: '/users/add-friend-list',
+			data: id
+		},)
+		return data;
+	} catch (e) {
+		return undefined;
+	}
+}
+
+export const removeFriend = async (id: any) => {
+	try {
+		const data = await Api.post<string, any>({
+			url: '/users/remove-friend-list',
+			data: id
+		},)
+		return data;
+	} catch (e) {
+		return undefined;
+	}
+}

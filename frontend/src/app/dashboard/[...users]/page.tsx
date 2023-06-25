@@ -4,9 +4,10 @@ import styles from "./users.module.css"
 import {useMutation, useQuery} from "react-query";
 import Api from "@/app/api/api";
 import {
+	addChat, addFriend,
 	getAllUsers, getPublicUserInfo,
 	getUserInfo,
-	postProfilePicture,
+	postProfilePicture, removeChat, removeFriend,
 	uploadProfilePicture,
 	UserAuthResponse
 } from "@/app/auth/auth.api";
@@ -28,6 +29,7 @@ interface MyPageProps {
 
 
 const User: React.FC<UserProps> = ({}) => {
+	const [self, setself] = useState<boolean>(false)
 	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 	//GET PROFILE IMAGE
 	const urlParam: string = usePathname().split('/').pop()!;
@@ -59,8 +61,39 @@ const User: React.FC<UserProps> = ({}) => {
 		}
 	})
 	useEffect(() => {
-		//for setup action on userData refresh ?
+		if (userData?.id == urlParam) {
+			setself(true);
+		} else {
+			setself(false);
+		}
 	},[userData])
+
+	function onClickAddChat()  {
+		const dtoId = {id: urlParam};
+		addChat(dtoId).then( (res) => {
+			console.log(res);
+		})
+	}
+
+	function onClickRemoveChat() {
+		const dtoId = {id: urlParam};
+		removeChat(dtoId).then( (res) => {
+			console.log(res);
+		});
+	}
+	function onClickAddFriend() {
+		const dtoId = {id: urlParam};
+		addFriend(dtoId).then( (res) => {
+			console.log(res);
+		});
+	}
+
+	function onClickRemoveFriend() {
+		const dtoId = {id: urlParam};
+		removeFriend(dtoId).then( (res) => {
+			console.log(res);
+		});
+	}
 	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
   return (
 	  <div className={stylesGrid.container}>
@@ -71,8 +104,22 @@ const User: React.FC<UserProps> = ({}) => {
 					  <p className={styles.userHeader_displayname}>{userData?.displayname}</p>
 				  </div>
 				  <hr className={styles.hr}/>
+				  {self ?
+					  <>
+						  <div className={styles.containerChatWith}>
+							  <div className={styles.chatWith} onClick={onClickAddChat}>Chat with</div>
+							  <div className={styles.chatWith} onClick={onClickAddFriend}>Add Friend</div>
+						  </div>
+						  <div className={styles.containerChatWith}>
+							  <div className={styles.removeChatWith} onClick={onClickRemoveChat}>Remove-chat</div>
+							  <div className={styles.removeChatWith} onClick={onClickRemoveFriend}>Remove-Friend</div>
+						  </div>
+				 	 </>
+					  :
+					  <div></div>
+				  }
 			  </div>
-			  <div className={styles.section_a_containerBottom}>
+				  <div className={styles.section_a_containerBottom}>
 				  <h1 className={styles.h1_section_a}>Rank:</h1>
 				  <Image className={styles.img_section_a} src='/media/logo-login.png' alt='rank-image' width={128} height={128}/>
 				  <p className={styles.p_section_a}>ADD SOME STATS HERE</p>

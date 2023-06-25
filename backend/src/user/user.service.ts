@@ -132,9 +132,9 @@ export class UserService {
 		return toDataURL(otpAuthUrl);
 	}
 
-	async updateChatList(id: string, data: string) {
+	async updateChatList(idTriger: string, data: string) {
 		try {
-			const user = await this.findById(id);
+			const user = await this.findById(idTriger);
 			(await user).chat = data;
 			await this.userRepo.save(user);
 		} catch (e) {
@@ -142,8 +142,20 @@ export class UserService {
 		}
 	}
 
+	async updateFriendList(idTriger: string, data: string) {
+		try {
+			const user = await this.findById(idTriger);
+			(await user).friends = data;
+			await this.userRepo.save(user);
+		} catch (e) {
+			throw new HttpException('Somthing went wrong', HttpStatus.INTERNAL_SERVER_ERROR,);
+		}
+	}
+
 	async checkUserIn(id: string, dataI: string) : Promise<boolean> {
-		const data = JSON.parse(dataI);
+		if (dataI == '')
+			return false;
+		const data = await JSON.parse(dataI);
 		let i = 0;
 		while (i < data.length){
 			if (data[i]?.id == id)

@@ -4015,7 +4015,7 @@ neo-async@^2.6.2:
 
 nest@^0.1.6:
   version "0.1.6"
-  resolved "https://registry.npmjs.org/nest/-/nest-0.1.6.tgz"
+  resolved "https://registry.yarnpkg.com/nest/-/nest-0.1.6.tgz#81aa0236f0ebc996523e5d3855c73dd382a2b255"
   integrity sha512-21378J/6pHB9EZMId5yz9DaxVj778pCHhzfXhRLLrLWZydpLgbsyxL5B5QyTSWJBk5L8XbiGgMvNZMb/qBySYg==
 
 node-abort-controller@^3.0.1:

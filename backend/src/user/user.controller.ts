@@ -14,7 +14,7 @@ import {
 } from '@nestjs/common';
 import {ChangeDisplayName, ChangeDisplayNameDto, UserId} from './dtos/user.changedisplay.dto';
 import RequestWithUser from 'src/auth/interface/requestWithUser.i';
-import {response, Response} from "express";
+import { Response} from "express";
 import {validate} from "class-validator";
 import {FileInterceptor} from "@nestjs/platform-express";
 import {diskStorage} from "multer";
@@ -136,23 +136,104 @@ export class UserController {
 	}
 
 	@HttpCode(200)
-	@Post('add-chat')
+	@Post('add-chat-list')
 	@UseGuards(JwtAuthGuard)
 	async addUserChat(@Req() request: RequestWithUser, @Res() res, @Body() userId: UserId) {
 		const user = await this.userService.findById(request.user.id);
-		const data = JSON.parse(user.chat);
+		let data = [];
+		if (user.chat != '')
+			data = await JSON.parse(user.chat);
 		if (await this.userService.checkUserIn(userId.id, user.chat)
 			|| await this.userService.checkUserIn(userId.id, user.friends)
-			|| await this.userService.checkUserIn(userId.id, user.blocked))
-				return response.send(false);
+			|| await this.userService.checkUserIn(userId.id, user.blocked)
+			|| user.id == userId.id)
+			return res.send(false);
 		const userAdd = await this.userService.findById(userId.id);
 		const dataAdd = {
 			id: userAdd.id,
 			displayname: userAdd.displayname,
 		}
 		data.push(dataAdd);
-		await this.userService.updateChatList(userAdd.id, JSON.stringify(data));
-		return response.send(true);
+		await this.userService.updateChatList(user.id, JSON.stringify(data));
+		return res.send(true);
+	}
+
+	@HttpCode(200)
+	@Post('remove-chat-list')
+	@UseGuards(JwtAuthGuard)
+	async removeUserChat(@Req() request: RequestWithUser, @Res() res, @Body() userId: UserId, intern: boolean = false) {
+		const user = await this.userService.findById(request.user.id);
+		let data = [];
+		if (user.chat == '' && !intern)
+			return res.send(false);
+		else if (user.chat == '')
+			return false
+		data = JSON.parse(user.chat);
+		for (let i = 0; i < data.length; i++){
+			if (data[i].id == userId.id){
+				data.splice(i, 1);
+				this.userService.updateChatList(user.id, JSON.stringify(data));
+				if (!intern)
+					return res.send(true);
+				else
+					return true
+			}
+		}
+		if (!intern)
+			return res.send(false)
+		return false
+	}
+
+@HttpCode(200)
+@Post('add-friend-list')
+@UseGuards(JwtAuthGuard)
+async addUserFriend(@Req() request: RequestWithUser, @Res() res, @Body() userId: UserId) {
+	const user = await this.userService.findById(request.user.id);
+	let data = [];
+	if (user.friends != '')
+		data = await JSON.parse(user.friends);
+	if (await this.userService.checkUserIn(userId.id, user.chat)){
+		await this.removeUserChat(request, res, userId, true);
+	}
+	if (await this.userService.checkUserIn(userId.id, user.friends)
+		|| await this.userService.checkUserIn(userId.id, user.blocked)
+		|| user.id == userId.id)
+		return res.send(false);
+	const userAdd = await this.userService.findById(userId.id);
+	const dataAdd = {
+		id: userAdd.id,
+		displayname: userAdd.displayname,
+	}
+	data.push(dataAdd);
+	await this.userService.updateFriendList(user.id, await JSON.stringify(data));
+	return res.send(true);
+	}
+
+	@HttpCode(200)
+	@Post('remove-friend-list')
+	@UseGuards(JwtAuthGuard)
+	async removeUserFriend(@Req() request: RequestWithUser, @Res() res, @Body() userId: UserId) {
+		const user = await this.userService.findById(request.user.id);
+		let data = [];
+		if (user.friends == '')
+			return res.send(false);
+		data = await JSON.parse(user.friends);
+		for (let i = 0; i < data.length; i++){
+			if (data[i].id == userId.id){
+				const dataChat = {
+					id: data[i].id,
+					displayname: data[i].displayname
+				};
+				data.splice(i, 1);
+				await this.userService.updateFriendList(user.id, JSON.stringify(data));
+				data = [];
+				if (user.chat != '')
+					data = await JSON.parse(user.chat);
+				data.push(dataChat);
+				await this.userService.updateChatList(user.id, JSON.stringify(data));
+				return res.send(true);
+			}
+		}
+		return res.send(false)
 	}
 }
-
