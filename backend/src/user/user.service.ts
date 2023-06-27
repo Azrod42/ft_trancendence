@@ -203,4 +203,9 @@ export class UserService {
 		}
 		return undefined;
 	}
+
+	async newGameLose(user: User) {
+		user.gameLose = user.gameLose + 1;
+		await this.userRepo.save(user);
+	}
 }

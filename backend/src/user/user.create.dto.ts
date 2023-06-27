@@ -33,6 +33,8 @@ class CreateUserDto {
 
 	chat: string;
 
+	gameLose: number;
+
 }
 
 export default CreateUserDto;

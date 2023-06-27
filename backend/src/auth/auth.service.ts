@@ -41,7 +41,8 @@ export class AuthService {
 				elo: 800,
 				chat: '',
 				blocked: '',
-				friends: ''
+				friends: '',
+				gameLose: 0,
 			});
 			user.password = undefined;
 			return user;

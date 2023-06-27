@@ -23,6 +23,8 @@ import * as path from "path";
 import * as process from "process";
 import * as fs from 'fs'
 import User from "./user.entity";
+import {InjectRepository} from "@nestjs/typeorm";
+import {Repository} from "typeorm";
 
 @Controller('users')
 export class UserController {
@@ -320,4 +322,14 @@ export class UserController {
 	async getBlockList(@Req() request: RequestWithUser, @Res() res) {
 		return res.send(await this.userService.getBlockList(request.user.id));
 	}
+
+	@HttpCode(200)
+	@UseGuards(JwtAuthGuard)
+	@Get('game-lose')
+	async gameLose(@Req() request: RequestWithUser, @Res() res) {
+		const user = await this.userService.findById(request.user.id);
+		await this.userService.newGameLose(user);
+		return res.send(true);
+	}
+
 }

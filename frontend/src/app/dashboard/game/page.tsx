@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import styles from "./game.module.css";
+import {gameLose} from "@/app/auth/auth.api";
 
 interface GameProps {
 }
@@ -84,7 +85,11 @@ const resetWholeGame = () => {
 		// Player 2 follows the ball
 		setPaddle2Y(ballPosition.y - 50);
 
-		if (playerScore >= 3 || player2Score >= 3) { 
+		if (playerScore >= 3 || player2Score >= 3) {
+			if (player2Score >= 3)
+				gameLose().then((res) => {
+					console.log(res);
+				});
 			setGameStatus("finished"); 
 			clearInterval(interval); 
 		  }
@@ -163,7 +168,7 @@ useEffect(() => { // mouvements souris
       <div className={styles.contentGame}>
         {gameStatus === "finished" ? (
 			<>
-				<h2>Bravo à {playerScore == 3 ? (<h2>Player 1</h2>) : (<h2>Player 2</h2>)}</h2>
+				<h2>Bravo à {playerScore == 3 ? (<h3>Player 1</h3>) : (<h3>Player 2</h3>)}</h2>
 				<button
 						className={styles.buttonGame}
 						onClick={resetWholeGame}

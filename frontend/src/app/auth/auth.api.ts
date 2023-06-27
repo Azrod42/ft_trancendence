@@ -296,3 +296,12 @@ export const getBlockList = async () => {
 		return undefined;
 	}
 }
+
+export const gameLose = async () => {
+	try {
+		const data = await Api.get<any>('/users/game-lose',)
+		return data;
+	} catch (e) {
+		return undefined;
+	}
+}
