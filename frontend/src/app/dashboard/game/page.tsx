@@ -100,7 +100,7 @@ const resetWholeGame = () => {
 		clearInterval(interval);
 	  };
 	}, [ballPosition, ballSpeed, paddleY, gameStatus]);
-  
+
 
 useEffect(() => { // mouvements souris 
     const handleMouseMove = (event: MouseEvent) => {
