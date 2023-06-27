@@ -40,7 +40,7 @@ const resetWholeGame = () => {
   useEffect(() => {
 
 	if(gameStatus === "notStarted" || gameStatus === "finished") {
-		return; // Do not run the game loop if the game has not started or has finished
+		return; 
 	  }
     const interval = setInterval(() => {
       if (canvasRef.current) {
