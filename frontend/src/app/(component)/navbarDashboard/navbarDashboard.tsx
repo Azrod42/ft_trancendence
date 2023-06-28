@@ -7,6 +7,7 @@ import {useQuery} from "react-query";
 import Api from "@/app/api/api";
 import Image from "next/image";
 import { motion } from "framer-motion"
+import {WebSocket} from "@/app/(component)/WebSocket/WebSocket";
 
 
 
@@ -84,6 +85,7 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
 			{/*<Link className={styles.linktxt} href="/dashboard/users">users</Link>*/}
 		</div>
 		<div className={styles.navRight}>
+			<WebSocket />
 			<p className={styles.displaynametxt}>{userData?.displayname}</p>
 			{profilePicture && (<Image className={styles.profilePicture} src={!ppGet ? "/media/logo-login.png" : profilePicture} alt="profile-picture" width={56} height={56} priority={true} onClick={oncMenu}/>)}
 			{open && <motion.div className={styles.menu}
