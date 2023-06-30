@@ -1,0 +1,9 @@
+.background {
+    background-color: #2C0FB1;
+}
+
+.hide {
+    position: absolute;
+    top: 0;
+    opacity: 0;
+}

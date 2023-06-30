@@ -1,6 +1,5 @@
 import Api from "../api/api";
 import {FormDisplayName} from "@/app/dashboard/profile/page";
-import {blob} from "stream/consumers";
 
 export type FormValues = {
 	username: string;
@@ -12,6 +11,18 @@ export type FormValuesRegister = {
 	username: string;
 	password: string;
 	passwordRepeat: string;
+};
+
+export type FormValuesCreateChannel = {
+	channelname: string;
+	password: string;
+	type: number
+	owners: string;
+};
+
+export type FormValueJoinChannel = {
+	id: string;
+	password: string;
 };
 
 export type UserId = {

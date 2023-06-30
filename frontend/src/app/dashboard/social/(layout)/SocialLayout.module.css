@@ -1,10 +1,14 @@
 .layout {
 	display: flex;
+	height: 100%;
+	width: 30%;
+	max-width: 300px;
 }
 
 .sidebar {
 	width: 30%;
 	min-width: 200px;
+	max-width: 300px;
 	height: calc(100vh - 60px);
 	position: fixed;
 	top: 71px;
@@ -26,7 +30,7 @@
 .socialTitle {
 	@font-face {
 		font-family: 'modernwarfare';
-		src: url('/font/ModernWarfare-OV7KP.ttf') format('truetype'); 
+		src: url("/font/ModernWarfare-OV7KP.ttf") format('truetype');
 	}
 	font-family: 'modernwarfare';
 	width: 159px;

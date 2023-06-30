@@ -4,7 +4,7 @@ import {
 	Body,
 	Controller,
 	Get,
-	HttpCode, HttpException, HttpStatus, Param,
+	HttpCode, HttpException, HttpStatus,
 	Post,
 	Req,
 	Res,
@@ -22,9 +22,6 @@ import {v4 as uuidv4} from 'uuid';
 import * as path from "path";
 import * as process from "process";
 import * as fs from 'fs'
-import User from "./user.entity";
-import {InjectRepository} from "@nestjs/typeorm";
-import {Repository} from "typeorm";
 
 @Controller('users')
 export class UserController {
@@ -268,6 +265,7 @@ export class UserController {
 		}
 		if (await this.userService.checkUserIn(userId.id, user.friends)) {
 			await this.removeUserFriend(request, res, userId, true);
+			await this.removeUserChat(request, res, userId, true);
 		}
 		if (await this.userService.checkUserIn(userId.id, user.blocked)
 			|| user.id == userId.id)

@@ -6,10 +6,12 @@ import { ConfigModule } from '@nestjs/config';
 import { UserController } from './user/user.controller';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
+import { ChannelModule } from './channel/channel.module';
 import JwtStrategy from './auth/interface/jwt.strategy';
+import {ChannelController} from "./channel/channel.controller";
 
 @Module({
-  imports: [DatabaseModule, ConfigModule.forRoot(), UserModule, AuthModule],
+  imports: [DatabaseModule, ConfigModule.forRoot(), UserModule, AuthModule, ChannelModule],
   controllers: [AppController, UserController],
   providers: [AppService, JwtStrategy],
 })

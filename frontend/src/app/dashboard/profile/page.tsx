@@ -50,7 +50,7 @@ const Profile: React.FC<ProfileProps> = ({}) => {
 	//GET USERS DATA FROM BACKEND AND DISPLAY IT
 	let [userData, setuserData] = useState<UserAuthResponse>();
 	const { push } = useRouter();
-	const { isLoading, error, data, refetch } = useQuery('getUserInfo', () =>
+	const { refetch } = useQuery('getUserInfo', () =>
 		getUserInfo().then(res => {
 			if (res == undefined)
 				push('/');
@@ -79,7 +79,6 @@ const Profile: React.FC<ProfileProps> = ({}) => {
 		if (upDisplayName)
 			setUpDisplayName(!upDisplayName)
 		mutation.mutate(data);
-
 	}
 	//QUERY TO MAKE API CALL TO BACKEND (rename)
 	const mutation = useMutation({
@@ -87,7 +86,7 @@ const Profile: React.FC<ProfileProps> = ({}) => {
 			Api.init();
 			return changeDisplayName(data);
 		},
-		onSuccess: (rep) => {
+		onSuccess: () => {
 			setTimeout(() => {
 				refetch();
 			}, 100);
@@ -122,7 +121,7 @@ const Profile: React.FC<ProfileProps> = ({}) => {
 			Api.init();
 			return uploadProfilePicture(data);
 		},
-		onSuccess: (rep) => {
+		onSuccess: () => {
 			setTimeout(() => {
 				refetch();
 				setPpGet(false);
