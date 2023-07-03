@@ -6,6 +6,7 @@ import { isUserLog } from '../(common)/checkLog';
 import NavBar from '../(component)/navbarDashboard/navbarDashboard';
 import styles from './dashboard.module.css'
 import {useQuery} from "react-query";
+import {socket, WebSocketProvider} from "@/app/(common)/WebsocketContext";
 
 export default function RootLayout({children,}: {children: React.ReactNode}) {
 	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
@@ -31,8 +32,10 @@ export default function RootLayout({children,}: {children: React.ReactNode}) {
 
 	return (
 		<main className={styles.layoutDiv}>
-			<NavBar />
-			{children}
+			{/*<WebSocketProvider value={socket}>*/}
+				<NavBar />
+				{children}
+			{/*</WebSocketProvider>*/}
 		</main>
 	)
 }

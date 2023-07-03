@@ -5,18 +5,22 @@ import styles2 from './globals.module.css'
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion'
 import Image from "next/image";
-import {getMyData} from "@/app/api/fetchData";
+import {socket, WebsocketContext, WebSocketProvider} from "@/app/(common)/WebsocketContext";
+import {WebSocket} from "@/app/(component)/WebSocket/WebSocket";
 
  
 export default function Home() {
-	//GET USER DATA FROM BACKEND
-	const { push, prefetch } = useRouter();
-	getMyData().then(res => {
-		if (res !== undefined)
-			push('/dashboard');
-	});
-	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
-	//PRELOAD ALL HOME PAGES
+
+	//GET USER DATA FROM BACKEND AND STORE IN useState
+	let [userData, setuserData] = useState<UserAuthResponse>();
+	const { push } = useRouter();
+	const { isLoading, error, data, refetch } = useQuery('getUserInfo', () =>
+		isUserLog().then(res => {
+			if (res !== undefined)
+				push('/dashboard');
+			setuserData(res);
+		}), { refetchInterval: 1000 * 5, refetchOnWindowFocus: false, staleTime: 5000 }
+	);
 	useEffect(() => {
 		prefetch('/auth/login');
 		prefetch('/auth/sign-up');
@@ -25,7 +29,6 @@ export default function Home() {
 	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
   return (
     <main className={styles2.main}>
-			{/*<NavBar />*/}
 			<div className={styles.wrapper}>
 				<motion.div className={styles.content}
 					initial={{y: -40}}
