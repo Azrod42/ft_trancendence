@@ -1,6 +1,4 @@
-import { IsEmail,IsString,IsNotEmpty,MinLength,IsBoolean } from "class-validator";
-import { NONAME } from "dns";
-
+import { IsEmail,IsString,IsNotEmpty,MinLength } from "class-validator";
 class CreateUserDto {
 	@IsString()
 	@IsNotEmpty()

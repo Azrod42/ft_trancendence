@@ -50,10 +50,9 @@ const Login: React.FC<LoginProps> = ({}) => {
 
 	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
 	//CHECK IF USER IS LOG (REDIRECT DASHBOARD) 
-	const { push } = useRouter();
+	const { push, prefetch } = useRouter();
 	useEffect(() => {
-
-
+		prefetch('/auth/2fa');
 		const data = isUserLog();
 		data.then(function (data: UserAuthResponse | undefined) {
 			if (data !== undefined) {

@@ -1,36 +1,53 @@
 'use client'
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { useRouter } from 'next/navigation'
 import styles from './chatHome.module.css';
+import LoadingPage from "@/app/(component)/loadingPage/loadingPage";
+import '../channel-create/style.css'
 
 interface CategoryProps {
 	title: string,
-	count: number
+	count: number,
+	type: string
 }
 
-export const Category: React.FC<CategoryProps> = ({ title, count}) => {
-	const [isOpen, setIsOpen] = useState(true);
+export const Category: React.FC<CategoryProps> = ({ title, count, type}) => {
+	const [isOpen, setIsOpen] = useState(false);
+	const {push} = useRouter();
 
+	useEffect(() => {
+		const Elem = document.getElementById(type);
+		if (isOpen == false) {
+			Elem?.classList.add('hide');
+		} else  {
+			Elem?.classList.remove('hide');
+		}
+	}, [isOpen])
 	return (
-		<div className={styles.category} onClick={() => setIsOpen(!isOpen)}>
-			<div className={styles.name}>
-				<p>{title} ({count})</p>
+		<>
+			<div className={styles.category} onClick={() => setIsOpen(!isOpen)}>
+				<div className={styles.name}>
+					<p>{title}</p><p id={type + 'nu'}></p>
+				</div>
+				<img className={styles.arrow}
+					src="/media/arrow.png"
+					alt="arrow"
+					style={{ transform: isOpen ? "rotate(0deg)" : "rotate(-90deg)" }}
+				/>
 			</div>
-			<img className={styles.arrow}
-				src="/media/arrow.png"
-				alt="arrow"
-				style={{ transform: isOpen ? "rotate(0deg)" : "rotate(270deg)" }}
-			/>
-		</div>
+			<div id={type} className={styles.channelUnit}>
+				<LoadingPage />
+			</div>
+		</>
 	);
 }
 
 export const ChatCategory: React.FC = () => {
 	return (
 		<div className={styles.container}>
-			<Category title="My friends" count={0} />
-			<Category title="Others" count={0} />
-			<Category title="Blocked" count={0} />
+			<Category title="My friends" count={0} type={'friendDiv'}/>
+			<Category title="Others" count={0} type={'othersDiv'}/>
+			<Category title="Blocked" count={0} type={'blockedDiv'} />
 		</div>
 	)
 }

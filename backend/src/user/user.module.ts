@@ -6,7 +6,6 @@ import User from './user.entity';
 import { PassportModule } from '@nestjs/passport';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
-import { LocalStrategy } from 'src/auth/local.strategy';
 import JwtStrategy from 'src/auth/interface/jwt.strategy';
 
 @Module({

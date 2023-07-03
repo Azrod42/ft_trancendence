@@ -37,11 +37,13 @@
 	flex: 1;
 	text-align: left;
 	margin: -3px 15px;
+	display: flex;
+	flex-direction: row;
+	gap: 10px
 }
 
 .arrow {
-	margin: auto;
-	margin-right: 12px;
+	margin: auto 12px auto auto;
 	transition: transform 0.3s ease-in-out;
 }
 
@@ -128,3 +130,13 @@
 .separator::after {
 	bottom: 7px;
 }
+
+.channelUnit {
+	margin-left: 20px;
+	margin-top: 3px;
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+	margin-bottom: 5px;
+}
+

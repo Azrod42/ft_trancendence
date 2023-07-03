@@ -9,9 +9,11 @@ export class ChangeDisplayNameDto {
 
 
 export class ChangeDisplayName {
+	@IsNotEmpty()
 	displayname: string;
 }
 
 export class UserId {
+	@IsNotEmpty()
 	id: string;
 }

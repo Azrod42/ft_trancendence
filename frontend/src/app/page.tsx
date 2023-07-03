@@ -1,14 +1,9 @@
 'use client'
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import styles from './page.module.css'
 import styles2 from './globals.module.css'
-
-
-import { isUserLog } from './(common)/checkLog';
 import { useRouter } from 'next/navigation';
-import { UserAuthResponse } from './auth/auth.api';
 import { motion } from 'framer-motion'
-import {useQuery} from "react-query";
 import Image from "next/image";
 import {socket, WebsocketContext, WebSocketProvider} from "@/app/(common)/WebsocketContext";
 import {WebSocket} from "@/app/(component)/WebSocket/WebSocket";
@@ -27,8 +22,10 @@ export default function Home() {
 		}), { refetchInterval: 1000 * 5, refetchOnWindowFocus: false, staleTime: 5000 }
 	);
 	useEffect(() => {
-		//for setup action on userData refresh ?
-	},[userData])
+		prefetch('/auth/login');
+		prefetch('/auth/sign-up');
+		prefetch('/dashboard');
+	}, []);
 	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
   return (
     <main className={styles2.main}>
