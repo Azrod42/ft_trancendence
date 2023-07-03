@@ -39,12 +39,11 @@
 	margin: -3px 15px;
 	display: flex;
 	flex-direction: row;
-	gap: 3px;
+	gap: 10px
 }
 
 .arrow {
-	margin: auto;
-	margin-right: 12px;
+	margin: auto 12px auto auto;
 	transition: transform 0.3s ease-in-out;
 }
 

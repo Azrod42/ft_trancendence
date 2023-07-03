@@ -1,6 +1,8 @@
+'use client'
 import React from 'react'
 import { HomeButtons } from '@/app/dashboard/social/chat-home/chatHomeComponent'
 import styles from "@/app/dashboard/social/chat-home/chatHome.module.css"
+import {useRouter} from "next/navigation";
 
 
 interface ChannelHomeProps {

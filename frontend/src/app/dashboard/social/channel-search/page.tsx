@@ -112,7 +112,7 @@ const ChannelHome: React.FC<ChannelSearchProps> = ({}) => {
         joinChannel(joinChanData).then((res) => {
             if (res.status == false){
                 setHeaderError('Error :')
-                setErrorMsg('Invalid credentials');
+                setErrorMsg(res.error);
                 setError(true);
                 setTimeout(() => {
                     setError(false);

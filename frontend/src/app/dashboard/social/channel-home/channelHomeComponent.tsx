@@ -15,12 +15,21 @@ export const ChannelCategory: React.FC = () => {
 		getUserChannel().then(res => {
 			const dta = JSON.parse(JSON.stringify(res.data!));
 			setUserChannel(res.data!);
-		}), { staleTime: 5000, refetchInterval: 1000 * 5}
+		}), { staleTime: 5000, refetchInterval: 1000 * 25, refetchOnWindowFocus: false}
 	);
 	useEffect(() => {
-		let htmlPu: string = '';
-		let htmlPr: string = '';
-		let htmlPro: string = '';
+		let htmlPu: string = `
+							<style>
+								.styleItem{
+								display: flex;
+								flex-direction: row;
+								gap: 15px;
+								justify-content: flex-start;
+								align-items: center;
+								}
+							</style>`;
+		let htmlPr: string = htmlPu;
+		let htmlPro: string = htmlPu;
 		let nuPu = 0, nuPr = 0, nuPro = 0;
 
 		if (!userChannel)
@@ -28,15 +37,7 @@ export const ChannelCategory: React.FC = () => {
 		for(let i = 0; userChannel[i]; i++) {
 			if (userChannel[i].type == 1) {
 				nuPu += 1;
-				htmlPu += ` <style>
-							.styleItem{
-							display: flex;
-							flex-direction: row;
-							gap: 15px;
-							justify-content: flex-start;
-							align-items: center;
-							}
-							</style>
+				htmlPu += ` 
 							<div class='styleItem' id='${userChannel[i].id}'>
 							<Image src='/media/logo42_32x32.png' alt='logo-channel' width={32} height={32}/>
 							<div>${userChannel[i].channelname}</div>
@@ -44,15 +45,7 @@ export const ChannelCategory: React.FC = () => {
 			}
 			if (userChannel[i].type == 2) {
 				nuPr += 1;
-				htmlPr += ` <style>
-							.styleItem{
-							display: flex;
-							flex-direction: row;
-							gap: 15px;
-							justify-content: flex-start;
-							align-items: center;
-							}
-							</style>
+				htmlPr += `
 							<div class='styleItem' id='${userChannel[i].id}'>
 							<Image src='/media/logo42_32x32.png' alt='logo-channel' width={32} height={32}/>
 							<div>${userChannel[i].channelname}</div>
@@ -60,15 +53,7 @@ export const ChannelCategory: React.FC = () => {
 			}
 			if (userChannel[i].type == 3) {
 				nuPro += 1;
-				htmlPro += ` <style>
-							.styleItem{
-							display: flex;
-							flex-direction: row;
-							gap: 15px;
-							justify-content: flex-start;
-							align-items: center;
-							}
-							</style>
+				htmlPro += `
 							<div class='styleItem' id='${userChannel[i].id}'>
 							<Image src='/media/logo42_32x32.png' alt='logo-channel' width={32} height={32}/>
 							<div>${userChannel[i].channelname}</div>
