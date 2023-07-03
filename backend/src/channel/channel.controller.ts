@@ -12,7 +12,14 @@ import {ChannelService} from "./channel.service";
 import JwtAuthGuard from "../auth/jwtAuth.guard";
 import RequestWithUser from "../auth/interface/requestWithUser.i";
 import CreateChannelDto from "./dtos/channel.create.dto";
-import {chanIdDto, chanJoinDto, chanNewTypeDto, inviteToChannelDto, muteUserDto} from "./dtos/channel.dto";
+import {
+    chanIdDto,
+    chanJoinDto,
+    chanNewTypeDto,
+    inviteToChannelDto,
+    messageReqDto,
+    muteUserDto
+} from "./dtos/channel.dto";
 
 @Controller('channel')
 export class ChannelController {
@@ -102,5 +109,17 @@ export class ChannelController {
     @UseGuards(JwtAuthGuard)
     async  muteUser (@Req() request: RequestWithUser, @Res() res, @Body() muteData: muteUserDto): Promise<string> {
         return res.send(await this.channelService.muteUser(request.user.id, muteData));
+    }
+    @HttpCode(200)
+    @Post('new-message')
+    @UseGuards(JwtAuthGuard)
+    async  handleNewMessage (@Req() request: RequestWithUser, @Res() res, @Body() muteData: messageReqDto): Promise<string> {
+        return res.send(await this.channelService.newMessage(request.user.displayname, muteData));
+    }
+    @HttpCode(200)
+    @Post('get-msg-hist')
+    @UseGuards(JwtAuthGuard)
+    async  getMsgHistory (@Req() request: RequestWithUser, @Res() res, @Body() inviteData: inviteToChannelDto): Promise<string> {
+        return res.send(await this.channelService.getMsgHistory(request.user.id, inviteData.id, inviteData.chanId));
     }
 }

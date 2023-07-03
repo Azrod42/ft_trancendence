@@ -27,7 +27,8 @@ const ChannelHome: React.FC<ChannelSearchProps> = ({}) => {
 
     useEffect(() => {
         getChannelWithoutUser().then((res) => {
-            setChanData(JSON.parse(JSON.stringify(res.data)))
+            if (res?.status == true)
+                setChanData(JSON.parse(JSON.stringify(res.data)))
         })
     },[]);
 

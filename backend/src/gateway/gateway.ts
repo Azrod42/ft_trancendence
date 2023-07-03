@@ -8,15 +8,30 @@ export class MyGateway implements OnModuleInit {
 
 
     onModuleInit(): any {
+        this.server.setMaxListeners(2000);
         this.server.on('connection', (socket) => {
-            console.log(socket.id, '\nConnected');
+            // console.log(socket.id, '\nConnected');
+
         })
     }
+
+    @SubscribeMessage('room')
+    onCreateRoom(@MessageBody() body: string) {
+        this.server.socketsJoin(body);
+    }
+
     @SubscribeMessage('newMessage')
     onNewMessage(@MessageBody() body: any) {
         this.server.emit('onMessage', {
             msg: 'New message',
-            content: body,
+            content: body?.message,
+        })
+    }
+    @SubscribeMessage('channelMessage')
+    onChannelMessage(@MessageBody() body: {channel: string, message: string}) {
+        this.server.in(body.channel).emit(body.channel, {
+            msg: 'New message',
+            content: body?.message
         })
     }
 }

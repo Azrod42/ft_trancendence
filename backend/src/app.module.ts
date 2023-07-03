@@ -12,7 +12,7 @@ import {GatewayModule} from "./gateway/gateway.module";
 import {SocketModule} from "./socket/socket.module";
 
 @Module({
-  imports: [DatabaseModule, ConfigModule.forRoot(), UserModule, AuthModule, GatewayModule],
+  imports: [DatabaseModule, ConfigModule.forRoot(), UserModule, AuthModule, GatewayModule, ChannelModule, SocketModule],
   controllers: [AppController, UserController],
   providers: [AppService, JwtStrategy],
 })

@@ -24,14 +24,14 @@ export default function RootLayout({children}: { children: React.ReactNode }) {
 return (
     <html lang="en" className={styles.html}>
 			<body style={{
-				backgroundImage: `url(${backgound.src})`,
-				backgroundSize: "cover",
-				backgroundPosition: "center",
-				backgroundRepeat: "repeat",
-				backgroundAttachment: "fixed",
-				height: "96vh"
-			}} className={font.className}>
-
+					backgroundImage: `url(${backgound.src})`,
+					backgroundSize: "cover",
+					backgroundPosition: "center",
+					backgroundRepeat: "repeat",
+					backgroundAttachment: "fixed",
+					height: "96vh"
+				}}>
+			{/*}} className={font.className}>*/}
 				<QueryClientProvider client={queryClient}>
 					{children}
 					<ReactQueryDevtools />

@@ -1,9 +1,9 @@
 'use client'
-import React, {useEffect, useState, useRef} from 'react';
+import React, {useEffect, useState, useRef, useContext} from 'react';
 import {useParams, useRouter} from "next/navigation";
 import styles from './channelMessage.module.css'
 import {SubmitHandler, useForm} from "react-hook-form";
-import {FormValueJoinChannel, getPublicUserInfo} from "@/app/auth/auth.api";
+import {FormValueJoinChannel, getPublicUserInfo, getUserInfo} from "@/app/auth/auth.api";
 import {
     addAdministrator,
     banUserChan, blockUserApi,
@@ -13,14 +13,14 @@ import {
     FormChangeChanType,
     FormValueInviteUser,
     FormValueMuteUser,
-    FormValueSendMessage,
+    FormValueSendMessage, getChannelMessageApi,
     inviteUserChan,
     joinChannel,
     kickUserChan,
     leaveChannel,
     muteUserPost,
-    removeAdministrator,
-    unbanUserChan,
+    removeAdministrator, sendMessageApi,
+    unbanUserChan, unblockUserApi,
 
 } from "@/app/dashboard/social/social.api";
 import {useMutation, useQuery} from "react-query";
@@ -28,6 +28,8 @@ import LoadingPage from "@/app/(component)/loadingPage/loadingPage";
 import ErrorNotification from "@/app/(component)/errorNotification/errorNotification";
 import {mockSession} from "next-auth/client/__tests__/helpers/mocks";
 import user = mockSession.user;
+import {WebsocketContext} from "@/app/(common)/WebsocketContext";
+import {getUserData} from "@/app/(common)/getUserData";
 
 interface ChannelProps {
 }
@@ -51,6 +53,8 @@ const Channel: React.FC<ChannelProps> = ({}) => {
     const removeAdmin= useForm<FormValueInviteUser>();
     const muteUser= useForm<FormValueMuteUser>();
     const blockUser= useForm<FormValueInviteUser>();
+    const unblockUser= useForm<FormValueInviteUser>();
+
 
 
     //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -295,7 +299,7 @@ const Channel: React.FC<ChannelProps> = ({}) => {
         setDisplayBlockUser(true);
     }
     const onSubmitBlockUserForm: SubmitHandler<FormValueInviteUser> = (data) => {
-        setPopup(false);
+        setDisplayBlockUser(false);
         data.chanId = uniqueIdentifier;
         blockUserApi(data).then((res) => {
             if (!res.status){
@@ -306,26 +310,178 @@ const Channel: React.FC<ChannelProps> = ({}) => {
                     setError(false)
                 },3000);
             }
-            else
+            else {
                 refetch();
+                messageQuery.refetch();
+            }
+            removeAdmin.reset();
+        });
+    }
+    const onSubmitUnBlockUserForm: SubmitHandler<FormValueInviteUser> = (data) => {
+        setDisplayBlockUser(false);
+        data.chanId = uniqueIdentifier;
+        unblockUserApi(data).then((res) => {
+            if (!res.status){
+                setHeaderError('Error :');
+                setErrorMsg(res.error);
+                setError(true);
+                setTimeout (() => {
+                    setError(false)
+                },3000);
+            }
+            else {
+                refetch();
+                messageQuery.refetch();
+            }
             removeAdmin.reset();
         });
     }
     //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    const [socket] = useState(useContext(WebsocketContext))
+    const [userData, setUserData] = useState<any>();
+    const [msgData, setMsgData] = useState<any>();
+    const htmlMsgInput:  React.MutableRefObject<any> = useRef();
+
+
+    //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    //GET USER AND MSG HISTORY
+    const userQuery = useQuery('fetchUserData', () =>
+        getUserInfo().then(res => {
+            setUserData(res);
+        }), { staleTime: 5000, refetchOnWindowFocus: false}
+    );
+    const messageQuery = useQuery('fetchMsgData', () =>
+        getChannelMessageApi({id: uniqueIdentifier, chanId: uniqueIdentifier}).then(res => {
+            if (res?.status == true)
+                setMsgData(res.data);
+        }), { staleTime: 500, refetchOnWindowFocus: false}
+    );
+    //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    //MSG DATA UPDATE
+    useEffect(() => {
+            if (msgData) {
+                let html: string = `
+                   <style>
+                        .containerMsg {
+                           display: flex;
+                           flex-direction: column;
+                           justify-content: flex-start;
+                           align-items: flex-start;
+                           gap: 0;
+                           /*border: 1px solid red;*/
+                           margin: 0;
+                           margin-top: 20px;
+                           margin-left: 10px;
+                        }
+                        .msgHeader {
+                            display: flex;
+                            flex-direction: row;
+                            gap: 10px;
+                            /*border: 1px solid greenyellow;*/
+
+                        }
+                        .message {
+                            /*border: 1px solid pink;*/
+                            align-self: flex-start;
+                            margin: 0;
+                        }
+                        .message1 {
+                            /*border: 1px solid pink;*/
+                            align-self: flex-start;
+                            margin: 0;
+                            color: deepskyblue;
+                            font-weight: 700;
+                        }
+                        .message2 {
+                            /*border: 1px solid pink;*/
+                            align-self: flex-start;
+                            margin: 0;
+                            color: whitesmoke;
+                            font-size: 0.8rem;
+                        }
+                   </style>
+                `
+                for (let i = 0; msgData[i]; i++) {
+                    const date = new Date(msgData[i].time);
+                    const time= `${date.getDay()} / ${date.getMonth()} ${date.getHours()}:${date.getMinutes()}`
+                    html += `
+                    <div class="containerMsg">
+                        <div class='msgHeader'>
+                            <p class='message1' >${msgData[i].displayname}</p>
+                            <p class='message2'>${time}</p>
+                        </div>
+                        <p class='message'>${msgData[i].message}</p>
+                    </div>
+                    `;
+                }
+                htmlMsgInput.current.innerHTML = html;
+                htmlMsgInput.current.scrollTop = htmlMsgInput.current.scrollHeight;
+            }
+            },[msgData])
+    //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    //CREATE ROOM WITH CHAN ID
+    useEffect(() => {
+        socket.emit(`room`, `${uniqueIdentifier}`);
+        socket.on(`${uniqueIdentifier}`, (data) => {
+            // console.log(data);
+            messageQuery.refetch();
+        })
+        return () => {
+         socket.off(`${uniqueIdentifier}`);
+        }
+    }, [])
+    //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    //ON SUBMIT SEND MESSAGE
     const onSubmitSendMessage: SubmitHandler<FormValueSendMessage> = (data) => {
-        console.log(data);
+        if (!userData) {
+            userQuery.refetch().then(() => {
+                msgData.handleSubmit(onSubmitSendMessage)
+            })
+        }
+        else {
+            data.chanId = uniqueIdentifier;
+            data.time = new Date().getTime();
+            data.displayname = userData.displayname;
+            data.id = userData.id;
+            sendMessageApi(data).then((res) => {
+                if (res?.status == false) {
+                    setHeaderError('Error :');
+                    setErrorMsg(res.error);
+                    setError(true);
+                    setTimeout(() => {
+                        setError(false)
+                    }, 3000);
+                }else {
+                    socket.emit(`channelMessage`, {channel: `${uniqueIdentifier}`, message: data.message})
+                }
+            })
+            sendMsg.reset();
+        }
     }
+    //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
 
     return (
         <div className={styles.container}>
             <div className={styles.left}>
                 {errorDisplay ? <ErrorNotification headerText={headerError} error={errorMsg} /> : <></>}
-                <div className={styles.chatWindow}>
-                    {uniqueIdentifier}
-                </div>
+                <div className={styles.chatWindow} ref={htmlMsgInput}><LoadingPage /></div>
                 <form className={styles.containerInForm} onSubmit={sendMsg.handleSubmit(onSubmitSendMessage)}>
                     <input className={styles.input} type="text" placeholder="" {...sendMsg.register('message', {required: true})} />
                     <input className={styles.buttonSend} type="submit" value='send'/>
@@ -409,14 +565,20 @@ const Channel: React.FC<ChannelProps> = ({}) => {
                 <>
                     <div className={styles.layer} onClick={() => setDisplayBlockUser(false)}></div>
                     <div className={styles.getPassword} onClick={() => setDisplayBlockUser(true)}>
-                        <h2 className={styles.h2}>Block User</h2>
+                        <p className={styles.p}>Block User</p>
                         <form className={styles.containerInForm3} onSubmit={blockUser.handleSubmit(onSubmitBlockUserForm)}>
                             <div className={styles.inputDiv}>
                                 <input className={styles.input} type="text" placeholder="" {...blockUser.register('id', {required: true})} />
                             </div>
                             <input className={styles.buttonSend} type="submit" value='Block'/>
                         </form>
-
+                        <p className={styles.p}>Unblock User</p>
+                        <form className={styles.containerInForm3} onSubmit={unblockUser.handleSubmit(onSubmitUnBlockUserForm)}>
+                            <div className={styles.inputDiv}>
+                                <input className={styles.input} type="text" placeholder="" {...unblockUser.register('id', {required: true})} />
+                            </div>
+                            <input className={styles.buttonSend} type="submit" value='unBlock'/>
+                        </form>
                     </div>
                 </> : <div></div>}
         </div>

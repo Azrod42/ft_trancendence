@@ -26,7 +26,11 @@ export type FormValueIdChannel = {
 };
 
 export type FormValueSendMessage = {
+    id: string;
+    chanId: string;
+    time: number;
     message: string;
+    displayname: string;
 };
 
 export type FormChangeChanType = {
@@ -234,6 +238,34 @@ export const unblockUserApi = async (formData: FormValueInviteUser) => {
     try {
         const data = await Api.post<string, FormValueInviteUser>({
             url: '/users/unblock-user',
+            data: formData
+        },)
+        return {status: true, data : data.data};
+    } catch (e: any) {
+        if (e.name == 'AxiosError')
+            return {status: false, error: e.response.data.message};
+        return {status: false, error: e};
+    }
+}
+
+export const sendMessageApi = async (formData: FormValueSendMessage) => {
+    try {
+        const data = await Api.post<string, FormValueSendMessage>({
+            url: '/channel/new-message',
+            data: formData
+        },)
+        return {status: true, data : data.data};
+    } catch (e: any) {
+        if (e.name == 'AxiosError')
+            return {status: false, error: e.response.data.message};
+        return {status: false, error: e};
+    }
+}
+
+export const getChannelMessageApi = async (formData: FormValueInviteUser) => {
+    try {
+        const data = await Api.post<string, FormValueInviteUser>({
+            url: '/channel/get-msg-hist',
             data: formData
         },)
         return {status: true, data : data.data};

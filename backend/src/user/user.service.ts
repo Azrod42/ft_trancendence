@@ -7,7 +7,7 @@ import {ChangeDisplayNameDto} from './dtos/user.changedisplay.dto';
 import { toDataURL } from 'qrcode';
 import * as bcrypt from 'bcrypt';
 import {response} from "express";
-import {muteUserDto} from "../channel/dtos/channel.dto";
+import {inviteToChannelDto, muteUserDto} from "../channel/dtos/channel.dto";
 import Channel from "../channel/channel.entity";
 
 
@@ -261,20 +261,20 @@ export class UserService {
 		return JSON.stringify(json);
 	}
 
-	async blockUser (userTrig: string, blockData: muteUserDto) {
-		const user = await this.userRepo.findOneBy({id: blockData.chanId});
+	async blockUser (userTrig: string, blockData: inviteToChannelDto) {
+		const user = await this.userRepo.findOneBy({id: userTrig});
 		const userToBlock = await this.findByDisplayname(blockData.id);
-		if (await this.isUserIn(user.blocked, userTrig))
+		if (await this.isUserIn(user.blocked, userToBlock))
 			throw new HttpException("User is already blocked", HttpStatus.CONFLICT,);
 		user.blocked = await this.addList(user.blocked, userToBlock)
 		await this.userRepo.save(user);
 		return true;
 	}
 
-	async unblockUser (userTrig: string, blockData: muteUserDto) {
-		const user = await this.userRepo.findOneBy({id: blockData.chanId});
+	async unblockUser (userTrig: string, blockData: inviteToChannelDto) {
+		const user = await this.userRepo.findOneBy({id: userTrig});
 		const userToUnblock = await this.findByDisplayname(blockData.id);
-		if (await this.isUserIn(user.blocked, userTrig) == false)
+		if (await this.isUserIn(user.blocked, userToUnblock) == false)
 			throw new HttpException("User is not blocked", HttpStatus.CONFLICT,);
 		user.blocked = await this.removeFormList(user.blocked, userToUnblock)
 		await this.userRepo.save(user);

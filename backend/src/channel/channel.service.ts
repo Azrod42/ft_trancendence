@@ -8,7 +8,7 @@ import CreateChannelDto from "./dtos/channel.create.dto";
 import {InjectRepository} from "@nestjs/typeorm";
 import {Repository} from "typeorm";
 import Channel from "./channel.entity";
-import {chanNewTypeDto, muteUserDto} from "./dtos/channel.dto";
+import {chanNewTypeDto, messageReqDto, muteUserDto} from "./dtos/channel.dto";
 
 @Injectable()
 export class ChannelService {
@@ -137,11 +137,11 @@ export class ChannelService {
         }
         return list;
     }
-    async addList (list: string, id: string, object: {id: string, time: number} = {id: 'unset', time: 0}) {
+    async addList (list: string, id: string, object = {id: 'unset', time: 0, message: '', displayname: ''}) {
         let json = []
         if (list)
             json = JSON.parse(list);
-        if (object.time !== 0)
+        if (object?.time !== 0)
             json.push(object);
         else
             json.push({id: id});
@@ -298,7 +298,8 @@ export class ChannelService {
         const channel: Channel = await this.channelRepo.findOneBy({id: muteData.chanId});
         let chanMute = [];
         const date = new Date().getTime();
-        chanMute = JSON.parse(channel.mutedusers);
+        if (channel.mutedusers)
+            chanMute = JSON.parse(channel.mutedusers);
         const userToMute = await this.usersService.findByDisplayname(muteData.id);
         if (await this.isUserIn(channel.owners, userTrig) == false)
             throw new HttpException("You are not channel administrator", HttpStatus.CONFLICT,);
@@ -312,8 +313,44 @@ export class ChannelService {
             }
         }
         channel.mutedusers = JSON.stringify(chanMute);
-        channel.mutedusers = await this.addList(channel.mutedusers, muteData.id, {id: muteData.id, time: muteData.time})
+        channel.mutedusers = await this.addList(channel.mutedusers, muteData.id, {id: muteData.id, time: muteData.time, message: '', displayname: ''})
         await this.channelRepo.save(channel);
         return true;
+    }
+
+    async newMessage (userTrig: string, messageData: messageReqDto) {
+        const channel: Channel = await this.channelRepo.findOneBy({id: messageData.chanId});
+        const user = await this.usersService.findByDisplayname(userTrig);
+        let muted = []
+        if (channel.mutedusers)
+            muted = JSON.parse(channel.mutedusers);
+        if (muted) {
+            const time = new Date().getTime();
+            for (let i = 0; muted[i]; i++) {
+                const timeMute: number = muted[i].time;
+                if (muted[i].id == userTrig && time < timeMute){
+                    const timeLeft: number = (muted[i].time - time) / 1000;
+                    throw new HttpException(`You are muted for ${timeLeft}s`, HttpStatus.CONFLICT,);
+                    }
+            }
+        }
+        channel.msghist = await this.addList(channel.msghist, user, {id: user, time: messageData.time, message: messageData.message, displayname: messageData.displayname});
+        await this.channelRepo.save(channel);
+        return true;
+    }
+
+    async getMsgHistory (userTrig: string, userToInvite: string, chanId: string) {
+        const channel: Channel = await this.channelRepo.findOneBy({id: chanId});
+        const user = await this.usersService.findById(userTrig);
+        const msg = [];
+        let chanMsg = []
+        if (channel.msghist)
+            chanMsg = JSON.parse(channel.msghist);
+        for (let i = 0; chanMsg[i]; i++) {
+            if (await this.isUserIn(user.blocked, chanMsg[i].id) == false){
+                msg.push(chanMsg[i]);
+            }
+        }
+        return msg;
     }
 }

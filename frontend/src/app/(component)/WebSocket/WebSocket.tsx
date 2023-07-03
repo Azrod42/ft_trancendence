@@ -11,14 +11,14 @@ export const WebSocket = () => {
         socket.on('connect', () => {
             console.log('User connected');
         });
-        socket.on('onMessage', (data) => {
+        socket.on('channelMessage', (data) => {
             console.log(data);
         });
 
         return () => {
             console.log('Unregister');
             socket.off('connect', );
-            socket.off('onMessage');
+            socket.off('channelMessage');
             socket.disconnect();
         }
     },[]);

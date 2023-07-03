@@ -42,3 +42,21 @@ export class muteUserDto {
     @IsNotEmpty()
     time: number;
 }
+
+export class messageReqDto {
+    @IsNotEmpty()
+    id : string;
+
+    @IsNotEmpty()
+    chanId: string;
+
+    @IsNotEmpty()
+    time: number;
+
+    @IsNotEmpty()
+    displayname: string;
+
+    @IsNotEmpty()
+    message: string;
+
+}

@@ -22,7 +22,7 @@ import {v4 as uuidv4} from 'uuid';
 import * as path from "path";
 import * as process from "process";
 import * as fs from 'fs'
-import {muteUserDto} from "../channel/dtos/channel.dto";
+import {inviteToChannelDto, muteUserDto} from "../channel/dtos/channel.dto";
 
 @Controller('users')
 export class UserController {
@@ -334,14 +334,14 @@ export class UserController {
 	@HttpCode(200)
 	@Post('block-user')
 	@UseGuards(JwtAuthGuard)
-	async  blockUser (@Req() request: RequestWithUser, @Res() res, @Body() muteData: muteUserDto): Promise<string> {
+	async  blockUser (@Req() request: RequestWithUser, @Res() res, @Body() muteData: inviteToChannelDto): Promise<string> {
 		return res.send(await this.userService.blockUser(request.user.id, muteData));
 	}
 
 	@HttpCode(200)
 	@Post('unblock-user')
 	@UseGuards(JwtAuthGuard)
-	async  unblockUser (@Req() request: RequestWithUser, @Res() res, @Body() muteData: muteUserDto): Promise<string> {
+	async  unblockUser (@Req() request: RequestWithUser, @Res() res, @Body() muteData: inviteToChannelDto): Promise<string> {
 		return res.send(await this.userService.unblockUser(request.user.id, muteData));
 	}
 
