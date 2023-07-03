@@ -94,7 +94,8 @@ const Channel: React.FC<ChannelProps> = ({}) => {
                     htmlUser += `
                     <span id='${res?.data.id}'>${res?.data.displayname}</span>
                 `
-                    userRef.current.innerHTML! = htmlUser;
+                    if (userRef && userRef.current)
+                        userRef.current.innerHTML! = htmlUser;
                     userIds.push({id: res?.data.id});
                 });
             }

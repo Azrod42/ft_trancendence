@@ -15,7 +15,7 @@ export const ChannelCategory: React.FC = () => {
 		getUserChannel().then(res => {
 			const dta = JSON.parse(JSON.stringify(res.data!));
 			setUserChannel(res.data!);
-		}), { staleTime: 5000, refetchInterval: 1000 * 25, refetchOnWindowFocus: false}
+		}), { staleTime: 5000, refetchInterval: 1000 * 5, refetchOnWindowFocus: false}
 	);
 	useEffect(() => {
 		let htmlPu: string = `
