@@ -1,0 +1,8 @@
+.containerMessage {
+  position: absolute;
+  right: 25%;
+  top: 71px;
+  width: 45%;
+  height: 90%;
+  border: 1px solid red;
+}

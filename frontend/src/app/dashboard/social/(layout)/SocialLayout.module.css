@@ -4,7 +4,6 @@
 
 .sidebar {
 	width: 30%;
-	min-width: 200px;
 	height: calc(100vh - 60px);
 	position: fixed;
 	top: 71px;
@@ -29,13 +28,13 @@
 		src: url('/font/ModernWarfare-OV7KP.ttf') format('truetype'); 
 	}
 	font-family: 'modernwarfare';
-	width: 159px;
 	font-style: normal;
 	font-weight: 400;
 	font-size: 36px;
 	line-height: 41px;
 	text-align: center;
 	color: #FFFFFF;
+	margin-top: 10px;
 	margin-bottom: 30px;
 }
 
@@ -159,5 +158,6 @@
 @media (max-width: 600px) {
 	.socialTitle {
 		font-size: 6vw;
+		white-space: nowrap;
 	}
 }

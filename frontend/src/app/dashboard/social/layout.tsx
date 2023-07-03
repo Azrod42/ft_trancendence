@@ -14,12 +14,13 @@ import {isUserLog} from "@/app/(common)/checkLog";
 export default function RootLayout({children,}: {children: React.ReactNode}) {
     let param: string = usePathname()
     param = param.substring(18);
-
+	const endIndex = param.indexOf('-');
+	param = param.substring(0, endIndex !== -1 ? endIndex : undefined)
     return (
         <div>
             <Layout>
                 <div className={styles.container}>
-                    { param == 'channel-home' ?
+                    { param == 'channel' ?
                         <ChannelCategory/>
                         :
                         <ChatCategory/>
@@ -29,5 +30,4 @@ export default function RootLayout({children,}: {children: React.ReactNode}) {
             {children}
         </div>
     )
-
 }
