@@ -1,30 +1,40 @@
 'use client'
-import {useContext, useEffect, useState} from "react";
+import {MutableRefObject, useContext, useEffect, useRef, useState} from "react";
 import {WebsocketContext} from "@/app/(common)/WebsocketContext";
+import styles from './websocket.module.css'
+import {useRouter} from "next/navigation";
+import {getPublicUserInfo, PublicUserResponse} from "@/app/auth/auth.api";
+import {AxiosResponse} from "axios";
 
 
-export const WebSocket = () => {
+export const WebSocket = (user: any) => {
     const [socket] = useState(useContext(WebsocketContext))
     const [nbUser, setNbUser] = useState<number>(0)
+    const [needRefresh, setNeedRefresh] = useState<boolean>(true);
+    const refDiv: MutableRefObject<any> = useRef();
+    const router = useRouter();
 
     useEffect(() => {
-        socket.on('connect', () => {
-            console.log('User connected');
+        setTimeout(() => {
+            needRefresh ? router.refresh() : () => {};
+        },10000);
+        socket.on(`ping`, (data) => {
+            socket.emit('pong', user);
         });
-        socket.on('channelMessage', (data) => {
-            console.log(data);
+        socket.on('connectedUser', (data) => {
+            refDiv.current.innerText = 'Connected user: ' + data?.data.length;
+            localStorage.setItem('connectedUser', JSON.stringify(data?.data));
+            setNeedRefresh(false)
         });
 
         return () => {
             console.log('Unregister');
-            socket.off('connect', );
-            socket.off('channelMessage');
+            socket.off('ping');
+            socket.off('connectedUser');
             socket.disconnect();
         }
     },[]);
     return (
-        <div>
-
-        </div>
+        <div ref={refDiv} className={styles.container}>Connected user: 1</div>
     )
 }

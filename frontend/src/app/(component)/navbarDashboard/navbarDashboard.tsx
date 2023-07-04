@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import styles from "./navbarDashboard.module.css"
-import {UserAuthResponse, logout, getUserInfo, getProfilePicture} from '@/app/auth/auth.api';
+import {UserAuthResponse, logout, getUserInfo, getProfilePicture, PublicUserResponse} from '@/app/auth/auth.api';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {useQuery} from "react-query";
@@ -45,13 +45,16 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
 
 	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
 	//GET USER DATA FROM BACKEND AND STORE IN useState
-	let [userData, setuserData] = useState<UserAuthResponse>();
+	let [userData, setuserData] = useState<PublicUserResponse>({id: 'id', avatar: 'avatar', displayname: 'displayname'});
+	let [isUserData, setIsUserData] = useState<boolean>(false);
 	const { push } = useRouter();
 	const { isLoading, error, data, refetch } = useQuery('getUserInfo', () =>
 		getUserInfo().then(res => {
 			if (res == undefined)
 				push('/');
-			setuserData(res);
+			const userDta: PublicUserResponse = {id: res?.id!, displayname: res?.displayname!, avatar: 'undefine'}
+			setuserData(userDta);
+			setIsUserData(true)
 		}), {refetchInterval: 1000 * 60 * 2, refetchOnWindowFocus: false}
 	);
 	useEffect(() => {
@@ -85,7 +88,7 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
 			{/*<Link className={styles.linktxt} href="/dashboard/users">users</Link>*/}
 		</div>
 		<div className={styles.navRight}>
-			<WebSocket />
+			{isUserData ? <WebSocket user={userData}/> : <></>}
 			<p className={styles.displaynametxt}>{userData?.displayname}</p>
 			{profilePicture && (<Image className={styles.profilePicture} src={!ppGet ? "/media/logo-login.png" : profilePicture} alt="profile-picture" width={56} height={56} priority={true} onClick={oncMenu}/>)}
 			{open && <motion.div className={styles.menu}

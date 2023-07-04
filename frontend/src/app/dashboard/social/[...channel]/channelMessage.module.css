@@ -45,7 +45,7 @@
 .input{
     width: 70%;
     min-width: 200px;
-    height: 30px;
+    height: 25px;
     background-color: #060B4299;
     border: 1px solid white;
     border-radius: 10px;
@@ -81,7 +81,7 @@
 .buttonSend2 {
     margin-top: 5px;
     width: 115px;
-    height: 30px;
+    height: 25px;
     background: linear-gradient(102.27deg, rgba(44, 14, 176, 1) 4.93%, rgba(146, 94, 210, 1) 125.19%);
     color: white;
     font-size: 20px;
@@ -141,7 +141,7 @@
 
 .containerLayer {
     width: 400px;
-    height: 600px;
+    height: 540px;
     background-color: #060B42;
     border-radius: 20px;
     box-shadow: 0 0 10px #EF5DA8;
@@ -154,6 +154,7 @@
     justify-content: flex-start;
     align-items: flex-start;
     padding: 10px;
+    gap: 0;
 }
 
 .htmlInput {
@@ -218,7 +219,7 @@
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    gap: 5px;
+    gap: 7px;
     color: white;
 }
 
@@ -227,7 +228,7 @@
 }
 
 .p{
-    margin: 10px 0 5px;
+    margin: 5px 0 0;
 }
 
 .buttonConfig2 {

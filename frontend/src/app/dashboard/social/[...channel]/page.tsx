@@ -39,6 +39,7 @@ const Channel: React.FC<ChannelProps> = ({}) => {
     let userRef: any = useRef(this);
     const uniqueIdentifier = useParams()['channel'].slice(8);
     const [chanData, setChanData] = useState<any>(undefined);
+    const [localConnectedUser, setLocalConnectedUser] = useState<any>(undefined);
     const [popup, setPopup] = useState<boolean>(false)
     const [displayPw, setDisplayPw] = useState<boolean>(false);
     const [displayBlockUser, setDisplayBlockUser] = useState<boolean>(false);
@@ -69,6 +70,13 @@ const Channel: React.FC<ChannelProps> = ({}) => {
             setChanData(res.data);
         }), { staleTime: 5000, refetchOnWindowFocus: false, refetchInterval: 5000}
     );
+
+    setInterval(() => {
+        if (localStorage.getItem('connectedUser')) {
+            setLocalConnectedUser(JSON.parse(localStorage.getItem('connectedUser')!))
+        }
+    }, 5000);
+
     useEffect(() => {
         if (!chanData)
             refetch();
@@ -88,12 +96,48 @@ const Channel: React.FC<ChannelProps> = ({}) => {
         const userIds: any[] = []
         if (chanData?.channelusers) {
             const userList = JSON.parse(chanData?.channelusers);
-            let htmlUser = `<style></style>`;
+            let connectedUser: any[] = localConnectedUser;
+            let htmlUser = `<style>
+                                        .containerConnectedUserDiv {
+                                            display: flex;
+                                            flex-direction: column;
+                                        }
+                                        .containerConnectedUser {
+                                            display: flex;
+                                            flex-direction: row;
+                                            gap: 7px;
+                                        }
+                                        .statusGreen {
+                                            width: 10px;
+                                            height: 10px;
+                                            border-radius: 10px;
+                                            background-color: greenyellow;
+                                            margin-top: 5px;
+                                        }
+                                        .statusRed {
+                                            width: 10px;
+                                            height: 10px;
+                                            border-radius: 10px;
+                                            background-color: red;
+                                            margin-top: 5px;
+                                        }
+                                    </style>`;
             for (let i = 0; userList[i]; i++) {
                 getPublicUserInfo(userList[i].id).then((res: any) => {
-                    htmlUser += `
-                    <span id='${res?.data.id}'>${res?.data.displayname}</span>
-                `
+                    htmlUser += `<div class="containerConnectedUserDiv"><span class='containerConnectedUser' id='${res?.data.id}'>${res?.data.displayname}`
+                    if (connectedUser) {
+                        let find = 0;
+                        for(let j = 0; connectedUser[j]; j++) {
+                            if (connectedUser[j].id == userList[i].id){
+                                htmlUser += '<div class="statusGreen"></div>'
+                                find = 1;
+                            }
+                        }
+                        if (!find) {
+                            htmlUser += '<div class="statusRed"></div>'
+                        }
+                    }
+                    htmlUser += '</span></div>'
                     if (userRef && userRef.current)
                         userRef.current.innerHTML! = htmlUser;
                     userIds.push({id: res?.data.id});
