@@ -56,8 +56,6 @@ const Channel: React.FC<ChannelProps> = ({}) => {
     const blockUser= useForm<FormValueInviteUser>();
     const unblockUser= useForm<FormValueInviteUser>();
 
-
-
     //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     //HANDLE ERROR NOTIFICATION
     const [errorDisplay, setError] = useState<boolean>(false);
@@ -388,20 +386,6 @@ const Channel: React.FC<ChannelProps> = ({}) => {
         });
     }
     //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     const [socket] = useState(useContext(WebsocketContext))

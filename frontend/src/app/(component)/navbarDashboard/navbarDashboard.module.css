@@ -69,4 +69,5 @@
 	box-shadow: 0 0 5px #EF5DA8;
 	border-radius: 10px;
 	padding-top: 10px;
+	z-index: 1;
 }

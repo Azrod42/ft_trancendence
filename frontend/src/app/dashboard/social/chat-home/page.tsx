@@ -2,7 +2,7 @@
 import React, {useEffect} from 'react'
 import styles from "./chatHome.module.css"
 import Layout from "@/app/dashboard/social/(layout)/SocialLayout"
-import { Category, ChatCategory, HomeButtons } from './chatHomeComponent';
+import { HomeButtons } from './chatHomeComponent';
 import {useRouter} from "next/navigation";
 
 interface ChatHomeProps {

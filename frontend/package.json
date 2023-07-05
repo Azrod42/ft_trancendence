@@ -39,6 +39,7 @@
     "utf-8-validate": "^6.0.3"
   },
   "devDependencies": {
-    "@types/express": "^4.17.17"
+    "@types/express": "^4.17.17",
+    "prisma": "^4.16.1"
   }
 }

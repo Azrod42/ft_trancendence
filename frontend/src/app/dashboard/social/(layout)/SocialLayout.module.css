@@ -38,6 +38,7 @@
 	line-height: 41px;
 	text-align: center;
 	color: #FFFFFF;
+	margin-top: 10px;
 	margin-bottom: 30px;
 }
 
@@ -161,5 +162,6 @@
 @media (max-width: 600px) {
 	.socialTitle {
 		font-size: 6vw;
+		white-space: nowrap;
 	}
 }

@@ -1,8 +1,7 @@
 'use client'
-import React, {useEffect, useRef, useState} from 'react'
+import React, {useRef, useState} from 'react'
 import styles from "./enable-2fa.module.css"
-import {activate2fa, FormOtp, FormValues, generateQr, getUserInfo} from "@/app/auth/auth.api";
-import Image from "next/image";
+import {activate2fa, FormOtp, generateQr, getUserInfo} from "@/app/auth/auth.api";
 import {SubmitHandler, useForm} from "react-hook-form";
 import {useRouter} from "next/navigation";
 
@@ -11,7 +10,7 @@ interface Enable2faProps {
 }
 
 const Enable2fa: React.FC<Enable2faProps> = ({}) => {
-    const { register, handleSubmit, formState: { errors } } = useForm<FormOtp>();
+    const { register, handleSubmit } = useForm<FormOtp>();
     const [getQR, setGetQR] = useState<boolean>(false)
     const { push } = useRouter();
     const refQr: React.MutableRefObject<any> | undefined = useRef();
