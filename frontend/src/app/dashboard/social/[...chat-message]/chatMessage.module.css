@@ -3,6 +3,35 @@
   right: 25%;
   top: 71px;
   width: 45%;
-  height: 90%;
-  border: 1px solid red;
+  height: calc(100% - 71px);
+  background: #060b26d9;
+  border: 1px solid #060b26d9;
+}
+
+.profile {
+  position: absolute;
+  right: 0;
+  top: 71px;
+  width: 25%;
+  height: calc(100% - 71px);
+  background: #060b42;
+}
+
+.searchBar {
+  background: #060b42;
+  padding: 19px, 16px, 19px, 16px;
+  position: fixed;
+  bottom: 5px;
+  width: 100%;
+}
+
+.input {
+  background-color: #2e1686;
+  border: 0;
+  padding: 10px;
+  width: 90%;
+  margin-right: 0.5%;
+}
+
+.button {
 }
