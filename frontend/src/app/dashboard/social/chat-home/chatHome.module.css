@@ -51,8 +51,8 @@
 	position: absolute;
 	right: 0;
 	top : 71px;
-	width: 70%;
 	height: calc(100% - 71px);
+	width: calc(100% - 300px);;
 	display: flex;
 	justify-content: center;
 	align-items: center;

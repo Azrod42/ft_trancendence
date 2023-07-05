@@ -65,7 +65,7 @@ const Channel: React.FC<ChannelProps> = ({}) => {
     const [errorMsg, setErrorMsg] = useState<string>('');
     //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     //GET CHANNEL DATA
-    const { isLoading, error, data, refetch } = useQuery('fetchChannelInfo', () =>
+    const channelQuery = useQuery('fetchChannelInfo', () =>
         fetchChannelInfo({id: uniqueIdentifier}).then(res => {
             setChanData(res.data);
         }), { staleTime: 5000, refetchOnWindowFocus: false, refetchInterval: 5000}
@@ -78,8 +78,14 @@ const Channel: React.FC<ChannelProps> = ({}) => {
     }, 5000);
 
     useEffect(() => {
+        if (localStorage.getItem('connectedUser')) {
+            setLocalConnectedUser(JSON.parse(localStorage.getItem('connectedUser')!))
+        }
+    }, [])
+
+    useEffect(() => {
         if (!chanData)
-            refetch();
+            channelQuery.refetch();
         if (chanData) {
             if (chanData.channelusers == '')
                 push('/dashboard/social/channel-home');
@@ -152,7 +158,7 @@ const Channel: React.FC<ChannelProps> = ({}) => {
                 }
             }, 1000);
         } else
-            refetch()
+            channelQuery.refetch()
     }, [chanData])
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     //MUTATION  CHANGE CHANNEL TYPE
@@ -167,7 +173,7 @@ const Channel: React.FC<ChannelProps> = ({}) => {
                 },3000);
             }
             else
-                refetch();
+                channelQuery.refetch();
         },
     });
     const onSubmitChannelTypePw: SubmitHandler<FormValueJoinChannel> = (data) => {
@@ -201,7 +207,7 @@ const Channel: React.FC<ChannelProps> = ({}) => {
                 },3000);
             }
             else
-                refetch();
+                channelQuery.refetch();
             inviteUsr.reset();
         });
     }
@@ -220,7 +226,7 @@ const Channel: React.FC<ChannelProps> = ({}) => {
                 },3000);
             }
             else
-                refetch();
+                channelQuery.refetch();
             kickUsr.reset();
         });
     }
@@ -239,7 +245,7 @@ const Channel: React.FC<ChannelProps> = ({}) => {
                 },3000);
             }
             else
-                refetch();
+                channelQuery.refetch();
             banUsr.reset();
         });
     }
@@ -258,7 +264,7 @@ const Channel: React.FC<ChannelProps> = ({}) => {
                 },3000);
             }
             else
-                refetch();
+                channelQuery.refetch();
             unbanUsr.reset();
         });
     }
@@ -275,7 +281,7 @@ const Channel: React.FC<ChannelProps> = ({}) => {
                 },3000);
             }
             else
-                refetch();
+                channelQuery.refetch();
         });
     }
     //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -293,7 +299,7 @@ const Channel: React.FC<ChannelProps> = ({}) => {
                 },3000);
             }
             else
-                refetch();
+                channelQuery.refetch();
             addAdmin.reset();
         });
     }
@@ -313,7 +319,7 @@ const Channel: React.FC<ChannelProps> = ({}) => {
                 },3000);
             }
             else
-                refetch();
+                channelQuery.refetch();
             removeAdmin.reset();
         });
     }
@@ -334,7 +340,7 @@ const Channel: React.FC<ChannelProps> = ({}) => {
                 },3000);
             }
             else
-                refetch();
+                channelQuery.refetch();
             muteUser.reset();
         });
     }
@@ -356,7 +362,7 @@ const Channel: React.FC<ChannelProps> = ({}) => {
                 },3000);
             }
             else {
-                refetch();
+                channelQuery.refetch();
                 messageQuery.refetch();
             }
             removeAdmin.reset();
@@ -375,7 +381,7 @@ const Channel: React.FC<ChannelProps> = ({}) => {
                 },3000);
             }
             else {
-                refetch();
+                channelQuery.refetch();
                 messageQuery.refetch();
             }
             removeAdmin.reset();
@@ -494,30 +500,23 @@ const Channel: React.FC<ChannelProps> = ({}) => {
     //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     //ON SUBMIT SEND MESSAGE
     const onSubmitSendMessage: SubmitHandler<FormValueSendMessage> = (data) => {
-        if (!userData) {
-            userQuery.refetch().then(() => {
-                msgData.handleSubmit(onSubmitSendMessage)
-            })
-        }
-        else {
-            data.chanId = uniqueIdentifier;
-            data.time = new Date().getTime();
-            data.displayname = userData.displayname;
-            data.id = userData.id;
-            sendMessageApi(data).then((res) => {
-                if (res?.status == false) {
-                    setHeaderError('Error :');
-                    setErrorMsg(res.error);
-                    setError(true);
-                    setTimeout(() => {
-                        setError(false)
-                    }, 3000);
-                }else {
-                    socket.emit(`channelMessage`, {channel: `${uniqueIdentifier}`, message: data.message})
-                }
-            })
-            sendMsg.reset();
-        }
+        data.chanId = uniqueIdentifier;
+        data.time = new Date().getTime();
+        data.displayname = userData.displayname;
+        data.id = userData.id;
+        sendMessageApi(data).then((res) => {
+            if (res?.status == false) {
+                setHeaderError('Error :');
+                setErrorMsg(res.error);
+                setError(true);
+                setTimeout(() => {
+                    setError(false)
+                }, 3000);
+            }else {
+                socket.emit(`channelMessage`, {channel: `${uniqueIdentifier}`, message: data.message})
+            }
+        })
+        sendMsg.reset();
     }
     //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 

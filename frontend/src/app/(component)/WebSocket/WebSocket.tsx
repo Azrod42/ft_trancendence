@@ -9,7 +9,6 @@ import {AxiosResponse} from "axios";
 
 export const WebSocket = (user: any) => {
     const [socket] = useState(useContext(WebsocketContext))
-    const [nbUser, setNbUser] = useState<number>(0)
     const [needRefresh, setNeedRefresh] = useState<boolean>(true);
     const refDiv: MutableRefObject<any> = useRef();
     const router = useRouter();
@@ -26,7 +25,6 @@ export const WebSocket = (user: any) => {
             localStorage.setItem('connectedUser', JSON.stringify(data?.data));
             setNeedRefresh(false)
         });
-
         return () => {
             console.log('Unregister');
             socket.off('ping');

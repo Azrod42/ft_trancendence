@@ -6,8 +6,8 @@
     position: absolute;
     right: 0;
     top : 71px;
-    width: 70%;
-    height: calc(100% - 72px);
+    height: calc(100% - 71px);
+    width: calc(100% - 300px);;
     /*border: 1px solid red;*/
     display: flex;
     flex-direction: column;
