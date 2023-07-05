@@ -37,11 +37,13 @@
 	flex: 1;
 	text-align: left;
 	margin: -3px 15px;
+	display: flex;
+	flex-direction: row;
+	gap: 10px
 }
 
 .arrow {
-	margin: auto;
-	margin-right: 12px;
+	margin: auto 12px auto auto;
 	transition: transform 0.3s ease-in-out;
 }
 
@@ -49,8 +51,8 @@
 	position: absolute;
 	right: 0;
 	top : 71px;
-	width: 70%;
 	height: calc(100% - 71px);
+	width: calc(100% - 300px);;
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -130,3 +132,13 @@
 .separator::after {
 	bottom: 7px;
 }
+
+.channelUnit {
+	margin-left: 20px;
+	margin-top: 3px;
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+	margin-bottom: 5px;
+}
+

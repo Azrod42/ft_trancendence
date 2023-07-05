@@ -108,7 +108,7 @@ export const ListUser: React.FC<ListUserProps> = ({}) => {
   }, [allUserData, currentUserData, refetchAllUsers, refetchUserInfo]);
 
   const handleUserClick = (userId: string) => {
-    push(`/dashboard/social/chat-message/${userId}`);
+    push(`/dashboard/social/chat/chat-message/${userId}`);
   };
 
   const handleLoadMore = () => {

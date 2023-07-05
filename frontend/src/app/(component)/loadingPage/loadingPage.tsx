@@ -3,8 +3,6 @@ import React from 'react'
 import styles from "./loadingPage.module.css"
 import { motion } from "framer-motion";
 
-
-
 interface LoadingComponentProps {
 
 }

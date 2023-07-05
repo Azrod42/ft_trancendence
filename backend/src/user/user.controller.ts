@@ -4,7 +4,7 @@ import {
 	Body,
 	Controller,
 	Get,
-	HttpCode, HttpException, HttpStatus, Param,
+	HttpCode, HttpException, HttpStatus,
 	Post,
 	Req,
 	Res,
@@ -22,7 +22,7 @@ import {v4 as uuidv4} from 'uuid';
 import * as path from "path";
 import * as process from "process";
 import * as fs from 'fs'
-import User from "./user.entity";
+import {inviteToChannelDto, muteUserDto} from "../channel/dtos/channel.dto";
 
 @Controller('users')
 export class UserController {
@@ -266,6 +266,7 @@ export class UserController {
 		}
 		if (await this.userService.checkUserIn(userId.id, user.friends)) {
 			await this.removeUserFriend(request, res, userId, true);
+			await this.removeUserChat(request, res, userId, true);
 		}
 		if (await this.userService.checkUserIn(userId.id, user.blocked)
 			|| user.id == userId.id)
@@ -320,4 +321,28 @@ export class UserController {
 	async getBlockList(@Req() request: RequestWithUser, @Res() res) {
 		return res.send(await this.userService.getBlockList(request.user.id));
 	}
+
+	@HttpCode(200)
+	@UseGuards(JwtAuthGuard)
+	@Get('game-lose')
+	async gameLose(@Req() request: RequestWithUser, @Res() res) {
+		const user = await this.userService.findById(request.user.id);
+		await this.userService.newGameLose(user);
+		return res.send(true);
+	}
+
+	@HttpCode(200)
+	@Post('block-user')
+	@UseGuards(JwtAuthGuard)
+	async  blockUser (@Req() request: RequestWithUser, @Res() res, @Body() muteData: inviteToChannelDto): Promise<string> {
+		return res.send(await this.userService.blockUser(request.user.id, muteData));
+	}
+
+	@HttpCode(200)
+	@Post('unblock-user')
+	@UseGuards(JwtAuthGuard)
+	async  unblockUser (@Req() request: RequestWithUser, @Res() res, @Body() muteData: inviteToChannelDto): Promise<string> {
+		return res.send(await this.userService.unblockUser(request.user.id, muteData));
+	}
+
 }

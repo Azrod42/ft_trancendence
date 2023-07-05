@@ -41,7 +41,8 @@ export class AuthService {
 				elo: 800,
 				chat: '',
 				blocked: '',
-				friends: ''
+				friends: '',
+				gameLose: 0,
 			});
 			user.password = undefined;
 			return user;
@@ -74,7 +75,7 @@ export class AuthService {
 	public getCookieWithJwtToken(user: User) {
 		const payload: TokenPayload = {user};
 		const token = this.jwtService.sign(payload);
-		return `Authentication=${token}; domain: 'localhost'; HttpOnly; Path=/; Secure; Max-Age=360000`
+		return `Authentication=${token}; domain: 'localhost'; HttpOnly; Path=/; Secure; Max-Age=99999`
 	}
 
 	public getCookieForLogout() {

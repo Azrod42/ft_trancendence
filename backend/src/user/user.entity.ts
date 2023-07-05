@@ -38,6 +38,9 @@ class User {
     @Column()
     chat: string;
 
+    @Column()
+    gameLose: number;
+
 }
 
 export default User;

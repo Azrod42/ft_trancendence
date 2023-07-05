@@ -1,0 +1,21 @@
+.container {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 400px;
+    height: 100px;
+    background-color: red;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: white;
+}
+
+.h1 {
+    font-size: 1.2rem;
+}
+
+.span {
+
+}

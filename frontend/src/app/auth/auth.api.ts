@@ -1,6 +1,5 @@
 import Api from "../api/api";
 import {FormDisplayName} from "@/app/dashboard/profile/page";
-import {blob} from "stream/consumers";
 
 export type FormValues = {
 	username: string;
@@ -12,6 +11,18 @@ export type FormValuesRegister = {
 	username: string;
 	password: string;
 	passwordRepeat: string;
+};
+
+export type FormValuesCreateChannel = {
+	channelname: string;
+	password: string;
+	type: number
+	owners: string;
+};
+
+export type FormValueJoinChannel = {
+	id: string;
+	password: string;
 };
 
 export type UserId = {
@@ -33,6 +44,12 @@ export interface UserAuthResponse {
 	email: string;
 	displayname: string;
 	is2FOn: boolean;
+}
+
+export interface PublicUserResponse {
+	id:string;
+	avatar: string;
+	displayname: string;
 }
 
 export const login = async(loginInput: FormValues) => {
@@ -291,6 +308,15 @@ export const getFriendList = async () => {
 export const getBlockList = async () => {
 	try {
 		const data = await Api.get<any>('/users/get-block-list',)
+		return data;
+	} catch (e) {
+		return undefined;
+	}
+}
+
+export const gameLose = async () => {
+	try {
+		const data = await Api.get<any>('/users/game-lose',)
 		return data;
 	} catch (e) {
 		return undefined;

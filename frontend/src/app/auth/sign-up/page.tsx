@@ -53,12 +53,13 @@ const useSignUp: React.FC<signUpProps> = ({}) => {
 
 	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
 	//CHECK IF USER IS LOG (REDIRECT DASHBOARD) 
-	const Move = useRouter();
+	const {push, prefetch} = useRouter();
 	useEffect(() => {
+		prefetch('/auth/2fa');
 		const data = isUserLog();
 		data.then(function(data: UserAuthResponse | undefined) {
 			if (data !== undefined){
-				Move.push('/dashboard');
+				push('/dashboard');
 			}
 		})
 	}, [])
@@ -79,7 +80,7 @@ const useSignUp: React.FC<signUpProps> = ({}) => {
 	//LOGIN MUTATION CALL BY onsubmit to resolve api call register
 	const {mutate: registerUser} = useMutation(regist, {
 		onSuccess: () => {
-			Move.push('/auth/login');
+			push('/auth/login');
 		},
 		onError: (e: any) => {
 			if (e.response.status === 400){

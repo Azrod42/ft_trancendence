@@ -87,6 +87,7 @@ export class AuthController {
 				blocked: '',
 				chat: '',
 				friends: '',
+				gameLose: 0,
 			}
 			await this.authService.register(newUser);
 			const user = await this.userService.findByUsername(userInformation['login']);
@@ -176,4 +177,5 @@ export class AuthController {
 			return response.send(false);
 		return response.send(true);
 	}
+
 }
