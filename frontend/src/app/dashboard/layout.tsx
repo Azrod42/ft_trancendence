@@ -32,10 +32,8 @@ export default function RootLayout({children,}: {children: React.ReactNode}) {
 
 	return (
 		<main className={styles.layoutDiv}>
-			{/*<WebSocketProvider value={socket}>*/}
 				<NavBar />
 				{children}
-			{/*</WebSocketProvider>*/}
 		</main>
 	)
 }
