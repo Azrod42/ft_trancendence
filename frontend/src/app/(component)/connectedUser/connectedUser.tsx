@@ -28,12 +28,13 @@ const ConnectedUser: React.FC<connectedUserProps> = ({}) => {
         let html = ` <style>
                           .userlogp {
                             font-size: 1.1rem;
-                            font-weight: 700;
+                            font-weight: 500;
                           }
                           .userlogcontainer {
                             display: flex;
                             flex-direction: row;
                             gap: 10px;
+                            cursor: pointer;
                           }
                           .img {
                             width: 50px;
@@ -46,14 +47,15 @@ const ConnectedUser: React.FC<connectedUserProps> = ({}) => {
             userLog = JSON.parse(localStorage.getItem('connectedUser')!);
             for (let i = 0; userLog[i]; i++) {
                 postProfilePicture(userLog[i].id).then((img) => {
-                    html += `<div class="userlogcontainer">
+                    html += `<div class="userlogcontainer" id="${userLog[i].id}">
                                 <Image class="img" src='data:image/png;base64,${img?.data}'/>
-                                <p id="${userLog[i].id}" class="userlogp">${userLog[i].displayname}</p>
+                                <p class="userlogp">${userLog[i].displayname}</p>
                             </div>`;
                 });
             }
             setTimeout(() => {
-                divRef.current.innerHTML = html;
+                if (divRef.current)
+                    divRef.current.innerHTML = html;
                 setTimeout(() => {
                     for (let i = 0; i < userLog.length; i++) {
                         let mySelectedElement = document.getElementById(userLog[i].id);

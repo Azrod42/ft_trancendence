@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import styles from "./leaderbard.module.css"
 import { useRouter } from 'next/navigation';
 import {useQuery} from "react-query";
@@ -10,6 +10,7 @@ import {stringify} from "querystring";
 interface LeaderboardProps {}
 
 const Leaderboard: React.FC<LeaderboardProps> = ({}) => {
+	const divRef: React.MutableRefObject<any> = useRef();
 	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
 	// GET DATA FROM BACKEND AND STORE IN useState
 	let [userData, setuserData] = useState<any>();
@@ -26,36 +27,60 @@ const Leaderboard: React.FC<LeaderboardProps> = ({}) => {
 		}
 	})
 	useEffect(() => {
-		let html: string = '';
+		let html: string = `<style>
+								.containerLeader {
+									width: 100%;
+									margin: 0;
+									display: flex;
+									flex-direction: row;
+									background-color: #060B26aa;
+								}
+								.usernameLeader {
+									width: 300px;
+									border: 1px solid;
+									border-collapse: collapse;
+									cursor: pointer;
+									margin: 0;
+								}
+								.eloLeader {
+									width: 60px;
+									border: 0.5px solid;
+									border-collapse: collapse;
+									margin: 0;
+								}
+							</style>`;
 		let link: string = '';
 		for (let i = 0; i < userData?.length; i++) {
 			link = `/dashboard/users/${userData[i].id}`
 			html += `
-				<tr className={styles.tr}>
-					<td className={styles.username}>${userData[i].displayname}</td>
-					<td className={styles.elo}>${userData[i].elo}</td>
-					<td className={styles.elo}><a href="${link}" style='text-decoration: none; color: gold'>acess</a></td>
-				</tr>
+				<div class='containerLeader'>
+					<p class='usernameLeader' id='${userData[i].id}'>${userData[i].displayname}</p>
+					<p class='eloLeader'>${userData[i].elo}</p>
+				</div>
 			`;
 		}
-		document.getElementById('data-table-users')!.innerHTML = html;
+		if (divRef.current)
+			divRef.current.innerHTML = html;
+		setTimeout(() => {
+			for (let i = 0; i < userData?.length; i++) {
+				let mySelectedElement = document.getElementById(userData[i].id);
+				mySelectedElement?.addEventListener("click", function getHtml() {
+					push(`/dashboard/user/${userData[i].id}`)
+				})
+			}
+		}, 1000);
 	},[userData])
 	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
 
 	return (
 		<div className={styles.container}>
-			<table className={styles.tablestyle}>
-				<thead>
-				<tr className={styles.tr}>
-					<th className={styles.username}>Username</th>
-					<th className={styles.elo}>Elo</th>
-					<th className={styles.elo}>Profile</th>
-				</tr>
-				</thead>
-				<tbody id='data-table-users'>
+			<div className={styles.header}>
+					<p className={styles.username}>Username</p>
+					<p className={styles.elo}>Elo</p>
+			</div>
+			<div ref={divRef}>
 
-				</tbody>
-			</table>
+			</div>
 		</div>
 	)
 }

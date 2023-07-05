@@ -7,6 +7,13 @@ import NavBar from '../(component)/navbarDashboard/navbarDashboard';
 import styles from './dashboard.module.css'
 import {useQuery} from "react-query";
 import {socket, WebSocketProvider} from "@/app/(common)/WebsocketContext";
+import {Barlow} from "next/font/google";
+
+const font = Barlow({
+	weight: ['400', '700', '100', '200'],
+	style: ['normal', 'italic'],
+	subsets: ['latin']
+});
 
 export default function RootLayout({children,}: {children: React.ReactNode}) {
 	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
@@ -32,8 +39,10 @@ export default function RootLayout({children,}: {children: React.ReactNode}) {
 
 	return (
 		<main className={styles.layoutDiv}>
+			<div className={font.className}>
 				<NavBar />
 				{children}
+			</div>
 		</main>
 	)
 }
