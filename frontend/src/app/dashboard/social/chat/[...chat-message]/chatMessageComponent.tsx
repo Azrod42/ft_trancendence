@@ -6,11 +6,9 @@ interface ChatWindowProps {}
 
 export const ChatWindow: React.FC<ChatWindowProps> = () => {
   return (
-    <>
-      <div className={styles.containerMessage}>
-        <SubmitMessage />
-      </div>
-    </>
+    <div className={styles.containerMessage}>
+      <SubmitMessage />
+    </div>
   );
 };
 

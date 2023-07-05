@@ -39,16 +39,6 @@ export const SearchUser: React.FC<SearchUserProps> = ({ user, onClick }) => {
   );
 };
 
-interface LoadMoreButtonProps {
-  onLoadMore: () => void;
-}
-
-export const LoadMoreButton: React.FC<LoadMoreButtonProps> = ({
-  onLoadMore,
-}) => {
-  return <button onClick={onLoadMore}>Load more</button>;
-};
-
 interface ListUserProps {}
 
 export const ListUser: React.FC<ListUserProps> = ({}) => {
@@ -58,14 +48,6 @@ export const ListUser: React.FC<ListUserProps> = ({}) => {
   const itemsPerPage = 5;
 
   const { push } = useRouter();
-
-  const fetchUsers = async () => {
-    const response = await fetch(
-      `/api/users?start=${page * itemsPerPage}&end=${(page + 1) * itemsPerPage}`
-    );
-    const users = await response.json();
-    return users;
-  };
 
   const { data: users, refetch: refetchAllUsers } = useQuery(
     "getUserInfo",
@@ -111,10 +93,6 @@ export const ListUser: React.FC<ListUserProps> = ({}) => {
     push(`/dashboard/social/chat/chat-message/${userId}`);
   };
 
-  const handleLoadMore = () => {
-    setPage((prevPage) => prevPage + 1);
-  };
-
   return (
     <>
       {allUserData && currentUserData && allUserData.length > 0 && (
@@ -126,7 +104,6 @@ export const ListUser: React.FC<ListUserProps> = ({}) => {
             ))}
         </div>
       )}
-      <LoadMoreButton onLoadMore={handleLoadMore} />
     </>
   );
 };

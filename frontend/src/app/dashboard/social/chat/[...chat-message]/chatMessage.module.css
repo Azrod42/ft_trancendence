@@ -1,35 +1,50 @@
-.containerMessage {
-  position: absolute;
-  right: 25%;
-  top: 71px;
-  width: 45%;
-  height: calc(100% - 71px);
-  background: #060b26d9;
-  border: 1px solid #060b26d9;
-}
-
-.profile {
+.containerParent {
   position: absolute;
   right: 0;
   top: 71px;
-  width: 25%;
-  height: calc(100% - 71px);
+  width: calc(100% - 300px);
+  height: calc(100% - 72px);
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.containerMessage {
+  display: flex;
+  flex: 7;
+  height: 100%;
+  background: #060b26d9;
+  border: 1px solid #060b26d9;
+  overflow: auto;
+}
+
+.profile {
+  flex: 3;
+  height: 100%;
   background: #060b42;
+  border: 1px solid #060b42;
 }
 
 .searchBar {
+  display: flex;
+  position: absolute;
+  justify-content: center;
+  align-items: center;
+  left: 0;
+  bottom: 0;
   background: #060b42;
-  padding: 19px, 16px, 19px, 16px;
-  position: fixed;
-  bottom: 5px;
-  width: 100%;
+  width: 67%;
+  padding: 5px 3px;
+  border: 1px solid #060b42;
+  gap: 10px;
 }
 
 .input {
   background-color: #2e1686;
   border: 0;
   padding: 10px;
-  width: 90%;
+  width: 100%;
   margin-right: 0.5%;
 }
 
