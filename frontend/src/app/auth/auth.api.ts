@@ -46,6 +46,12 @@ export interface UserAuthResponse {
 	is2FOn: boolean;
 }
 
+export interface PublicUserResponse {
+	id:string;
+	avatar: string;
+	displayname: string;
+}
+
 export const login = async(loginInput: FormValues) => {
 	try {
 		const { data } = await Api.post<UserAuthResponse, FormValues>({

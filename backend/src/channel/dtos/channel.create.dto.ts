@@ -28,6 +28,9 @@ class CreateChannelDto {
 
 	@IsEmpty()
 	channelusers: string;
+
+	@IsEmpty()
+	owner: string;
 }
 
 export default CreateChannelDto;

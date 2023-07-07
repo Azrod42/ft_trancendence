@@ -39,12 +39,11 @@
 	margin: -3px 15px;
 	display: flex;
 	flex-direction: row;
-	gap: 3px;
+	gap: 10px
 }
 
 .arrow {
-	margin: auto;
-	margin-right: 12px;
+	margin: auto 12px auto auto;
 	transition: transform 0.3s ease-in-out;
 }
 
@@ -52,12 +51,14 @@
 	position: absolute;
 	right: 0;
 	top : 71px;
-	width: 70%;
 	height: calc(100% - 71px);
+	width: calc(100% - 300px);;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	flex-direction: column;
+	background: #060B26D9;
+	border: 1px solid #060B26D9;
 }
 
 .buttonsContainer {

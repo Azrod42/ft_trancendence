@@ -29,6 +29,9 @@ class Channel {
     @Column()
     channelusers: string
 
+    @Column()
+    owner: string;
+
 }
 
 export default Channel

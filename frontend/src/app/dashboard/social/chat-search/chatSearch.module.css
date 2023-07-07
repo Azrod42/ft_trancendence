@@ -1,0 +1,130 @@
+.container {
+  position: absolute;
+  right: 0;
+  top: 71px;
+  width: 70%;
+  height: calc(100% - 71px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background: #060b26d9;
+  border: 1px solid #060b26d9;
+}
+
+.mainFrame {
+  width: 90%;
+  max-width: 1267px;
+  height: 80%;
+  max-height: 735px;
+  background-color: #060b42;
+  border-radius: 50px;
+  box-shadow: 0px 30px 150px rgba(139, 139, 139, 0.1);
+  margin-bottom: 30px;
+  padding-top: 20px;
+}
+
+.searchBar {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px 8px 12px;
+  box-sizing: border-box;
+  isolation: isolate;
+  gap: 8px;
+  width: 95%;
+  height: 40px;
+  background: transparent;
+  box-shadow: 0 0 0 2px #7848c9;
+  border-radius: 100px;
+  margin: auto;
+}
+
+.searchBar input {
+  width: calc(100% + 100px);
+  margin: 0;
+  height: 24px;
+  font-family: "Source Sans Pro", sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 24px;
+  display: flex;
+  color: #ffffff;
+  background: transparent;
+  border: none;
+}
+
+.searchBar input::placeholder {
+  color: #ffffff;
+}
+
+.searchBar img {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+}
+
+.userList {
+  display: grid;
+  grid-auto-rows: 60px;
+  flex-direction: column;
+  overflow-y: auto;
+  height: calc(100% - 70px);
+  margin-top: 25px;
+}
+
+.user {
+  display: flex;
+  width: 90%;
+  height: 40px;
+  margin: auto;
+  flex-direction: row;
+  align-items: center;
+  cursor: pointer;
+}
+
+.profileImage {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  margin-right: 10px;
+  border-radius: 50%;
+}
+
+.userDetails {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  width: 80%;
+  color: #ffffff;
+}
+
+.userName,
+.userExp,
+.userLevel {
+  width: 100%;
+  max-width: 220px;
+  flex: 1;
+}
+
+.userName {
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 33.89px;
+  border-right: 1px solid #ffffff85;
+}
+
+.userExp {
+  border-right: 1px solid #ffffff85;
+}
+
+.userExp,
+.userLevel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 10px;
+}

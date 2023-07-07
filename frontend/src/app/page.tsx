@@ -1,22 +1,29 @@
 'use client'
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import styles from './page.module.css'
 import styles2 from './globals.module.css'
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion'
 import Image from "next/image";
-import {getMyData} from "@/app/api/fetchData";
+import {socket, WebsocketContext, WebSocketProvider} from "@/app/(common)/WebsocketContext";
+import {WebSocket} from "@/app/(component)/WebSocket/WebSocket";
+import {UserAuthResponse} from "@/app/auth/auth.api";
+import {useQuery} from "react-query";
+import {isUserLog} from "@/app/(common)/checkLog";
 
  
 export default function Home() {
-	//GET USER DATA FROM BACKEND
+
+	//GET USER DATA FROM BACKEND AND STORE IN useState
+	let [userData, setuserData] = useState<UserAuthResponse>();
 	const { push, prefetch } = useRouter();
-	getMyData().then(res => {
-		if (res !== undefined)
-			push('/dashboard');
-	});
-	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
-	//PRELOAD ALL HOME PAGES
+	const { isLoading, error, data, refetch } = useQuery('getUserInfo', () =>
+		isUserLog().then(res => {
+			if (res !== undefined)
+				push('/dashboard');
+			setuserData(res);
+		}), { refetchInterval: 1000 * 5, refetchOnWindowFocus: false, staleTime: 5000 }
+	);
 	useEffect(() => {
 		prefetch('/auth/login');
 		prefetch('/auth/sign-up');
@@ -25,7 +32,6 @@ export default function Home() {
 	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
   return (
     <main className={styles2.main}>
-			{/*<NavBar />*/}
 			<div className={styles.wrapper}>
 				<motion.div className={styles.content}
 					initial={{y: -40}}

@@ -178,4 +178,5 @@ export class AuthController {
 			return response.send(false);
 		return response.send(true);
 	}
+
 }

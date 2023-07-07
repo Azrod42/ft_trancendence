@@ -7,6 +7,8 @@ import {ChangeDisplayNameDto} from './dtos/user.changedisplay.dto';
 import { toDataURL } from 'qrcode';
 import * as bcrypt from 'bcrypt';
 import {response} from "express";
+import {inviteToChannelDto, muteUserDto} from "../channel/dtos/channel.dto";
+import Channel from "../channel/channel.entity";
 
 
 
@@ -218,4 +220,73 @@ export class UserService {
 		await this.userRepo.save(user);
 	  }
 	  
+	async findByDisplayname (displayname: string): Promise<string> {
+		try {
+			const users = await this.userRepo.query(`SELECT displayname, id FROM public."user"`)
+			if (!users)
+				throw new HttpException('User not found QRY', HttpStatus.INTERNAL_SERVER_ERROR,);
+			for (let i = 0; users[i]; i++){
+				if (users[i].displayname == displayname)
+					return users[i].id;
+			}
+			throw new HttpException('User not found', HttpStatus.INTERNAL_SERVER_ERROR,);
+		} catch (e) {
+			throw new HttpException('User not found', HttpStatus.INTERNAL_SERVER_ERROR,);
+		}
+		return '';
+	}
+
+	async isUserIn (list: string, id: string) {
+		if (!list)
+			return false;
+		const json = JSON.parse(list);
+		for (let i = 0; json[i]; i++) {
+			if (json[i].id == id) {
+				return true;
+			}
+		}
+		return false;
+	}
+	async removeFormList (list: string, id: string) {
+		if (!list)
+			return list;
+		const json = JSON.parse(list);
+		for (let i = 0; json[i]; i++) {
+			if (json[i].id == id) {
+				json.splice(i, 1);
+				return JSON.stringify(json);
+			}
+		}
+		return list;
+	}
+	async addList (list: string, id: string, object: {id: string, time: number} = {id: 'unset', time: 0}) {
+		let json = []
+		if (list)
+			json = JSON.parse(list);
+		if (object.time !== 0)
+			json.push(object);
+		else
+			json.push({id: id});
+		return JSON.stringify(json);
+	}
+
+	async blockUser (userTrig: string, blockData: inviteToChannelDto) {
+		const user = await this.userRepo.findOneBy({id: userTrig});
+		const userToBlock = await this.findByDisplayname(blockData.id);
+		if (await this.isUserIn(user.blocked, userToBlock))
+			throw new HttpException("User is already blocked", HttpStatus.CONFLICT,);
+		user.blocked = await this.addList(user.blocked, userToBlock)
+		await this.userRepo.save(user);
+		return true;
+	}
+
+	async unblockUser (userTrig: string, blockData: inviteToChannelDto) {
+		const user = await this.userRepo.findOneBy({id: userTrig});
+		const userToUnblock = await this.findByDisplayname(blockData.id);
+		if (await this.isUserIn(user.blocked, userToUnblock) == false)
+			throw new HttpException("User is not blocked", HttpStatus.CONFLICT,);
+		user.blocked = await this.removeFormList(user.blocked, userToUnblock)
+		await this.userRepo.save(user);
+		return true;
+	}
 }

@@ -6,4 +6,5 @@
     position: absolute;
     top: 0;
     opacity: 0;
+    transform: translateY(-1000px);
 }

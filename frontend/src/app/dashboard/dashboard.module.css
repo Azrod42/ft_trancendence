@@ -10,17 +10,21 @@
 }
 
 .containerchild {
-	background-color: rgba(29, 30, 78, 1);
+	background-color: #060B26cc;
 	width: 400px;
 	height: 300px;
 	text-align: center;
 	color: white;
 	display: flex;
+	flex-direction: column;
 	align-items: center;
 	justify-content: center;
 	border-radius: 10px;
 	box-shadow: 0 0 5px #EF5DA8;
 	margin: 10px auto;
+	padding-right: 10px;
+	padding-left: 10px;
+	padding-bottom: 10px;
 }
 
 .layoutDiv {
@@ -30,7 +34,11 @@
 	margin: -10px;
 }
 
-@media screen and (max-width: 1400px) {
+.h2ConUsr {
+	margin-top: 10px;
+}
+
+@media screen and (max-width: 1220px) {
 	.container {
 		grid-template-columns: repeat(2, 1fr);
 	}

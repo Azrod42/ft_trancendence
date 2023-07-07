@@ -1,8 +1,7 @@
 'use client'
-import React, {useEffect, useState} from 'react'
+import React, {useRef, useState} from 'react'
 import styles from "./enable-2fa.module.css"
-import {activate2fa, FormOtp, FormValues, generateQr, getUserInfo} from "@/app/auth/auth.api";
-import Image from "next/image";
+import {activate2fa, FormOtp, generateQr, getUserInfo} from "@/app/auth/auth.api";
 import {SubmitHandler, useForm} from "react-hook-form";
 import {useRouter} from "next/navigation";
 
@@ -11,9 +10,10 @@ interface Enable2faProps {
 }
 
 const Enable2fa: React.FC<Enable2faProps> = ({}) => {
-    const { register, handleSubmit, formState: { errors } } = useForm<FormOtp>();
+    const { register, handleSubmit } = useForm<FormOtp>();
     const [getQR, setGetQR] = useState<boolean>(false)
     const { push } = useRouter();
+    const refQr: React.MutableRefObject<any> | undefined = useRef();
     if (!getQR) {
         setGetQR(true);
         getUserInfo().then((res) => {
@@ -24,7 +24,8 @@ const Enable2fa: React.FC<Enable2faProps> = ({}) => {
                     const htmlToPush = `
             <Image src="${res?.data}" alt="2faQrCode" width={256} height={256} priority={true}/>
             `
-                    document.getElementById('qr-code')!.innerHTML = htmlToPush;
+                    if (refQr.current)
+                        refQr.current.innerHTML = htmlToPush;
                 })
             }
         })
@@ -37,7 +38,7 @@ const Enable2fa: React.FC<Enable2faProps> = ({}) => {
     }
     return (
         <div className={styles.container}>
-            <div id='qr-code'></div>
+            <div ref={refQr}></div>
             <p>Scan the QR Code with Google Authenticator and enter the code to confirm</p>
             <form onSubmit={handleSubmit(onSubmitForm)}>
                 <input type="text" placeholder="XXXXXX" {...register("twoFactorAuthenticationCode", {})} />

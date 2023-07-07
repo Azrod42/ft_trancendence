@@ -8,6 +8,14 @@ import styles from './dashboard.module.css'
 import {useQuery} from "react-query";
 import { io } from 'socket.io-client';
 import { idWebSocket } from "@/app/auth/auth.api";
+import {socket, WebSocketProvider} from "@/app/(common)/WebsocketContext";
+import {Barlow} from "next/font/google";
+
+const font = Barlow({
+	weight: ['400', '700', '100', '200'],
+	style: ['normal', 'italic'],
+	subsets: ['latin']
+});
 
 export default function RootLayout({children,}: {children: React.ReactNode}) {
 	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
@@ -69,8 +77,10 @@ export default function RootLayout({children,}: {children: React.ReactNode}) {
 
 	return (
 		<main className={styles.layoutDiv}>
-			<NavBar />
-			{children}
+			<div className={font.className}>
+				<NavBar />
+				{children}
+			</div>
 		</main>
 	)
 }

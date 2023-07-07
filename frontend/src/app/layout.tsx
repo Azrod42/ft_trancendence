@@ -2,15 +2,10 @@
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from "react-query/devtools"
 import styles from './globals.module.css'
-import { Barlow } from 'next/font/google'
 import backgound from '../../public/background/main-backgound.jpg'
 import React from 'react';
 
-const font = Barlow({ 
-	weight: ['400', '700', '100', '200'],
-	style: ['normal', 'italic'],
-	subsets: ['latin']
-});
+
 
 // export const metadata = {
 //   title: 'ft_trancendence',
@@ -24,14 +19,13 @@ export default function RootLayout({children}: { children: React.ReactNode }) {
 return (
     <html lang="en" className={styles.html}>
 			<body style={{
-				backgroundImage: `url(${backgound.src})`,
-				backgroundSize: "cover",
-				backgroundPosition: "center",
-				backgroundRepeat: "repeat",
-				backgroundAttachment: "fixed",
-				height: "96vh"
-			}} className={font.className}>
-
+					backgroundImage: `url(${backgound.src})`,
+					backgroundSize: "cover",
+					backgroundPosition: "center",
+					backgroundRepeat: "repeat",
+					backgroundAttachment: "fixed",
+					height: "96vh"
+			}}>
 				<QueryClientProvider client={queryClient}>
 					{children}
 					<ReactQueryDevtools />
