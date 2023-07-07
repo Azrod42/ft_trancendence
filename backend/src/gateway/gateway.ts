@@ -29,7 +29,7 @@ export class MyGateway implements OnModuleInit {
     onModuleInit(): any {
         this.server.setMaxListeners(2000);
         this.server.on('connection', (socket) => {
-            console.log(`a user connected = ${socket.id}`);
+            console.log(`a user connected as = ${socket.id}`);
 
             socket.on('storeClientInfo', function (data) {
                 // Ici, vous pouvez stocker `data.userId` et `data.socketId` dans votre base de données
