@@ -40,5 +40,4 @@ const DashboardUser: React.FC<DashboardUserProps> = ({}) => {
 		</div>
   )
 }
-
 export default DashboardUser;
