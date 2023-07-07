@@ -2,7 +2,9 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import styles from "./game.module.css";
-import {gameLose} from "@/app/auth/auth.api";
+import { gameLose } from "@/app/auth/auth.api";
+import { io } from 'socket.io-client';
+
 
 interface GameProps {
 }
@@ -37,6 +39,60 @@ const resetWholeGame = () => {
 	setPlayerScore(0);
 	setPlayer2Score(0);
   }
+
+  //////////////////////////////////////////////////////////////////////
+
+  // import React, { useEffect, useRef, useState } from 'react';
+  // import { io } from 'socket.io-client';
+  // // ...
+  
+  // const Game: React.FC<GameProps> = () => {
+  //   // ...
+  
+    useEffect(() => {
+      // const socket = io('http://localhost:3003');
+      // socket.on('connect', () => {
+      //     console.log('connected to server');
+      // });
+  
+  //     // Met à jour la position de la barre de l'autre joueur lorsque le serveur envoie un événement 'move'.
+  //     socket.on('move', (paddle2Y) => {
+  //       setPaddle2Y(paddle2Y);
+  //     });
+  
+  //     socket.on('disconnect', () => {
+  //       console.log('disconnected from server');
+  //     });
+  
+  //     // Appeler cette fonction pour envoyer la position de la barre au serveur.
+  //     const moveBar = (position) => {
+  //       socket.emit('move', position);
+  //     };
+  
+  //     // ...
+  
+  //     const handleMouseMove = (event: MouseEvent) => {
+  //       let newY = event.clientY - 280;
+  //       // ...
+  //       setPaddleY(newY);
+  //       moveBar(newY);
+  //     };
+  
+  //     // ...
+  
+  //     return () => {
+  //       socket.disconnect();
+  //       // ...
+  //     };
+    }, [gameStatus]);
+  
+  //   // ...
+  // };
+  
+  // export default Game;
+  
+
+  //////////////////////////////////////////////////////////////////////
 
   useEffect(() => {
 
@@ -168,7 +224,7 @@ useEffect(() => { // mouvements souris
       <div className={styles.contentGame}>
         {gameStatus === "finished" ? (
 			<>
-				<h2>Bravo à {playerScore == 3 ? (<h3>Player 1</h3>) : (<h3>Player 2</h3>)}</h2>
+				<h2>Bravo à {playerScore == 3 ? (<h4>Player 1</h4>) : (<h4>Player 2</h4>)}</h2>
 				<button
 						className={styles.buttonGame}
 						onClick={resetWholeGame}

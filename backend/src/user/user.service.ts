@@ -211,6 +211,15 @@ export class UserService {
 		await this.userRepo.save(user);
 	}
 
+	async updateWebSocketId(userId: string, socketId: string) {
+		const user = await this.findById(userId);
+		if (!user) {
+			throw new HttpException('Somthing went fucking wrong', HttpStatus.INTERNAL_SERVER_ERROR,);
+		}
+		user.idWebSocket = socketId;
+		await this.userRepo.save(user);
+	  }
+	  
 	async findByDisplayname (displayname: string): Promise<string> {
 		try {
 			const users = await this.userRepo.query(`SELECT displayname, id FROM public."user"`)
@@ -280,7 +289,4 @@ export class UserService {
 		await this.userRepo.save(user);
 		return true;
 	}
-
-
-
 }
