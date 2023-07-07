@@ -41,7 +41,7 @@
     }, []);
   
     const handleSocketConnection = () => {
-      socketRef.current = io('http://localhost:3003');
+      socketRef.current = io('http://localhost:4001');
       if(socketRef.current){
         socketRef.current.on('connect', () => {
           if(socketRef.current) {

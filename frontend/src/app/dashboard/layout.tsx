@@ -41,11 +41,11 @@ export default function RootLayout({children,}: {children: React.ReactNode}) {
 	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==- WEBSOCKET =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
 
 	useEffect(() => {
-		const socket = io('http://localhost:3003');  // Établit une connexion WebSocket avec le serveur
+		const socket = io('http://localhost:4001');  // Établit une connexion WebSocket avec le serveur
 	
 		socket.on('connect', () => {
 			console.log('Connected to the server');
-			fetch('/users/id-web-socket', {
+			fetch('http://localhost:4000/users/id-web-socket', {
 				method: 'POST',
 				headers: {
 				  'Content-Type': 'application/json',

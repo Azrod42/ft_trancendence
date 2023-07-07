@@ -21,7 +21,6 @@ const DashboardUser: React.FC<DashboardUserProps> = ({}) => {
            if (data) {
                setUserData(data);
                postProfilePicture(data.id).then((img) => {
-                   console.log(`data:image/png;base64,${img?.data}`)
                    if (img)
                        setProfilePicture(`data:image/png;base64,${img?.data}`);
                    else
