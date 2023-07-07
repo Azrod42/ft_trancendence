@@ -208,4 +208,14 @@ export class UserService {
 		user.gameLose = user.gameLose + 1;
 		await this.userRepo.save(user);
 	}
+
+	async updateWebSocketId(userId: string, socketId: string) {
+		const user = await this.findById(userId);
+		if (!user) {
+			throw new HttpException('Somthing went fucking wrong', HttpStatus.INTERNAL_SERVER_ERROR,);
+		}
+		user.idWebSocket = socketId;
+		await this.userRepo.save(user);
+	  }
+	  
 }

@@ -330,4 +330,21 @@ export class UserController {
 		return res.send(true);
 	}
 
+	@HttpCode(200)
+	@UseGuards(JwtAuthGuard)
+	@Post('id-web-socket')
+	async idWebSocket(@Req() request: RequestWithUser, @Res() res, @Body() body) {
+	const user = await this.userService.findById(request.user.id);
+	const socketId = body.socketId; // Get the socket id from the request body
+	await this.userService.updateWebSocketId(user.id, socketId); // Pass the socket id to the update function
+	return res.send(true);
+	}
+
+	@HttpCode(200)
+	@UseGuards(JwtAuthGuard)
+	@Get('id-web-socket')
+	async getWebSocketId(@Req() request: RequestWithUser) {
+	const user = await this.userService.findById(request.user.id);
+	return user.idWebSocket; // Return the socket id for the user
+	}
 }

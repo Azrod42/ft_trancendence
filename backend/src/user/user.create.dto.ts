@@ -33,6 +33,8 @@ class CreateUserDto {
 
 	gameLose: number;
 
+	idWebSocket: string;
+
 }
 
 export default CreateUserDto;

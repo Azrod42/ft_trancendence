@@ -6,8 +6,8 @@ import Link from 'next/link';
 import {useQuery} from "react-query";
 import Api from "@/app/api/api";
 import Image from "next/image";
-import { motion } from "framer-motion"
-
+import { motion } from "framer-motion";
+import io from 'socket.io-client';
 
 
 interface NavBarProps {
@@ -70,6 +70,26 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
 		push('/');
 	}
 	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
+	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
+	//CONNECT TO WEBSOCKET 
+	// useEffect(() => {
+	// 	const socket = io('http://localhost:3003');  // Établit une connexion WebSocket avec le serveur
+	
+	// 	socket.on('connect', () => {
+	// 	  console.log('Connected to the server');
+	// 	  // Ici, vous pouvez effectuer des opérations supplémentaires une fois la connexion établie, si nécessaire
+	// 	});
+	// 	socket.on('disconnect', () => {
+	// 	  console.log('Disconnected from the server');
+	// 	  // Effectuez des opérations supplémentaires lors de la déconnexion, si nécessaire
+	// 	});
+	
+	// 	return () => {
+	// 	  socket.disconnect(); // Déconnecte le socket lorsque le composant est démonté
+	// 	};
+	//   }, []);
+	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
+
 	//REFRESH TOPBAR DATA eatch 30s
 	// setInterval(refetch, 3000);
   return (
