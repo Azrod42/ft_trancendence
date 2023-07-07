@@ -1,7 +1,7 @@
 "use client"
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import {getUserInfo, UserAuthResponse} from '../auth/auth.api';
+import {getUserInfo, setWebSocketId, UserAuthResponse} from '../auth/auth.api';
 import { isUserLog } from '../(common)/checkLog';
 import NavBar from '../(component)/navbarDashboard/navbarDashboard';
 import styles from './dashboard.module.css'
@@ -45,21 +45,9 @@ export default function RootLayout({children,}: {children: React.ReactNode}) {
 	
 		socket.on('connect', () => {
 			console.log('Connected to the server');
-			fetch('http://localhost:4000/users/id-web-socket', {
-				method: 'POST',
-				headers: {
-				  'Content-Type': 'application/json',
-				  // N'oubliez pas d'inclure les en-têtes d'autorisation si nécessaire
-				},
-				body: JSON.stringify({ userId: userData?.id, socketId: socket.id }),  // Envoyez l'ID du socket dans le corps de la requête
-			  })
-				.then(response => response.json())
-				.then(data => {
+			setWebSocketId({id: socket.id}).then(data => {
 				  console.log('WebSocket ID updated successfully:', data);
 				})
-				.catch((error) => {
-				  console.error('Error updating WebSocket ID:', error);
-				});
 			  
 		  });
 	

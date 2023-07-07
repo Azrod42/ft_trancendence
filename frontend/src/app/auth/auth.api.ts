@@ -331,3 +331,15 @@ export const idWebSocket = async () => {
 		return undefined;
 	}
 }
+
+export const setWebSocketId = async (id: any) => {
+	try {
+		const data = await Api.post<string, any>({
+			url: '/users/id-web-socket',
+			data: id
+		},)
+		return data;
+	} catch (e) {
+		return undefined;
+	}
+}

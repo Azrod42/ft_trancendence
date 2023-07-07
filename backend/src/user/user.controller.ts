@@ -12,7 +12,7 @@ import {
 	UseGuards,
 	UseInterceptors
 } from '@nestjs/common';
-import {ChangeDisplayName, ChangeDisplayNameDto, UserId} from './dtos/user.changedisplay.dto';
+import {ChangeDisplayName, ChangeDisplayNameDto, socketId, UserId} from './dtos/user.changedisplay.dto';
 import RequestWithUser from 'src/auth/interface/requestWithUser.i';
 import { Response} from "express";
 import {validate} from "class-validator";
@@ -334,9 +334,9 @@ export class UserController {
 	@HttpCode(200)
 	@UseGuards(JwtAuthGuard)
 	@Post('id-web-socket')
-	async idWebSocket(@Req() request: RequestWithUser, @Res() res, @Body() body) {
+	async idWebSocket(@Req() request: RequestWithUser, @Res() res, @Body() body: socketId) {
 	const user = await this.userService.findById(request.user.id);
-	const socketId = body.socketId; // Get the socket id from the request body
+	const socketId = body.id; // Get the socket id from the request body
 	await this.userService.updateWebSocketId(user.id, socketId); // Pass the socket id to the update function
 	return res.send(true);
 	}
