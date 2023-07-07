@@ -8,7 +8,6 @@ import Api from "@/app/api/api";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import io from 'socket.io-client';
-import { motion } from "framer-motion"
 import {WebSocket} from "@/app/(component)/WebSocket/WebSocket";
 
 
