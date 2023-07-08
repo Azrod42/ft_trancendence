@@ -142,3 +142,11 @@
   gap: 5px;
   margin-bottom: 5px;
 }
+
+.userCategory {
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+  justify-content: flex-start;
+  align-items: center;
+}

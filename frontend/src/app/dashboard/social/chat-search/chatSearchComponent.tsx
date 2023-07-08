@@ -5,6 +5,9 @@ import { useQuery } from "react-query";
 import { getAllUsers, getUserInfo } from "@/app/auth/auth.api";
 import styles from "@/app/dashboard/social/chat-search/chatSearch.module.css";
 import Image from "next/image";
+import { addChat } from "@/app/auth/auth.api";
+import { getBlockList } from "@/app/auth/auth.api";
+import { useBlocker } from "react-router/dist/lib/hooks";
 
 export const SearchBar: React.FC = () => {
   return (
@@ -42,12 +45,10 @@ export const SearchUser: React.FC<SearchUserProps> = ({ user, onClick }) => {
 interface ListUserProps {}
 
 export const ListUser: React.FC<ListUserProps> = ({}) => {
-  let [allUserData, setAllUserData] = useState<any[]>([]);
-  let [currentUserData, setCurrentUserData] = useState<any>();
-  const [page, setPage] = useState(0);
-  const itemsPerPage = 5;
-
   const { push } = useRouter();
+  const [allUserData, setAllUserData] = useState<any[]>([]);
+  const [currentUserData, setCurrentUserData] = useState<any>();
+  const [userBlocked, setUserBlocked] = useState<any[]>([]);
 
   const { data: users, refetch: refetchAllUsers } = useQuery(
     "getUserInfo",
@@ -68,6 +69,22 @@ export const ListUser: React.FC<ListUserProps> = ({}) => {
     { staleTime: 5000 }
   );
 
+  const { data: blockedData, refetch: refetchBlockedList } = useQuery(
+    "getUserBlocked",
+    () =>
+      getBlockList().then((res) => {
+        if (res && res.data) {
+          setUserBlocked(res.data);
+        }
+      }),
+    { staleTime: 5000, refetchInterval: 1000 * 5, refetchOnWindowFocus: false }
+  );
+  console.log(userBlocked);
+
+  useEffect(() => {
+    refetchBlockedList();
+  }, [refetchBlockedList]);
+
   useEffect(() => {
     if (users) {
       setAllUserData((prevUsers) => [...prevUsers, ...users]);
@@ -75,13 +92,16 @@ export const ListUser: React.FC<ListUserProps> = ({}) => {
   }, [users]);
 
   useEffect(() => {
-    if (currentUser) {
-      setCurrentUserData(currentUser);
+    if (users) {
+      setAllUserData((prevUsers) => [...prevUsers, ...users]);
     }
-  }, [currentUser]);
+    if (!currentUserData) {
+      refetchUserInfo();
+    }
+  }, [users, currentUserData, refetchUserInfo]);
 
   useEffect(() => {
-    if (allUserData.length === 0) {
+    if (allUserData && allUserData.length === 0) {
       refetchAllUsers();
     }
     if (!currentUserData) {
@@ -90,6 +110,10 @@ export const ListUser: React.FC<ListUserProps> = ({}) => {
   }, [allUserData, currentUserData, refetchAllUsers, refetchUserInfo]);
 
   const handleUserClick = (userId: string) => {
+    const dtoId = { id: userId };
+    addChat(dtoId).then((res) => {
+      console.log(res);
+    });
     push(`/dashboard/social/chat/chat-message/${userId}`);
   };
 
@@ -98,7 +122,17 @@ export const ListUser: React.FC<ListUserProps> = ({}) => {
       {allUserData && currentUserData && allUserData.length > 0 && (
         <div className={styles.userList}>
           {allUserData
-            .filter((user: any) => user.id !== currentUserData.id)
+            .filter((user: any) => {
+              console.log(user.id);
+              let isBlocked = false;
+              userBlocked.some((blockedUser: any) => {
+                if (blockedUser.id === user.id) {
+                  console.log("TRUE");
+                  isBlocked = true;
+                }
+              });
+              return user.id !== currentUserData.id && !isBlocked;
+            })
             .map((user: any) => (
               <SearchUser key={user.id} user={user} onClick={handleUserClick} />
             ))}
