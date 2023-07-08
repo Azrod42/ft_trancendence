@@ -289,4 +289,14 @@ export class UserService {
 		await this.userRepo.save(user);
 		return true;
 	}
+
+	// async getWebSocketIdByUserId(id: string) {
+	// 	try {
+	// 		const user = await this.findById(id);
+	// 		return user.idWebSocket;
+	// 	} catch (e) {
+	// 		throw new HttpException('Somthing went fucking wrong', HttpStatus.INTERNAL_SERVER_ERROR,);
+	// 	}
+	// 	return undefined;
+	// }
 }

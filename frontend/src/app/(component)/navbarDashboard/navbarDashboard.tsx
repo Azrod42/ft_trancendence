@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import styles from "./navbarDashboard.module.css"
 import {UserAuthResponse, logout, getUserInfo, getProfilePicture, PublicUserResponse} from '@/app/auth/auth.api';
 import { useRouter } from 'next/navigation';
@@ -9,6 +9,8 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import io from 'socket.io-client';
 import {WebSocket} from "@/app/(component)/WebSocket/WebSocket";
+import {WebsocketContext} from "@/app/(common)/WebsocketContext";
+
 
 
 interface NavBarProps {
@@ -74,25 +76,39 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
 		push('/');
 	}
 	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
-	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
-	//CONNECT TO WEBSOCKET 
-	// useEffect(() => {
-	// 	const socket = io('http://localhost:3003');  // Établit une connexion WebSocket avec le serveur
-	
-	// 	socket.on('connect', () => {
-	// 	  console.log('Connected to the server');
-	// 	  // Ici, vous pouvez effectuer des opérations supplémentaires une fois la connexion établie, si nécessaire
-	// 	});
-	// 	socket.on('disconnect', () => {
-	// 	  console.log('Disconnected from the server');
-	// 	  // Effectuez des opérations supplémentaires lors de la déconnexion, si nécessaire
-	// 	});
-	
-	// 	return () => {
-	// 	  socket.disconnect(); // Déconnecte le socket lorsque le composant est démonté
-	// 	};
-	//   }, []);
-	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
+	const [socket] = useState(useContext(WebsocketContext))
+
+	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==- MISE EN DUEL=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
+ 
+	useEffect(() => {
+    console.log("Début de l'écoute des événements 'duelRequest'");
+
+    console.log(`Socket est connectée : ${socket.connected}`);
+
+    const handleDuelRequest = (data: any) => {
+        try {
+            console.log("Demande de duel reçue");
+            console.log(data);
+        } catch (error) {
+            console.error('Erreur lors du traitement de la demande de duel : ', error);
+        }
+    };
+  
+    socket.on('duelRequest', handleDuelRequest);
+
+	socket.on('connect_error', (error) => {
+		console.log('Erreur de connexion :', error);
+	  });
+    console.log("Écoute des événements 'duelRequest' en cours");
+  
+    return () => {
+        console.log("Arrêt de l'écoute des événements 'duelRequest'");
+        socket.off('duelRequest', handleDuelRequest);
+    };
+}, [socket]);
+
+	  
+	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==- MISE EN DUEL FIN=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
 
 	//REFRESH TOPBAR DATA eatch 30s
 	// setInterval(refetch, 3000);
@@ -102,7 +118,7 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
 		</div>
 		<div className={styles.navLeft}>
 			<Link className={styles.linktxt} href="/dashboard/">Home</Link>
-			<Link className={styles.linktxt} href="/dashboard/game">Game</Link>
+			<Link className={styles.linktxt} href="/dashboard/gameStart">Game</Link>
 			<Link className={styles.linktxt} href="/dashboard/social/chat-home">Social</Link>
 			<Link className={styles.linktxt} href="/dashboard/leaderboard">Leaderboard</Link>
 			{/*<Link className={styles.linktxt} href="/dashboard/users">users</Link>*/}

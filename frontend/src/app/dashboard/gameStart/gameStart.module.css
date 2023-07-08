@@ -1,12 +1,55 @@
-.test {
-	color: white;
-	background-color: aliceblue;
-}
-
 .container {
-	color: wheat;
+	color: white;
+	display: flex;
+	flex-direction: column;
+	margin: 100px 400px;
+  }
+
+  .users {
+	border: solid white 1px;
+  }
+  
+  .title {
+	color: white; 
+	margin-bottom: 10px;
+  }
+  
+  .userlogp {
+	font-size: 1.1rem;
+	font-weight: 500;
+	color: white;
+  }
+  
+  .userlogcontainer {
+	display: flex;
+	flex-direction: row;
+	gap: 15px;
+	cursor: pointer;
+	padding: 4px 10px;
+	display: flex;
+	/* justify-content: space-around; */
+	align-items: center;
+	/* background-color: green; */
+	gap: 400px;
+  }
+  
+  .img {
+	object-fit: cover;
+	border-radius: 50px;
+  }
+
+	.whiteText {
+		color: white;
+	}
+
+.fightButton {
+	height:30px;
 }
 
-.containerGameStart {
-	color: white;
+.row {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	/* background-color: blue; */
+	gap: 30px;
 }

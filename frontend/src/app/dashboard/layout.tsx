@@ -60,7 +60,7 @@ export default function RootLayout({children,}: {children: React.ReactNode}) {
 		  socket.disconnect(); // Déconnecte le socket lorsque le composant est démonté
 		};
 	  }, []);
-	  //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==- WEBSOCKET FIN =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
+	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==- WEBSOCKET FIN =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
 
 
 	return (

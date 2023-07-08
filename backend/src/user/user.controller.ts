@@ -333,6 +333,23 @@ export class UserController {
 
 	@HttpCode(200)
 	@UseGuards(JwtAuthGuard)
+	@Get('get-web-socket-id-by-user-id')
+	async getWebSocketIdByUserId(@Req() request: RequestWithUser,  @Res() res) {
+	  const user = await this.userService.findById(request.user.id);
+	  return res.send(user.idWebSocket);
+	}
+	
+	
+
+	@HttpCode(200)
+	@UseGuards(JwtAuthGuard)
+	@Get('get-block-list')
+	async socketId(@Req() request: RequestWithUser, @Res() res) {
+		return res.send(await this.userService.getBlockList(request.user.id));
+	}
+
+	@HttpCode(200)
+	@UseGuards(JwtAuthGuard)
 	@Post('id-web-socket')
 	async idWebSocket(@Req() request: RequestWithUser, @Res() res, @Body() body: socketId) {
 	const user = await this.userService.findById(request.user.id);
@@ -348,6 +365,7 @@ export class UserController {
 	const user = await this.userService.findById(request.user.id);
 	return user.idWebSocket; // Return the socket id for the user
 	}
+	
 
 	@Post('block-user')
 	@UseGuards(JwtAuthGuard)

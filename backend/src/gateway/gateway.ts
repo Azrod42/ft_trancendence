@@ -1,58 +1,31 @@
 import {MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer} from "@nestjs/websockets";
 import {OnModuleInit} from "@nestjs/common";
-import  { Server } from 'socket.io'
+import  { Server, Socket } from 'socket.io'
 import express from "express";
 
-// const app = express();
-//
-//
-// app.use(express.json()); // Ajoutez ceci pour que Express puisse analyser le JSON dans le corps des requêtes
-//
-// app.post('/users/id-web-socket', (req, res) => {
-//     const userId = req.body.userId; // Remplacez ceci par la logique d'authentification pour obtenir l'ID de l'utilisateur
-//     const socketId = req.body.socketId;
-//
-//     console.log(`Received socket ID ${socketId} for user ${userId}`);
-//
-//     // Ici, vous pouvez stocker `userId` et `socketId` dans votre base de données
-//
-//     res.send({ success: true }); // Renvoyer une réponse pour que le client sache que la requête a réussi
-// });
 
 @WebSocketGateway(4001, {cors: { origin: ['http://localhost:3000']}})
 export class MyGateway implements OnModuleInit {
     @WebSocketServer()
     server: Server;
 
+    sockets: { [id: string]: Socket } = {};
     connectedUser: any[];
 
     onModuleInit(): any {
         this.server.setMaxListeners(2000);
         this.server.on('connection', (socket) => {
             console.log(`a user connected as = ${socket.id}`);
+            this.sockets[socket.id] = socket;
 
             socket.on('storeClientInfo', function (data) {
                 // Ici, vous pouvez stocker `data.userId` et `data.socketId` dans votre base de données
                 console.log('Received ID:', data.socketId, 'for user:', data.userId);
             });
 
-            // if (waitingPlayer) {
-            //   // Il y a un joueur en attente, alors les mettre ensemble dans une salle
-            //   const room = `room-${waitingPlayer.id}-${socket.id}`;
-            //   socket.join(room);
-            //   waitingPlayer.join(room);
-
-            //   // Vous pouvez maintenant utiliser `io.to(room).emit()` pour envoyer des messages à ces deux joueurs
-
-            //   console.log(`Users ${waitingPlayer.id} and ${socket.id} are paired together.`);
-            //   waitingPlayer = null; // Réinitialisez le joueur en attente
-            // } else {
-            //   // Aucun joueur n'attend, alors mettez ce joueur en attente
-            //   waitingPlayer = socket;
-            // }
-
             socket.on('disconnect', () => {
                 console.log(`User disconnected: ${socket.id}`);
+                delete this.sockets[socket.id];
             });
         })
         setInterval(() => {
@@ -90,6 +63,7 @@ export class MyGateway implements OnModuleInit {
             content: body?.message,
         })
     }
+
     @SubscribeMessage('channelMessage')
     async onChannelMessage(@MessageBody() body: {channel: string, message: string}) {
         this.server.in(body.channel).emit(body.channel, {
@@ -97,4 +71,35 @@ export class MyGateway implements OnModuleInit {
             content: body?.message
         })
     }
+
+    @SubscribeMessage('duel')
+    onDuelRequest(@MessageBody() body: {recipient: string, socket: string}) {
+        console.log("Received 'duel' event with body:", body);
+    
+        const recipientSocketId = body.socket;
+        console.log(`Recipient socketId = ${recipientSocketId}`);
+        const recipientSocket = this.sockets[recipientSocketId];
+    
+        if(recipientSocket) {
+            console.log(`Recipient socket was found = ${body.socket}`);
+            recipientSocket.emit('duelRequest', {
+                msg: 'New duel request',
+            });
+            console.log("'duelRequest' event has been emitted");
+        }
+        else {
+            console.log(`Recipient socket not found = ${body.recipient}`);
+        }
+    }
+
+    @SubscribeMessage('duelRequest')
+    onDuelRequestAccepted(@MessageBody() body: {msg: string}) {
+    console.log("We are in 'duelRequest' event with bodyyy:", body);
+
+    const message = body.msg;
+    console.log(`Message = ${message}`);
+
 }
+    
+}
+

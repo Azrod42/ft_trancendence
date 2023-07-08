@@ -8,11 +8,14 @@ import {AxiosResponse} from "axios";
 
 
 export const WebSocket = (user: any) => {
+
     const [socket] = useState(useContext(WebsocketContext))
     const [needRefresh, setNeedRefresh] = useState<boolean>(true);
     const refDiv: MutableRefObject<any> = useRef();
     const router = useRouter();
 
+
+    
     useEffect(() => {
         setTimeout(() => {
             needRefresh ? router.refresh() : () => {};

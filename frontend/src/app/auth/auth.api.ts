@@ -323,6 +323,16 @@ export const gameLose = async () => {
 	}
 }
 
+
+export const getWebSocketIdByUserId = async () => {
+	try {
+		const data = await Api.get<any>('/users/get-web-socket-id-by-user-id',)
+		return data;
+	} catch (e) {
+		return undefined;
+	}
+}
+
 export const idWebSocket = async () => {
 	try {
 		const data = await Api.get<any>('/users/id-web-socket',)
