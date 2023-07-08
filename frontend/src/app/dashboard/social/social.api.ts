@@ -36,6 +36,14 @@ export type FormValueSendMessage = {
   displayname: string;
 };
 
+export type FormValueUserSendMessage = {
+  idSender: string;
+  idTarget: string;
+  time: number;
+  displaynameSender: string;
+  message: string;
+};
+
 export type FormChangeChanType = {
   id: string;
   password: string;
@@ -272,6 +280,34 @@ export const getChannelMessageApi = async (formData: FormValueInviteUser) => {
   try {
     const data = await Api.post<string, FormValueInviteUser>({
       url: "/channel/get-msg-hist",
+      data: formData,
+    });
+    return { status: true, data: data.data };
+  } catch (e: any) {
+    if (e.name == "AxiosError")
+      return { status: false, error: e.response.data.message };
+    return { status: false, error: e };
+  }
+};
+
+export const sendUserMessageApi = async (formData: FormValueUserSendMessage) => {
+  try {
+    const data = await Api.post<string, FormValueUserSendMessage>({
+      url: "/users/new-message",
+      data: formData,
+    });
+    return { status: true, data: data.data };
+  } catch (e: any) {
+    if (e.name == "AxiosError")
+      return { status: false, error: e.response.data.message };
+    return { status: false, error: e };
+  }
+};
+
+export const getUserMessageApi = async (formData: FormValueIdChannel) => {
+  try {
+    const data = await Api.post<string, FormValueIdChannel>({
+      url: "/users/get-msg-hist",
       data: formData,
     });
     return { status: true, data: data.data };

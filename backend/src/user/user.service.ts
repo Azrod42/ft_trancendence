@@ -3,11 +3,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import User from "./user.entity";
 import { Repository} from 'typeorm';
 import CreateUserDto from './user.create.dto';
-import {ChangeDisplayNameDto} from './dtos/user.changedisplay.dto';
+import {ChangeDisplayNameDto, messageUser} from './dtos/user.changedisplay.dto';
 import { toDataURL } from 'qrcode';
 import * as bcrypt from 'bcrypt';
 import {response} from "express";
-import {inviteToChannelDto, muteUserDto} from "../channel/dtos/channel.dto";
+import {inviteToChannelDto, messageReqDto, muteUserDto} from "../channel/dtos/channel.dto";
 import Channel from "../channel/channel.entity";
 
 
@@ -261,6 +261,14 @@ export class UserService {
 		return JSON.stringify(json);
 	}
 
+	async addListMsg (list: string, object: messageUser) {
+		let json = []
+		if (list)
+			json = JSON.parse(list);
+		json.push(object);
+		return JSON.stringify(json);
+	}
+
 	async blockUser (userTrig: string, blockData: inviteToChannelDto) {
 		const user = await this.userRepo.findOneBy({id: userTrig});
 		const userToBlock = await this.findByDisplayname(blockData.id);
@@ -281,6 +289,28 @@ export class UserService {
 		return true;
 	}
 
+	async newUserMessage (userTrig: string, messageData: messageUser) {
+		const userS: User = await this.userRepo.findOneBy({id: userTrig});
+		const userT = await this.userRepo.findOneBy({id: userTrig});
+		userS.msgHist = await this.addListMsg(userS.msgHist,  messageData);
+		userT.msgHist = await this.addListMsg(userT.msgHist,  messageData);
+		await this.userRepo.save(userS);
+		await this.userRepo.save(userT);
+		return true;
+	}
 
+	async getUserMsgHistory (userTrig: string, userTarget: string) {
+		const userR: User = await this.userRepo.findOneBy({id: userTrig});
+		const history  = [];
+		let msgHist = []
+		if (userR.msgHist != '')
+			msgHist = JSON.parse(userR.msgHist);
+		for (let i = 0; msgHist[i]; i++) {
+			if ((msgHist[i].idSender == userTrig && msgHist[i].idTarget == userTarget) || (msgHist[i].idSender == userTarget && msgHist[i].idTarget == userTrig)) {
+				history.push(msgHist[i]);
+			}
+		}
+		return JSON.stringify(history);
+	}
 
 }

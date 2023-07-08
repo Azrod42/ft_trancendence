@@ -39,6 +39,9 @@ class User {
     chat: string;
 
     @Column()
+    msgHist: string;
+
+    @Column()
     gameLose: number;
 
 }

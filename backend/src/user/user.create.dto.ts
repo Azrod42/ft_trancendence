@@ -33,6 +33,8 @@ class CreateUserDto {
 
 	gameLose: number;
 
+	msgHist: string
+
 }
 
 export default CreateUserDto;

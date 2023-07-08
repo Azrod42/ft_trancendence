@@ -148,6 +148,17 @@ export class ChannelService {
         return JSON.stringify(json);
     }
 
+    async addListMsg (list: string, id: string, object = {id: 'unset', time: 0, message: '', displayname: ''}) {
+        let json = []
+        if (list)
+            json = JSON.parse(list);
+        if (object?.time !== 0)
+            json.push(object);
+        else
+            json.push({id: id});
+        return JSON.stringify(json);
+    }
+
     private async verifyPassword(plainTextPassword: string, hashoedPassword: string) {
         const arePasswordMatching = await bcrypt.compare(plainTextPassword, hashoedPassword);
         if (!arePasswordMatching) {

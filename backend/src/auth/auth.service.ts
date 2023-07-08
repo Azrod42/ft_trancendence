@@ -43,6 +43,7 @@ export class AuthService {
 				blocked: '',
 				friends: '',
 				gameLose: 0,
+				msgHist: '',
 			});
 			user.password = undefined;
 			return user;

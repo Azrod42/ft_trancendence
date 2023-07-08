@@ -12,7 +12,7 @@ import {
 	UseGuards,
 	UseInterceptors
 } from '@nestjs/common';
-import {ChangeDisplayName, ChangeDisplayNameDto, UserId} from './dtos/user.changedisplay.dto';
+import {ChangeDisplayName, ChangeDisplayNameDto, messageUser, UserId} from './dtos/user.changedisplay.dto';
 import RequestWithUser from 'src/auth/interface/requestWithUser.i';
 import { Response} from "express";
 import {validate} from "class-validator";
@@ -22,7 +22,7 @@ import {v4 as uuidv4} from 'uuid';
 import * as path from "path";
 import * as process from "process";
 import * as fs from 'fs'
-import {inviteToChannelDto, muteUserDto} from "../channel/dtos/channel.dto";
+import {chanIdDto, inviteToChannelDto, messageReqDto, muteUserDto} from "../channel/dtos/channel.dto";
 
 @Controller('users')
 export class UserController {
@@ -344,5 +344,16 @@ export class UserController {
 	async  unblockUser (@Req() request: RequestWithUser, @Res() res, @Body() muteData: inviteToChannelDto): Promise<string> {
 		return res.send(await this.userService.unblockUser(request.user.id, muteData));
 	}
-
+	@HttpCode(200)
+	@Post('new-message')
+	@UseGuards(JwtAuthGuard)
+	async  handleNewMessage (@Req() request: RequestWithUser, @Res() res, @Body() muteData: messageUser): Promise<string> {
+		return res.send(await this.userService.newUserMessage(request.user.displayname, muteData));
+	}
+	@HttpCode(200)
+	@Post('get-msg-hist')
+	@UseGuards(JwtAuthGuard)
+	async  getMsgHistory (@Req() request: RequestWithUser, @Res() res, @Body() inviteData: chanIdDto): Promise<string> {
+		return res.send(await this.userService.getUserMsgHistory(request.user.id, inviteData.id));
+	}
 }
