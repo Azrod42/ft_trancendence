@@ -290,8 +290,8 @@ export class UserService {
 	}
 
 	async newUserMessage (userTrig: string, messageData: messageUser) {
-		const userS: User = await this.userRepo.findOneBy({id: userTrig});
-		const userT = await this.userRepo.findOneBy({id: userTrig});
+		const userS: User = await this.userRepo.findOneBy({id: messageData.idSender});
+		const userT = await this.userRepo.findOneBy({id: messageData.idTarget});
 		userS.msgHist = await this.addListMsg(userS.msgHist,  messageData);
 		userT.msgHist = await this.addListMsg(userT.msgHist,  messageData);
 		await this.userRepo.save(userS);

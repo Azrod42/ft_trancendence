@@ -348,7 +348,7 @@ export class UserController {
 	@Post('new-message')
 	@UseGuards(JwtAuthGuard)
 	async  handleNewMessage (@Req() request: RequestWithUser, @Res() res, @Body() muteData: messageUser): Promise<string> {
-		return res.send(await this.userService.newUserMessage(request.user.displayname, muteData));
+		return res.send(await this.userService.newUserMessage(request.user.id, muteData));
 	}
 	@HttpCode(200)
 	@Post('get-msg-hist')
