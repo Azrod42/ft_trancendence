@@ -26,7 +26,6 @@ export const WebSocket = (user: any) => {
             setNeedRefresh(false)
         });
         return () => {
-            console.log('Unregister');
             socket.off('ping');
             socket.off('connectedUser');
             socket.disconnect();

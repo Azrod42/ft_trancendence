@@ -20,7 +20,7 @@ const ConnectedUser: React.FC<connectedUserProps> = ({}) => {
     useEffect(() => {
         setInterval(() => {
             setNewData(newData + 1);
-        }, 10000)
+        }, 5000)
     }, []);
 
     useEffect(() => {

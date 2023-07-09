@@ -1,11 +1,12 @@
   "use client"
 
-  import React, { useEffect, useRef, useState } from 'react';
+  import React, {useContext, useEffect, useRef, useState} from 'react';
   import { io, Socket } from 'socket.io-client';
   import {UserAuthResponse, logout, getUserInfo, getProfilePicture} from '@/app/auth/auth.api';
   import { useRouter } from 'next/navigation';
   import {useQuery} from "react-query";
   import styles from "./gameStart.module.css"
+  import {WebsocketContext} from "@/app/(common)/WebsocketContext";
     
   function MessageForm() {
     //GET USER DATA FROM BACKEND AND STORE IN useState
@@ -25,41 +26,30 @@
     })
     useEffect(() => {
       //for setup action on userData refresh ?
+      setShowUserInfo(true);
     },[userData])
   
-    const socketRef = useRef<Socket | null>(null);
-    const [showUserInfo, setShowUserInfo] = useState(false);
-    const [socketId, setSocketId] = useState<string | null>(null);
-  
+    const [showUserInfo, setShowUserInfo] = useState<boolean>(false);
+    const [socket] = useState(useContext(WebsocketContext));
+
     useEffect(() => {
+      socket.emit('gameRoom', 'ready-to-play');
+      socket.on('ready-to-play', (data) => {
+        console.log(data);
+      })
       return () => {
-        // disconnect socket when component unmounts
-        if (socketRef.current) {
-          socketRef.current.disconnect();
-        }
-      };
-    }, []);
-  
-    const handleSocketConnection = () => {
-      socketRef.current = io('http://localhost:3003');
-      if(socketRef.current){
-        socketRef.current.on('connect', () => {
-          if(socketRef.current) {
-            setSocketId(socketRef.current.id);
-          }
-        });
+        socket.off('ready-to-play');
       }
-      setShowUserInfo(true);
-    };
+    }, [])
+
   
     return (
       <div >
-        <button type="button" onClick={handleSocketConnection}>Connect to Socket Server</button>
         {showUserInfo  && (
           <div className={styles.containerGameStart}>
             <p>Name: {userData?.displayname }</p>
             <p>ID: {userData?.id}</p>
-            <p>Socket ID: {socketId}</p>
+            <p>Socket ID: {socket.id}</p>
           </div>
         )}
       </div>

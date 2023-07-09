@@ -4,8 +4,6 @@ import styles from "./leaderbard.module.css"
 import { useRouter } from 'next/navigation';
 import {useQuery} from "react-query";
 import {getAllUsers} from "@/app/auth/auth.api";
-import Link from 'next/link';
-import {stringify} from "querystring";
 
 interface LeaderboardProps {}
 
@@ -15,7 +13,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({}) => {
 	// GET DATA FROM BACKEND AND STORE IN useState
 	let [userData, setuserData] = useState<any>();
 	const { push } = useRouter();
-	const { isLoading, error, data, refetch } = useQuery('getUserInfo', () =>
+	const { refetch } = useQuery('getUserInfo', () =>
 		getAllUsers().then(res => {
 			setuserData(res?.data);
 			// console.log(JSON.stringify(res?.data));
@@ -84,5 +82,4 @@ const Leaderboard: React.FC<LeaderboardProps> = ({}) => {
 		</div>
 	)
 }
-
 export default Leaderboard;
