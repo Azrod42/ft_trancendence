@@ -79,7 +79,6 @@ export const ListUser: React.FC<ListUserProps> = ({}) => {
       }),
     { staleTime: 5000, refetchInterval: 1000 * 5, refetchOnWindowFocus: false }
   );
-  console.log(userBlocked);
 
   useEffect(() => {
     refetchBlockedList();
@@ -111,9 +110,7 @@ export const ListUser: React.FC<ListUserProps> = ({}) => {
 
   const handleUserClick = (userId: string) => {
     const dtoId = { id: userId };
-    addChat(dtoId).then((res) => {
-      console.log(res);
-    });
+    addChat(dtoId).then((res) => {});
     push(`/dashboard/social/chat/chat-message/${userId}`);
   };
 
@@ -123,11 +120,9 @@ export const ListUser: React.FC<ListUserProps> = ({}) => {
         <div className={styles.userList}>
           {allUserData
             .filter((user: any) => {
-              console.log(user.id);
               let isBlocked = false;
               userBlocked.some((blockedUser: any) => {
                 if (blockedUser.id === user.id) {
-                  console.log("TRUE");
                   isBlocked = true;
                 }
               });

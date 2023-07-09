@@ -11,28 +11,27 @@ import {
   removeBlock,
 } from "@/app/auth/auth.api";
 import {
-  FormValueSendMessage,
-  sendMessageApi,
+  FormValueUserSendMessage,
+  sendUserMessageApi,
+  getUserMessageApi,
 } from "@/app/dashboard/social/social.api";
 import { WebsocketContext } from "@/app/(common)/WebsocketContext";
+import { useQuery } from "react-query";
 import { SubmitHandler, useForm } from "react-hook-form";
 import ErrorNotification from "@/app/(component)/errorNotification/errorNotification";
+import LoadingPage from "@/app/(component)/loadingPage/loadingPage";
 
 interface ChatWindowProps {}
 
-export const ChatWindow: React.FC<ChatWindowProps> = () => {
+export const ChatWindow: React.FC<ChatWindowProps> = ({}) => {
   const [user1Id, setUser1Id] = useState<string>("");
   const user2Id: string = usePathname().split("/").pop()!;
-  const roomId = `private_${user1Id}_${user2Id}`;
-
-  const [messages, setMessages] = useState<string[]>([]);
+  const [message, setMessage] = useState("");
   const [socket] = useState(useContext(WebsocketContext));
   const [userData, setUserData] = useState<any>();
-  const [msgData, setMsgData] = useState<any>();
+  const [msgUserData, setMsgUserData] = useState<any>();
   const htmlMsgInput: React.MutableRefObject<any> = useRef();
-
-  const [message, setMessage] = useState("");
-  const sendMsg = useForm<FormValueSendMessage>();
+  const sendMsg = useForm<FormValueUserSendMessage>();
 
   const [errorDisplay, setError] = useState<boolean>(false);
   const [headerError, setHeaderError] = useState<string>("");
@@ -46,20 +45,26 @@ export const ChatWindow: React.FC<ChatWindowProps> = () => {
     });
   }, []);
 
+  const userQuery = useQuery(
+    "fetchUserChatData",
+    () =>
+      getUserInfo().then((res) => {
+        setUserData(res);
+      }),
+    { staleTime: 5000, refetchOnWindowFocus: false }
+  );
+
+  const messageUserQuery = useQuery(
+    "fetchMsgUserData",
+    () =>
+      getUserMessageApi({ id: user2Id }).then((res) => {
+        if (res?.status == true) setMsgUserData(res.data);
+      }),
+    { staleTime: 500, refetchOnWindowFocus: false }
+  );
+
   useEffect(() => {
-    const roomId = `private_${user1Id}_${user2Id}`;
-
-    socket.emit("room", roomId);
-
-    socket.on(roomId, (data) => {});
-
-    return () => {
-      socket.off(roomId);
-    };
-  }, [socket, user1Id, user2Id]);
-
-  useEffect(() => {
-    if (msgData) {
+    if (msgUserData) {
       let html: string = `
            <style>
                 .containerMsg {
@@ -101,30 +106,48 @@ export const ChatWindow: React.FC<ChatWindowProps> = () => {
                 }
            </style>
         `;
-      for (let i = 0; msgData[i]; i++) {
-        const date = new Date(msgData[i].time);
+      for (let i = 0; msgUserData[i]; i++) {
+        const date = new Date(msgUserData[i].time);
         const time = `${date.getDay()} / ${date.getMonth()} ${date.getHours()}:${date.getMinutes()}`;
         html += `
             <div class="containerMsg">
                 <div class='msgHeader'>
-                    <p class='message1' >${msgData[i].displayname}</p>
+                    <p class='message1' >${msgUserData[i].displaynameSender}</p>
                     <p class='message2'>${time}</p>
                 </div>
-                <p class='message'>${msgData[i].message}</p>
+                <p class='message'>${msgUserData[i].message}</p>
             </div>
             `;
       }
       htmlMsgInput.current.innerHTML = html;
       htmlMsgInput.current.scrollTop = htmlMsgInput.current.scrollHeight;
     }
-  }, [msgData]);
+  }, [msgUserData]);
 
-  const onSubmitSendMessage: SubmitHandler<FormValueSendMessage> = (data) => {
-    data.chanId = roomId;
+  useEffect(() => {
+    socket.emit(`room`, `${user2Id}`);
+    socket.on(`${user2Id}`, (data) => {
+      // console.log(data);
+      messageUserQuery.refetch();
+    });
+    return () => {
+      socket.off(`${user2Id}`);
+    };
+  }, [messageUserQuery, socket, user2Id]);
+
+  const onSubmitSendMessage: SubmitHandler<FormValueUserSendMessage> = (
+    data
+  ) => {
+    data.idSender = user1Id;
+    data.idTarget = user2Id;
     data.time = new Date().getTime();
-    data.displayname = userData?.displayname ?? "";
-    data.id = userData.id;
-    sendMessageApi(data).then((res) => {
+    if (userData && userData.displayname) {
+      data.displaynameSender = userData.displayname;
+    }
+    const allMessages = message;
+    data.message += "\n" + allMessages;
+
+    sendUserMessageApi(data).then((res) => {
       if (res?.status == false) {
         setHeaderError("Error :");
         setErrorMsg(res.error);
@@ -133,8 +156,8 @@ export const ChatWindow: React.FC<ChatWindowProps> = () => {
           setError(false);
         }, 3000);
       } else {
-        socket.emit(`channelMessage`, {
-          channel: `${roomId}`,
+        socket.emit(`newMessage`, {
+          userId: user2Id,
           message: data.message,
         });
       }
@@ -144,22 +167,22 @@ export const ChatWindow: React.FC<ChatWindowProps> = () => {
 
   return (
     <div className={styles.containerMessage}>
-      {messages.map((message, index) => (
-        <div key={index}>{message}</div>
-      ))}
       {errorDisplay ? (
         <ErrorNotification headerText={headerError} error={errorMsg} />
       ) : (
         <></>
       )}
+      <div className={styles.chatWindow} ref={htmlMsgInput}>
+        <LoadingPage />
+      </div>
       <form
         className={styles.searchBar}
         onSubmit={sendMsg.handleSubmit(onSubmitSendMessage)}
       >
         <input
           className={styles.input}
-          placeholder="Enter your message…"
           type="text"
+          placeholder=""
           {...sendMsg.register("message", { required: true })}
         />
         <button type="submit" value="send">

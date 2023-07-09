@@ -3,7 +3,7 @@
   right: 0;
   top: 71px;
   width: calc(100% - 300px);
-  height: calc(100% - 72px);
+  height: calc(100% - 73px);
   display: flex;
   flex-direction: row;
   align-items: flex-start;
@@ -16,7 +16,17 @@
   height: 100%;
   background: #060b26d9;
   border: 1px solid #060b26d9;
-  overflow: auto;
+}
+
+.chatWindow {
+  height: calc(100% - 100px);
+  margin: 20px;
+  border-radius: 20px;
+  overflow: scroll;
+}
+
+.chatWindow::-webkit-scrollbar {
+  width: 0;
 }
 
 .profile {
@@ -28,6 +38,11 @@
   height: 100%;
   background: #060b42;
   border: 1px solid #060b42;
+  overflow: scroll;
+}
+
+.profile::-webkit-scrollbar {
+  width: 0;
 }
 
 .searchBar {
