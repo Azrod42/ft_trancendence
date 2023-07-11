@@ -11,6 +11,7 @@ import io from 'socket.io-client';
 import {WebSocket} from "@/app/(component)/WebSocket/WebSocket";
 import { newWebSocket } from "@/app/auth/auth.api";
 import {WebsocketContext} from "@/app/(common)/WebsocketContext";
+import uuid from 'react-uuid'
 
 interface MyModalProps {
 	isOpen: boolean;
@@ -71,7 +72,7 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
 	//GET PROFILE IMAGE
 	const [profilePicture, setProfilePicture] = useState<string>('');
 	const [ppGet, setPpGet] = useState<boolean>(false);
-	const [duelRequest, setDuelRequest] = useState<{ socketId: string } | null>(null);
+	const [duelRequest, setDuelRequest] = useState<{ socketId: string, idRoom: string} | null>(null);
 	useEffect(() => {
 	if (!ppGet) {
 		getProfilePicture().then(
@@ -124,9 +125,8 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
 	const [socket] = useState(useContext(WebsocketContext))
 
 	useEffect(() => {
-		const handleDuelRequest = (data: { socketId: string }) => {
+		const handleDuelRequest = (data: { socketId: string, idRoom: string}) => {
 			alert(`Ca fonctionne`);
-			console.log("On est dans handleDuelRequest");
     		setDuelRequest(data);
 		};
 	
@@ -135,7 +135,10 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
 			socket.off('duelRequest', handleDuelRequest);
 		};
 	}, [socket]);
-	
+
+	useEffect(() => {
+		console.log(duelRequest);
+	}, [duelRequest])
 
 	  //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==- MISE EN DUEL FIN=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
 
@@ -166,8 +169,9 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
 	}
 
 	const handleAccept = () => {
-		socket.emit('acceptDuel', { duelSocketId: duelRequest?.socketId });
-		setDuelRequest(null);
+		  push(`/dashboard/game/${duelRequest?.idRoom}`);
+		  socket.emit('acceptDuel', { duelSocketId: duelRequest?.socketId, idRoom: duelRequest?.idRoom});
+		  setDuelRequest(null);
 	}
 
 	//REFRESH TOPBAR DATA eatch 30s

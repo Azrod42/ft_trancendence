@@ -8,6 +8,7 @@ import Image from 'next/image';
 import {getUserInfo, postProfilePicture} from "@/app/auth/auth.api";
 import {WebsocketContext} from "@/app/(common)/WebsocketContext";
 import { getWebSocketIdByUserId } from "@/app/auth/auth.api";
+import uuid from "react-uuid"
 
 
 
@@ -66,7 +67,9 @@ const GameStart: React.FC<gameStartProps> = ({}) => {
 
     getWebSocketIdByUserId(id).then((res) => {
     console.log(`This is res.data = ${res?.data}`);
-    socket.emit('duelRequest', {socketId: res?.data});
+    const uid = uuid();
+    socket.emit('duelRequest', {socketId: res?.data, idRoom: uid});
+    push(`/dashboard/game/${uid}`);
     })
 };
 

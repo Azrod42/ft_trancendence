@@ -75,14 +75,20 @@ export class MyGateway implements OnModuleInit {
     }
 
     @SubscribeMessage('duelRequest')
-    onDuelRequest(@MessageBody() data: { socketId: string }) {
-    console.log(`We are in 'duelRequest' event and this is socketId = ${data.socketId}`);
+    onDuelRequest(@MessageBody() data: { socketId: string, idRoom: string }) {
+    console.log(`We are in 'duelRequest' event and this is socketId = ${data.socketId}`, "ID room", data?.idRoom);
     this.server.sockets.to(data.socketId).emit('duelRequest', data);
     }
 
     @SubscribeMessage('acceptDuel')
-    onDuelRequestAccepted(@MessageBody() data: { socketId: string }) {
-    
+    onDuelRequestAccepted(@MessageBody() data: { socketId: string, idRoom: string}) {
+        console.log('yes -0-0-0-0-0-0- ', data.idRoom);
+
+    }
+
+    @SubscribeMessage('move')
+    onMove(@MessageBody() data: { idRoom: string, user:string, y: string}) {
+        this.server.in(data.idRoom).emit(data.idRoom, data);
     }
 
 }
