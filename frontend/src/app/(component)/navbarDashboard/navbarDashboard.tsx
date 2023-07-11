@@ -9,7 +9,49 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import io from 'socket.io-client';
 import {WebSocket} from "@/app/(component)/WebSocket/WebSocket";
+import { newWebSocket } from "@/app/auth/auth.api";
 import {WebsocketContext} from "@/app/(common)/WebsocketContext";
+
+interface MyModalProps {
+	isOpen: boolean;
+	onClose: () => void;
+	children?: React.ReactNode;
+  }
+  
+  function MyModal({ isOpen, onClose, children }: MyModalProps) {
+	if (!isOpen) return null;
+  
+	return (
+	  <div
+		style={{
+		  position: "fixed",
+		  top: 0,
+		  left: 0,
+		  right: 0,
+		  bottom: 0,
+		  backgroundColor: "rgba(0,0,0,0.3)",
+		  display: "flex",
+		  justifyContent: "center",
+		  alignItems: "center",
+		  zIndex: 1000,
+		}}
+		onClick={onClose}
+	  >
+		<div
+		  style={{
+			backgroundColor: "white",
+			padding: "1em",
+			position: "relative",
+			zIndex: 1001,
+		  }}
+		  onClick={(e) => e.stopPropagation()}
+		>
+		  {children}
+		  <button onClick={onClose}>Close</button>
+		</div>
+	  </div>
+	);
+  }
 
 
 
@@ -29,6 +71,7 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
 	//GET PROFILE IMAGE
 	const [profilePicture, setProfilePicture] = useState<string>('');
 	const [ppGet, setPpGet] = useState<boolean>(false);
+	const [duelRequest, setDuelRequest] = useState<{ socketId: string } | null>(null);
 	useEffect(() => {
 	if (!ppGet) {
 		getProfilePicture().then(
@@ -76,68 +119,93 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
 		push('/');
 	}
 	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
+	
+	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==- MISE EN DUEL=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
 	const [socket] = useState(useContext(WebsocketContext))
 
-	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==- MISE EN DUEL=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
- 
 	useEffect(() => {
-    console.log("Début de l'écoute des événements 'duelRequest'");
+		const handleDuelRequest = (data: { socketId: string }) => {
+			alert(`Ca fonctionne`);
+			console.log("On est dans handleDuelRequest");
+    		setDuelRequest(data);
+		};
+	
+		socket.on('duelRequest', (data) => handleDuelRequest(data));	
+		return () => {
+			socket.off('duelRequest', handleDuelRequest);
+		};
+	}, [socket]);
+	
 
-    console.log(`Socket est connectée : ${socket.connected}`);
+	  //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==- MISE EN DUEL FIN=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
 
-    const handleDuelRequest = (data: any) => {
-        try {
-            console.log("Demande de duel reçue");
-            console.log(data);
-        } catch (error) {
-            console.error('Erreur lors du traitement de la demande de duel : ', error);
-        }
-    };
-  
-    socket.on('duelRequest', handleDuelRequest);
+	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==- MAJ SOCKET AT RELOAD=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
 
-	socket.on('connect_error', (error) => {
-		console.log('Erreur de connexion :', error);
-	  });
-    console.log("Écoute des événements 'duelRequest' en cours");
-  
-    return () => {
-        console.log("Arrêt de l'écoute des événements 'duelRequest'");
-        socket.off('duelRequest', handleDuelRequest);
-    };
-}, [socket]);
+	useEffect(() => {
+		const handleNewSocket = (data: any) => {
+			// alert(`This socket's ID: ${socket.id} and data?.socketId: ${data?.socketId}`);
+			try {
+				newWebSocket(data.socketId).then((res) => {
+				})
+			} catch (error) {
+				console.error('Error while updating new socket', error);
+			}
+		};
+	
+		socket.on('newSocket', (data) => handleNewSocket(data));	
+		return () => {
+			socket.off('newSocket', handleNewSocket);
+		};
+	}, [socket]);
+	
 
-	  
-	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==- MISE EN DUEL FIN=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
+	  //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==- MAJ SOCKET AT RELOAD FIN=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
+		
+	  const handleDecline = () => {
+		setDuelRequest(null);
+	}
+
+	const handleAccept = () => {
+		socket.emit('acceptDuel', { duelSocketId: duelRequest?.socketId });
+		setDuelRequest(null);
+	}
 
 	//REFRESH TOPBAR DATA eatch 30s
 	// setInterval(refetch, 3000);
-  return (
-	<nav className={styles.container}>
-		<div >
-		</div>
-		<div className={styles.navLeft}>
-			<Link className={styles.linktxt} href="/dashboard/">Home</Link>
-			<Link className={styles.linktxt} href="/dashboard/gameStart">Game</Link>
-			<Link className={styles.linktxt} href="/dashboard/social/chat-home">Social</Link>
-			<Link className={styles.linktxt} href="/dashboard/leaderboard">Leaderboard</Link>
-			{/*<Link className={styles.linktxt} href="/dashboard/users">users</Link>*/}
-		</div>
-		<div className={styles.navRight}>
-			{isUserData ? <WebSocket user={userData}/> : <></>}
-			<p className={styles.displaynametxt}>{userData?.displayname}</p>
-			{profilePicture && (<Image className={styles.profilePicture} src={!ppGet ? "/media/logo-login.png" : profilePicture} alt="profile-picture" width={56} height={56} priority={true} onClick={oncMenu}/>)}
-			{open && <motion.div className={styles.menu}
-								 initial={{opacity: 0}}
-								 animate={{opacity: 1}}
-								 transition={{duration: 0.4}}
+	return (
+		<nav className={styles.container}>
+			<div>
+			</div>
+			<div className={styles.navLeft}>
+				<Link className={styles.linktxt} href="/dashboard/">Home</Link>
+				<Link className={styles.linktxt} href="/dashboard/gameStart">Game</Link>
+				<Link className={styles.linktxt} href="/dashboard/social/chat-home">Social</Link>
+				<Link className={styles.linktxt} href="/dashboard/leaderboard">Leaderboard</Link>
+				{/*<Link className={styles.linktxt} href="/dashboard/users">users</Link>*/}
+			</div>
+			<div className={styles.navRight}>
+				{isUserData ? <WebSocket user={userData}/> : <></>}
+				<p className={styles.displaynametxt}>{userData?.displayname}</p>
+				{profilePicture && (<Image className={styles.profilePicture} src={!ppGet ? "/media/logo-login.png" : profilePicture} alt="profile-picture" width={56} height={56} priority={true} onClick={oncMenu}/>)}
+				{open && 
+					<motion.div className={styles.menu}
+								initial={{opacity: 0}}
+								animate={{opacity: 1}}
+								transition={{duration: 0.4}}
 					>
-				<Link className={styles.linktxt} href="/dashboard/profile" onClick={oncMenu}>Profile</Link>
-				<p className={styles.linktxt} onClick={onSubmit}>Logout</p>
-			</motion.div>}
-		</div>
-	</nav>
-  )
+						<Link className={styles.linktxt} href="/dashboard/profile" onClick={oncMenu}>Profile</Link>
+						<p className={styles.linktxt} onClick={onSubmit}>Logout</p>
+					</motion.div>
+				}
+			</div>
+			<MyModal isOpen={duelRequest != null} onClose={handleDecline}>
+				<h1>On vous invite à un duel</h1>
+				<p>Accepter?</p>
+				<button onClick={handleAccept}>Accepter</button>
+				<button onClick={handleDecline}>Decliner</button>
+			</MyModal>
+		</nav>
+	)	
 }
 
 export default NavBar;

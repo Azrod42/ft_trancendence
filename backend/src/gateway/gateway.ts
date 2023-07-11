@@ -1,13 +1,14 @@
 import {MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer} from "@nestjs/websockets";
 import {OnModuleInit} from "@nestjs/common";
 import  { Server, Socket } from 'socket.io'
-import express from "express";
+import { UserService } from '../user/user.service';
 
 
 @WebSocketGateway(4001, {cors: { origin: ['http://localhost:3000']}})
 export class MyGateway implements OnModuleInit {
     @WebSocketServer()
     server: Server;
+    constructor(private readonly userService: UserService) {}
 
     sockets: { [id: string]: Socket } = {};
     connectedUser: any[];
@@ -16,11 +17,12 @@ export class MyGateway implements OnModuleInit {
         this.server.setMaxListeners(2000);
         this.server.on('connection', (socket) => {
             console.log(`a user connected as = ${socket.id}`);
-            this.sockets[socket.id] = socket;
+        this.sockets[socket.id] = socket;
 
-            socket.on('storeClientInfo', function (data) {
-                // Ici, vous pouvez stocker `data.userId` et `data.socketId` dans votre base de données
-                console.log('Received ID:', data.socketId, 'for user:', data.userId);
+            socket.on('storeClientInfo', async function (data) {
+            console.log(' We are in storeClientInfo, Received ID:', data.socketId, 'for user:', data.userId.user.id);
+            this.server.sockets.to(data.socketId).emit('newSocket', data);
+            //this.userService.updateWebSocketId(data.userId.user.id, data.socketId);  
             });
 
             socket.on('disconnect', () => {
@@ -66,40 +68,23 @@ export class MyGateway implements OnModuleInit {
 
     @SubscribeMessage('channelMessage')
     async onChannelMessage(@MessageBody() body: {channel: string, message: string}) {
-        this.server.in(body.channel).emit(body.channel, {
-            msg: 'New message',
-            content: body?.message
-        })
-    }
-
-    @SubscribeMessage('duel')
-    onDuelRequest(@MessageBody() body: {recipient: string, socket: string}) {
-        console.log("Received 'duel' event with body:", body);
-    
-        const recipientSocketId = body.socket;
-        console.log(`Recipient socketId = ${recipientSocketId}`);
-        const recipientSocket = this.sockets[recipientSocketId];
-    
-        if(recipientSocket) {
-            console.log(`Recipient socket was found = ${body.socket}`);
-            recipientSocket.emit('duelRequest', {
-                msg: 'New duel request',
-            });
-            console.log("'duelRequest' event has been emitted");
-        }
-        else {
-            console.log(`Recipient socket not found = ${body.recipient}`);
-        }
+    this.server.in(body.channel).emit(body.channel, {
+        msg: 'New message',
+        content: body?.message
+    })
     }
 
     @SubscribeMessage('duelRequest')
-    onDuelRequestAccepted(@MessageBody() body: {msg: string}) {
-    console.log("We are in 'duelRequest' event with bodyyy:", body);
+    onDuelRequest(@MessageBody() data: { socketId: string }) {
+    console.log(`We are in 'duelRequest' event and this is socketId = ${data.socketId}`);
+    this.server.sockets.to(data.socketId).emit('duelRequest', data);
+    }
 
-    const message = body.msg;
-    console.log(`Message = ${message}`);
+    @SubscribeMessage('acceptDuel')
+    onDuelRequestAccepted(@MessageBody() data: { socketId: string }) {
+    
+    }
 
 }
     
-}
 

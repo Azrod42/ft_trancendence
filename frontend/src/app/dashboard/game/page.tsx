@@ -146,10 +146,9 @@ const resetWholeGame = () => {
 				gameLose().then((res) => {
 					console.log(res);
 				});
-			setGameStatus("finished"); 
-			clearInterval(interval); 
+			setGameStatus("finished");
+			clearInterval(interval);
 		  }
-
 		}
 	}, 10);
 	return () => {

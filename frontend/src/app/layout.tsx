@@ -6,12 +6,6 @@ import backgound from '../../public/background/main-backgound.jpg'
 import React from 'react';
 
 
-
-// export const metadata = {
-//   title: 'ft_trancendence',
-//   description: 'Last 42 project',
-// }
-
 //QUERY CLIENT don't touch for now
 const queryClient = new QueryClient({});
 

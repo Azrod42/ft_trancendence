@@ -10,7 +10,8 @@ import {
 	Res,
 	UploadedFile,
 	UseGuards,
-	UseInterceptors
+	UseInterceptors,
+	Param
 } from '@nestjs/common';
 import {ChangeDisplayName, ChangeDisplayNameDto, socketId, UserId} from './dtos/user.changedisplay.dto';
 import RequestWithUser from 'src/auth/interface/requestWithUser.i';
@@ -23,6 +24,7 @@ import * as path from "path";
 import * as process from "process";
 import * as fs from 'fs'
 import {inviteToChannelDto, muteUserDto} from "../channel/dtos/channel.dto";
+
 
 @Controller('users')
 export class UserController {
@@ -330,17 +332,30 @@ export class UserController {
 		await this.userService.newGameLose(user);
 		return res.send(true);
 	}
+  
 
 	@HttpCode(200)
 	@UseGuards(JwtAuthGuard)
-	@Get('get-web-socket-id-by-user-id')
-	async getWebSocketIdByUserId(@Req() request: RequestWithUser,  @Res() res) {
-	  const user = await this.userService.findById(request.user.id);
-	  return res.send(user.idWebSocket);
+	@Get('get-web-socket-id-by-user-id/:id')
+	async getWebSocketIdByUserId(@Param('id') id: string, @Res() res) {
+		const user = await this.userService.findById(id);
+		console.log(`This is user.idWebSocket in useguard = ${user.idWebSocket}`)
+		return res.send(user.idWebSocket);
 	}
-	
-	
 
+	@HttpCode(200)
+	@UseGuards(JwtAuthGuard)
+	@Get('new-web-socket/:socketId')
+	async newWebSocket(@Param('socketId') socketId: string, @Req() request: RequestWithUser, @Res() res) {
+		const user = await this.userService.findById(request.user.id);
+		console.log(`This is newWebSocket user = ${user.id} and socket = ${socketId}`)
+		await this.userService.updateWebSocketId(user.id, socketId);
+		return res.send(user.idWebSocket);
+	}
+
+
+	
+	
 	@HttpCode(200)
 	@UseGuards(JwtAuthGuard)
 	@Get('get-block-list')

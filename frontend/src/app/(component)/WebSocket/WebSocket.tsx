@@ -13,8 +13,6 @@ export const WebSocket = (user: any) => {
     const [needRefresh, setNeedRefresh] = useState<boolean>(true);
     const refDiv: MutableRefObject<any> = useRef();
     const router = useRouter();
-
-
     
     useEffect(() => {
         setTimeout(() => {
@@ -27,6 +25,11 @@ export const WebSocket = (user: any) => {
             refDiv.current.innerText = 'Connected user: ' + data?.data.length;
             localStorage.setItem('connectedUser', JSON.stringify(data?.data));
             setNeedRefresh(false)
+        });
+        console.log(`this is user.id avant le emit = ${user.id}`)
+        socket.emit('storeClientInfo', {
+            userId: user,
+            socketId: socket.id,
         });
         return () => {
             console.log('Unregister');

@@ -64,13 +64,12 @@ const GameStart: React.FC<gameStartProps> = ({}) => {
   const handleFightClick = (id: string) => {
     console.log(`Fight with user: ${id}`);
 
-    getWebSocketIdByUserId().then((res) => {
-       socket.emit('duel', {
-          recipient: id,
-          socket: res?.data,
-       });
-    });
+    getWebSocketIdByUserId(id).then((res) => {
+    console.log(`This is res.data = ${res?.data}`);
+    socket.emit('duelRequest', {socketId: res?.data});
+    })
 };
+
 
 
   return (
