@@ -32,7 +32,6 @@ export const WebSocket = (user: any) => {
             socketId: socket.id,
         });
         return () => {
-            console.log('Unregister');
             socket.off('ping');
             socket.off('connectedUser');
             socket.disconnect();

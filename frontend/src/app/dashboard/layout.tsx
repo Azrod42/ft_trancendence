@@ -1,7 +1,7 @@
 "use client"
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import {getUserInfo, setWebSocketId, UserAuthResponse} from '../auth/auth.api';
+import {getUserInfo, UserAuthResponse} from '../auth/auth.api';
 import { isUserLog } from '../(common)/checkLog';
 import NavBar from '../(component)/navbarDashboard/navbarDashboard';
 import styles from './dashboard.module.css'
@@ -40,27 +40,39 @@ export default function RootLayout({children,}: {children: React.ReactNode}) {
 	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
 	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==- WEBSOCKET =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
 
-	useEffect(() => {
-		const socket = io('http://localhost:4001');  // Établit une connexion WebSocket avec le serveur
-	
-		socket.on('connect', () => {
-			console.log('Connected to the server');
-			setWebSocketId({id: socket.id}).then(data => {
-				  console.log('WebSocket ID updated successfully:', data);
-				})
-			  
-		  });
-	
-		socket.on('disconnect', () => {
-		  console.log('Disconnected from the server');
-		  // Effectuez des opérations supplémentaires lors de la déconnexion, si nécessaire
-		});
-	
-		return () => {
-		  socket.disconnect(); // Déconnecte le socket lorsque le composant est démonté
-		};
-	  }, []);
-	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==- WEBSOCKET FIN =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
+	// useEffect(() => {
+	// 	const socket = io('http://localhost:3003');  // Établit une connexion WebSocket avec le serveur
+	//
+	// 	socket.on('connect', () => {
+	// 		console.log('Connected to the server');
+	// 		fetch('/users/id-web-socket', {
+	// 			method: 'POST',
+	// 			headers: {
+	// 			  'Content-Type': 'application/json',
+	// 			  // N'oubliez pas d'inclure les en-têtes d'autorisation si nécessaire
+	// 			},
+	// 			body: JSON.stringify({ userId: userData?.id, socketId: socket.id }),  // Envoyez l'ID du socket dans le corps de la requête
+	// 		  })
+	// 			.then(response => response.json())
+	// 			.then(data => {
+	// 			  console.log('WebSocket ID updated successfully:', data);
+	// 			})
+	// 			.catch((error) => {
+	// 			  console.error('Error updating WebSocket ID:', error);
+	// 			});
+	//
+	// 	  });
+	//
+	// 	socket.on('disconnect', () => {
+	// 	  console.log('Disconnected from the server');
+	// 	  // Effectuez des opérations supplémentaires lors de la déconnexion, si nécessaire
+	// 	});
+	//
+	// 	return () => {
+	// 	  socket.disconnect(); // Déconnecte le socket lorsque le composant est démonté
+	// 	};
+	//   }, []);
+	  //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==- WEBSOCKET FIN =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
 
 
 	return (

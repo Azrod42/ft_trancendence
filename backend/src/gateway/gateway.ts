@@ -47,6 +47,12 @@ export class MyGateway implements OnModuleInit {
     onCreateRoom(@MessageBody() body: string) {
         this.server.socketsJoin(body);
     }
+
+    @SubscribeMessage('gameRoom')
+    onCreateGameRoom(@MessageBody() body: string) {
+        this.server.socketsJoin(body);
+        this.server.in(body).emit(body, {message: 'A nerd join gameRoom'});
+    }
     @SubscribeMessage('pong')
     onPongHandle(@MessageBody() body: any) {
         const actual = this.connectedUser;
