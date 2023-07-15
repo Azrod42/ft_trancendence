@@ -89,13 +89,13 @@ export class MyGateway implements OnModuleInit {
 
     @SubscribeMessage('acceptDuel')
     onAcceptDuel(@MessageBody() data: { socketId: string, idRoom: string, currentUserId: string, currentUserName: string}) {
-        console.log('On etait dans le back end de acceptDuel ', data.idRoom);
+        // console.log('On etait dans le back end de acceptDuel ', data.idRoom);
         this.server.in(data.idRoom).emit('acceptDuel', data);
     }
 
     @SubscribeMessage('move')
     onMove(@MessageBody() data: { idRoom: string, user:string, y: string}) {
-        console.log('On etait dans le back end de move ', data.idRoom);
+        // console.log('On etait dans le back end de move ', data.idRoom);
         this.server.in(data.idRoom).emit(data.idRoom, data);
     }
 

@@ -42,7 +42,7 @@ const Room: React.FC<RoomProps> = () => {
 
   //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
   //GET USERS DATA FROM BACKEND AND DISPLAY IT
-  let [userData, setuserData] = useState<UserAuthResponse>();
+  let [userData, setuserData] = useState<UserAuthResponseGame>();
   const { push } = useRouter();
   const { refetch } = useQuery('getUserInfo', () =>
       getUserInfo().then(res => {
@@ -55,6 +55,7 @@ const Room: React.FC<RoomProps> = () => {
     if (userData == undefined) {
       refetch()
     }
+    console.log(`This is userData.gameNumber = ${userData?.gameNumber}`)
   })
   useEffect(() => {
     //for setup action on userData refresh ?
@@ -64,7 +65,7 @@ const Room: React.FC<RoomProps> = () => {
   useEffect(() => {
     socket.emit('room', uniqueIdentifier);
     socket.on(`${uniqueIdentifier}`, (data) => {
-      console.log(`On est dans la socket de room`);
+      // console.log(`On est dans la socket de room`);
       console.log(userData?.displayname, ": Y = ", data?.y);
       // console.log(userData?.user, ": Y = ", data?.y);
     })
@@ -79,20 +80,19 @@ const Room: React.FC<RoomProps> = () => {
       socket.emit('move', {idRoom: uniqueIdentifier, user: userData?.username, y: data?.screenY})
       let newY = data?.screenY- 350;
       if (canvasRef.current) {
-                // Ne depasse pas les rebords
-                newY = Math.max(newY, 10);
-                newY = Math.min(newY, canvasRef.current.height - 110);
-              }
-              setPaddleY(newY);
-            });
+            // Ne depasse pas les rebords
+            newY = Math.max(newY, 10);
+            newY = Math.min(newY, canvasRef.current.height - 110);
+          }
+          setPaddleY(newY);
+        });
   }, []);
 
   /////////////// essaie reception data
 
   useEffect(() => {
     socket.on('acceptDuel', (data) => {
-      console.log(`On est dans le front de acceptDuel`, data);
-      // console.log(userData?.user, ": Y = ", data?.y);
+      // console.log(`On est dans le front de acceptDuel`, data);
     })
     return () => {
       socket.off(`acceptDuel`);

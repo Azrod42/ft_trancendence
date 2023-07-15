@@ -44,6 +44,9 @@ class User {
     @Column()
     idWebSocket: string;
 
+    @Column()
+    gameNumber: number;
+
 }
 
 export default User;

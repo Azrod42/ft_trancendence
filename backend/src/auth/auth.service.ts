@@ -44,6 +44,7 @@ export class AuthService {
 				friends: '',
 				gameLose: 0,
 				idWebSocket: '',
+				gameNumber: 0,
 			});
 			user.password = undefined;
 			return user;

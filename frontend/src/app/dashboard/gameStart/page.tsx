@@ -8,6 +8,7 @@ import Image from 'next/image';
 import {getUserInfo, postProfilePicture} from "@/app/auth/auth.api";
 import {WebsocketContext} from "@/app/(common)/WebsocketContext";
 import { getWebSocketIdByUserId } from "@/app/auth/auth.api";
+import { setGameNumber } from "@/app/auth/auth.api";
 import uuid from "react-uuid"
 
 
@@ -75,7 +76,15 @@ const GameStart: React.FC<gameStartProps> = ({}) => {
     // console.log(`This is currentUserId = ${currentUserId}`);
     const uid = uuid();
     socket.emit('duelRequest', {socketId: res?.data, idRoom: uid, currentUserId: currentUserId, currentUserName: currentUserName});
-    socket.emit('acceptDuel', {socketId: res?.data, idRoom: uid, currentUserId: currentUserId, currentUserName: currentUserName});
+    // socket.emit('acceptDuel', {socketId: res?.data, idRoom: uid, currentUserId: currentUserId, currentUserName: currentUserName});
+      console.log("On etait au debut backend changement de chiffre");
+      console.log("On etait au debut backend changement de chiffre");
+      console.log("On etait au debut backend changement de chiffre");
+      setGameNumber(1).then((res) => {
+      console.log("On etait en fin de backend changement de chiffre", res);
+      console.log("On etait en fin de backend changement de chiffre");
+      console.log("On etait en fin de backend changement de chiffre");
+		});
     push(`/dashboard/game/${uid}`);
     })
 };

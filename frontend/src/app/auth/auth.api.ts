@@ -46,6 +46,15 @@ export interface UserAuthResponse {
 	is2FOn: boolean;
 }
 
+// export interface UserAuthResponseGame {
+// 	id:string;
+// 	username: string;
+// 	email: string;
+// 	displayname: string;
+// 	is2FOn: boolean;
+// 	gameNumber: number;
+// }
+
 export interface PublicUserResponse {
 	id:string;
 	avatar: string;
@@ -104,6 +113,16 @@ export  const changeDisplayName = async(registerInput: FormDisplayName) => {
 export  const getUserInfo = async() => {
 	try {
 		const {data} = await Api.get<UserAuthResponse>('/users/getuserdata',);
+		// console.log(data);
+		return data;
+	} catch (e) {
+		return undefined;
+	}
+}
+
+export  const getUserInfoGame = async() => {
+	try {
+		const {data} = await Api.get<UserAuthResponseGame>('/users/getuserdataGame',);
 		// console.log(data);
 		return data;
 	} catch (e) {
@@ -317,6 +336,15 @@ export const getBlockList = async () => {
 export const gameLose = async () => {
 	try {
 		const data = await Api.get<any>('/users/game-lose',)
+		return data;
+	} catch (e) {
+		return undefined;
+	}
+}
+
+export const setGameNumber = async (num: number) => {
+	try {
+		const data = await Api.get<any>(`/users/set-game-number/${num}`,)
 		return data;
 	} catch (e) {
 		return undefined;

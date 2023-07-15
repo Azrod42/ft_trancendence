@@ -89,6 +89,7 @@ export class AuthController {
 				friends: '',
 				gameLose: 0,
 				idWebSocket: '',
+				gameNumber: 0,
 			}
 			await this.authService.register(newUser);
 			const user = await this.userService.findByUsername(userInformation['login']);

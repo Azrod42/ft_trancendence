@@ -333,6 +333,14 @@ export class UserController {
 		return res.send(true);
 	}
   
+	@HttpCode(200)
+	@UseGuards(JwtAuthGuard)
+	@Get('set-game-number/:num')
+	async setGameNumber(@Req() request: RequestWithUser, @Res() res, @Param('num') num: number) {
+	const user = await this.userService.findById(request.user.id);
+	await this.userService.setNewGameNumber(user, num);
+	return res.send(true);
+}
 
 	@HttpCode(200)
 	@UseGuards(JwtAuthGuard)

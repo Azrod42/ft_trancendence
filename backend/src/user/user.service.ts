@@ -211,6 +211,11 @@ export class UserService {
 		await this.userRepo.save(user);
 	}
 
+	async setNewGameNumber(user: User, num:number) {
+		user.gameNumber = num;
+		await this.userRepo.save(user);
+	}
+
 	async updateWebSocketId(userId: string, socketId: string) {
 		const user = await this.findById(userId);
 		if (!user) {

@@ -129,7 +129,6 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
 
 	useEffect(() => {
 		const handleDuelRequest = (data: { socketId: string, idRoom: string, currentUserId: string, currentUserName:string}) => {
-			// alert(`Ca fonctionne`);
     		setDuelRequest(data);
 		};
 	
@@ -149,7 +148,6 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
 
 	useEffect(() => {
 		const handleNewSocket = (data: any) => {
-			// alert(`This socket's ID: ${socket.id} and data?.socketId: ${data?.socketId}`);
 			try {
 				newWebSocket(data.socketId).then((res) => {
 				})
@@ -172,9 +170,8 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
 	}
 
 	const handleAccept = () => {
-		  push(`/dashboard/game/${duelRequest?.idRoom}`);
-		  socket.emit('acceptDuel', { duelSocketId: duelRequest?.socketId, idRoom: duelRequest?.idRoom, currentUserId: duelRequest?.currentUserId, currentUserName: duelRequest?.currentUserName});
-		  setDuelRequest(null);
+		push(`/dashboard/game/${duelRequest?.idRoom}`);
+		setDuelRequest(null);
 	}
 
 	//REFRESH TOPBAR DATA eatch 30s
