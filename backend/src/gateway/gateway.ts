@@ -1,31 +1,19 @@
-import {MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer} from "@nestjs/websockets";
-import {OnModuleInit} from "@nestjs/common";
-import  { Server } from 'socket.io'
-import express from "express";
+import {
+  MessageBody,
+  SubscribeMessage,
+  WebSocketGateway,
+  WebSocketServer,
+} from '@nestjs/websockets';
+import { OnModuleInit } from '@nestjs/common';
+import { Server } from 'socket.io';
 
-// const app = express();
-//
-//
-// app.use(express.json()); // Ajoutez ceci pour que Express puisse analyser le JSON dans le corps des requêtes
-//
-// app.post('/users/id-web-socket', (req, res) => {
-//     const userId = req.body.userId; // Remplacez ceci par la logique d'authentification pour obtenir l'ID de l'utilisateur
-//     const socketId = req.body.socketId;
-//
-//     console.log(`Received socket ID ${socketId} for user ${userId}`);
-//
-//     // Ici, vous pouvez stocker `userId` et `socketId` dans votre base de données
-//
-//     res.send({ success: true }); // Renvoyer une réponse pour que le client sache que la requête a réussi
-// });
 
-@WebSocketGateway(4001, {cors: { origin: ['http://localhost:3000']}})
+@WebSocketGateway(4001, { cors: { origin: ['http://localhost:3000'] } })
 export class MyGateway implements OnModuleInit {
-    @WebSocketServer()
-    server: Server;
+  @WebSocketServer()
+  server: Server;
 
-    connectedUser: any[];
-
+  connectedUser: any[];
     onModuleInit(): any {
         this.server.setMaxListeners(2000);
         this.server.on('connection', (socket) => {

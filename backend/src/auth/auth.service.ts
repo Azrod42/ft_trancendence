@@ -43,6 +43,7 @@ export class AuthService {
 				blocked: '',
 				friends: '',
 				gameLose: 0,
+				msgHist: '',
 				idWebSocket: '',
 			});
 			user.password = undefined;

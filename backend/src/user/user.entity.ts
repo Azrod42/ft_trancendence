@@ -39,11 +39,13 @@ class User {
     chat: string;
 
     @Column()
+    msgHist: string;
+
+    @Column()
     gameLose: number;
 
     @Column()
     idWebSocket: string;
-
 }
 
 export default User;
