@@ -16,13 +16,15 @@
   height: 100%;
   background: #060b26d9;
   border: 1px solid #060b26d9;
+  overflow: auto;
 }
 
 .chatWindow {
   height: calc(100% - 100px);
   margin: 20px;
   border-radius: 20px;
-  overflow: scroll;
+  overflow-x: scroll;
+  overflow-y: auto;
 }
 
 .chatWindow::-webkit-scrollbar {

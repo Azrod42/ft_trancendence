@@ -24,7 +24,7 @@ const ChatHome: React.FC<ChatHomeProps> = ({}) => {
       <div className={styles2.container}>
         <Header text="Send new message" />
         <div className={styles2.mainFrame}>
-          <SearchBar />
+          {/*<SearchBar />*/}
           <ListUser />
         </div>
       </div>

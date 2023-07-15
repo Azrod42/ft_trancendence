@@ -13,7 +13,7 @@ const ChatSearch: React.FC<ChatSearchProps> = ({}) => {
     <div className={styles.container}>
       <Header text="Send new message" />
       <div className={styles.mainFrame}>
-        <SearchBar />
+        {/*<SearchBar />*/}
         <ListUser />
       </div>
     </div>

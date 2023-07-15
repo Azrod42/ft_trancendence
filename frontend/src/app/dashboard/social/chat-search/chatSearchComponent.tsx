@@ -48,10 +48,14 @@ export const ListUser: React.FC<ListUserProps> = ({}) => {
   const { push } = useRouter();
   const [allUserData, setAllUserData] = useState<any[]>([]);
   const [currentUserData, setCurrentUserData] = useState<any>();
-  const [userBlocked, setUserBlocked] = useState<any[]>([]);
+  const [userBlocked, setUserBlocked] = useState<any[]>(
+    currentUserData?.blocked || []
+  );
+  const [blockedDataInitialized, setBlockedDataInitialized] =
+    useState<boolean>(false);
 
-  const { data: users, refetch: refetchAllUsers } = useQuery(
-    "getUserInfo",
+  const { data: users, refetch: refetchAllUsers } = useQuery<any>(
+    "getallUser",
     () =>
       getAllUsers().then((res) => {
         setAllUserData(res?.data);
@@ -69,38 +73,26 @@ export const ListUser: React.FC<ListUserProps> = ({}) => {
     { staleTime: 5000 }
   );
 
-  const { data: blockedData, refetch: refetchBlockedList } = useQuery(
-    "getUserBlocked",
-    () =>
-      getBlockList().then((res) => {
-        if (res && res.data) {
-          setUserBlocked(res.data);
-        }
-      }),
-    { staleTime: 5000, refetchInterval: 1000 * 5, refetchOnWindowFocus: false }
-  );
-
-  useEffect(() => {
-    refetchBlockedList();
-  }, [refetchBlockedList]);
-
   useEffect(() => {
     if (users) {
-      setAllUserData((prevUsers) => [...prevUsers, ...users]);
+      setAllUserData(users?.data);
     }
   }, [users]);
 
   useEffect(() => {
-    if (users) {
-      setAllUserData((prevUsers) => [...prevUsers, ...users]);
+    if (currentUser) {
+      setCurrentUserData(currentUser);
     }
-    if (!currentUserData) {
-      refetchUserInfo();
-    }
-  }, [users, currentUserData, refetchUserInfo]);
+  }, [currentUser]);
 
   useEffect(() => {
-    if (allUserData && allUserData.length === 0) {
+    if (currentUserData) {
+      setUserBlocked(currentUserData?.blocked || []);
+    }
+  }, [currentUserData]);
+
+  useEffect(() => {
+    if (!allUserData || allUserData.length === 0) {
       refetchAllUsers();
     }
     if (!currentUserData) {
@@ -120,12 +112,12 @@ export const ListUser: React.FC<ListUserProps> = ({}) => {
         <div className={styles.userList}>
           {allUserData
             .filter((user: any) => {
-              let isBlocked = false;
-              userBlocked.some((blockedUser: any) => {
-                if (blockedUser.id === user.id) {
-                  isBlocked = true;
-                }
-              });
+              const blockedUsers = currentUserData?.blocked
+                ? JSON.parse(currentUserData.blocked)
+                : [];
+              const isBlocked = blockedUsers.some(
+                (blockedUser: any) => blockedUser.id === user.id
+              );
               return user.id !== currentUserData.id && !isBlocked;
             })
             .map((user: any) => (

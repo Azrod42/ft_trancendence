@@ -20,6 +20,8 @@ import { useQuery } from "react-query";
 import { SubmitHandler, useForm } from "react-hook-form";
 import ErrorNotification from "@/app/(component)/errorNotification/errorNotification";
 import LoadingPage from "@/app/(component)/loadingPage/loadingPage";
+import { getBlockList, getFriendList } from "@/app/auth/auth.api";
+import { useMutation } from "react-query";
 
 interface ChatWindowProps {}
 
@@ -32,6 +34,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({}) => {
   const [msgUserData, setMsgUserData] = useState<any>();
   const htmlMsgInput: React.MutableRefObject<any> = useRef();
   const sendMsg = useForm<FormValueUserSendMessage>();
+  const [currentUserId, setCurrentUserId] = useState<string>("");
 
   const [errorDisplay, setError] = useState<boolean>(false);
   const [headerError, setHeaderError] = useState<string>("");
@@ -44,6 +47,10 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({}) => {
       }
     });
   }, []);
+
+  useEffect(() => {
+    setCurrentUserId(user2Id);
+  }, [user2Id]);
 
   const userQuery = useQuery(
     "fetchUserChatData",
@@ -64,8 +71,15 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({}) => {
   );
 
   useEffect(() => {
+    if (currentUserId) {
+      messageUserQuery.refetch();
+    }
+  }, [currentUserId, messageUserQuery]);
+
+  useEffect(() => {
     if (msgUserData) {
       let html: string = `
+
            <style>
                 .containerMsg {
                    display: flex;
@@ -73,7 +87,6 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({}) => {
                    justify-content: flex-start;
                    align-items: flex-start;
                    gap: 0;
-                   /*border: 1px solid red;*/
                    margin: 0;
                    margin-top: 20px;
                    margin-left: 10px;
@@ -82,23 +95,19 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({}) => {
                     display: flex;
                     flex-direction: row;
                     gap: 10px;
-                    /*border: 1px solid greenyellow;*/
 
                 }
                 .message {
-                    /*border: 1px solid pink;*/
                     align-self: flex-start;
                     margin: 0;
                 }
                 .message1 {
-                    /*border: 1px solid pink;*/
                     align-self: flex-start;
                     margin: 0;
                     color: deepskyblue;
                     font-weight: 700;
                 }
                 .message2 {
-                    /*border: 1px solid pink;*/
                     align-self: flex-start;
                     margin: 0;
                     color: whitesmoke;
@@ -119,15 +128,23 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({}) => {
             </div>
             `;
       }
+
+      const chatWindow = htmlMsgInput.current;
+      const shouldScrollToBottom =
+        chatWindow.scrollTop + chatWindow.clientHeight ===
+        chatWindow.scrollHeight;
+
       htmlMsgInput.current.innerHTML = html;
-      htmlMsgInput.current.scrollTop = htmlMsgInput.current.scrollHeight;
+
+      if (shouldScrollToBottom) {
+        htmlMsgInput.current.scrollTop = htmlMsgInput.current.scrollHeight;
+      }
     }
   }, [msgUserData]);
 
   useEffect(() => {
-    socket.emit(`room`, `${user2Id}`);
-    socket.on(`${user2Id}`, (data) => {
-      // console.log(data);
+    socket.emit(`newMessage`, `${user2Id}`);
+    socket.on(`onMessage`, (data) => {
       messageUserQuery.refetch();
     });
     return () => {
@@ -157,7 +174,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({}) => {
         }, 3000);
       } else {
         socket.emit(`newMessage`, {
-          userId: user2Id,
+          userId: `${user2Id}`,
           message: data.message,
         });
       }
@@ -206,6 +223,29 @@ export const Profile: React.FC<ProfileProps> = () => {
   const userId: string = usePathname().split("/").pop()!;
 
   const [userData, setUserData] = useState<any>();
+  const [userFriend, setUserFriend] = useState<any>();
+  const [userBlocked, setUserBlocked] = useState<any>();
+  const [currentUserData, setCurrentUserData] = useState<any>();
+  const [error, setError] = useState<boolean>(false);
+  const [headerError, setHeaderError] = useState<string>("");
+  const [errorMsg, setErrorMsg] = useState<string>("");
+
+  const { data: currentUser, refetch: refetchUserInfo } = useQuery(
+    "getUserInfo",
+    () =>
+      getUserInfo().then((res) => {
+        if (res == undefined) push("/");
+        setCurrentUserData(res);
+      }),
+    { staleTime: 5000 }
+  );
+
+  useEffect(() => {
+    if (currentUser) {
+      setCurrentUserData(currentUser);
+      console.log(currentUser);
+    }
+  }, [currentUser]);
 
   useEffect(() => {
     getPublicUserInfo(userId).then((res) => {
@@ -215,11 +255,25 @@ export const Profile: React.FC<ProfileProps> = () => {
     });
   }, [userId]);
 
+  const { mutate: addFriendMutation } = useMutation(addFriend, {
+    onSuccess: (res) => {
+      if (res && res.data && res.data.error) {
+        setHeaderError("Error:");
+        setErrorMsg(res.error);
+        setError(true);
+        setTimeout(() => {
+          setError(false);
+        }, 5000);
+      } else {
+        console.log("Friend added successfully");
+      }
+    },
+  });
+
   function onClickAddFriend() {
+    // Votre logique pour ajouter un ami ici
     const dtoId = { id: userId };
-    addFriend(dtoId).then((res) => {
-      console.log(res);
-    });
+    addFriendMutation(dtoId);
   }
 
   function onClickRemoveFriend() {
@@ -234,6 +288,7 @@ export const Profile: React.FC<ProfileProps> = () => {
     addBlock(dtoId).then((res) => {
       console.log(res);
     });
+    push(`/dashboard/social/chat-search`);
   }
 
   function onClickRemoveBlock() {
@@ -259,6 +314,9 @@ export const Profile: React.FC<ProfileProps> = () => {
           </div>
         </div>
         <div className={styles.buttonContainer}>
+          {error && (
+            <ErrorNotification headerText={headerError} error={errorMsg} />
+          )}
           <div className={styles.chatWith} onClick={onClickAddFriend}>
             <span>Add friend</span>
           </div>

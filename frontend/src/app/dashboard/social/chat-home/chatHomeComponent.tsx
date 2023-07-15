@@ -13,6 +13,7 @@ interface CategoryProps {
   count: number;
   type: string;
   users?: any[];
+  localConnectedUser?: any[];
 }
 
 export const Category: React.FC<CategoryProps> = ({
@@ -20,9 +21,17 @@ export const Category: React.FC<CategoryProps> = ({
   count,
   type,
   users,
+  localConnectedUser,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const { push } = useRouter();
+
+  const isUserConnected = (userId: string): boolean => {
+    if (localConnectedUser) {
+      return localConnectedUser.some((user: any) => user.id === userId);
+    }
+    return false;
+  };
 
   const handleUserClick = (userId: string) => {
     if (type === "blockedDiv") {
@@ -74,6 +83,11 @@ export const Category: React.FC<CategoryProps> = ({
                     height={36}
                   />
                   <p key={user.id + "un"}>{user.displayname}</p>
+                  {isUserConnected(user.id) ? (
+                    <div className={styles.statusGreen}></div>
+                  ) : (
+                    <div className={styles.statusRed}></div>
+                  )}
                 </div>
               ))}
           </div>
@@ -89,6 +103,7 @@ export const ChatCategory: React.FC = () => {
   const [userFriend, setUserFriend] = useState<any>();
   const [userOther, setUserOther] = useState<any>();
   const [userBlocked, setUserBlocked] = useState<any>();
+  const [localConnectedUser, setLocalConnectedUser] = useState<any>(undefined);
 
   useEffect(() => {
     getFriendList().then((res) => {
@@ -159,6 +174,30 @@ export const ChatCategory: React.FC = () => {
     refetchBlockedList();
   }, [refetchFriendList, refetchOtherList, refetchBlockedList]);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (
+        typeof window !== "undefined" &&
+        localStorage.getItem("connectedUser")
+      ) {
+        setLocalConnectedUser(
+          JSON.parse(localStorage.getItem("connectedUser")!)
+        );
+      }
+    }, 5000);
+
+    if (
+      typeof window !== "undefined" &&
+      localStorage.getItem("connectedUser")
+    ) {
+      setLocalConnectedUser(JSON.parse(localStorage.getItem("connectedUser")!));
+    }
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
+
   return (
     <div className={styles.container}>
       <Category
@@ -166,18 +205,21 @@ export const ChatCategory: React.FC = () => {
         count={userFriend?.length ?? 0}
         type={"friendDiv"}
         users={userFriend || []}
+        localConnectedUser={localConnectedUser}
       />
       <Category
         title="Others"
         count={userOther?.length ?? 0}
         type={"othersDiv"}
         users={userOther || []}
+        localConnectedUser={localConnectedUser}
       />
       <Category
         title="Blocked"
         count={userBlocked?.length ?? 0}
         type={"blockedDiv"}
         users={userBlocked || []}
+        localConnectedUser={localConnectedUser}
       />
     </div>
   );
