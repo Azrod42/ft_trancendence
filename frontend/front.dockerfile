@@ -8,4 +8,4 @@ RUN apk update && apk upgrade
 
 EXPOSE 3000
 
-ENTRYPOINT [ "/bin/sh", "-c", "yarn install --non-interactive && yarn build && yarn start" ]
+ENTRYPOINT [ "/bin/sh", "-c", "yarn install --non-interactive && yarn add next && yarn build && yarn start" ]

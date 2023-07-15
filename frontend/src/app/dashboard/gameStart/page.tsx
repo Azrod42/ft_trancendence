@@ -1,54 +1,70 @@
-"use client"
+  "use client"
 
-import { useMutation } from 'react-query';
-import { useForm, SubmitHandler } from 'react-hook-form';
-import Api from "../../api/api";
-
-
-type FormValues = {
-	text: string;
-};
-async function sendApiMessage({ text }: { text: string }) {
-	console.log("Tout debut\n");
-	try {
-	const response = await Api.post<{message: string}, {text: string}>({
-		url: '/api/sendMessage',
-		data: {
-		text
-		}
-	});
-	console.log("Tout debut apres\n");
-	return response.data;
-	} catch (error) {
-	throw error;
-	}
-}
-
-function MessageForm() {
-  const { register, handleSubmit } = useForm<FormValues>();
-  const mutation = useMutation(sendApiMessage);
-
-  const onSubmit: SubmitHandler<FormValues> = (data) => {
-    mutation.mutate(data);
-  };
-
-
-  return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <label>
-        Message:
-        <textarea {...register('text')} required />
-      </label>
-      <input type="submit" value="Send" />
-      {mutation.isLoading ? (
-        "Sending message..."
-      ) : mutation.isError ? (
-        <div>An error occurred: {(mutation.error as Error).message}</div>
-      ) : mutation.isSuccess ? (
-        <div>Message sent successfully!</div>
-      ) : null}
-    </form>
-  );
-}
-
-export default MessageForm;
+  import React, { useEffect, useRef, useState } from 'react';
+  import { io, Socket } from 'socket.io-client';
+  import {UserAuthResponse, logout, getUserInfo, getProfilePicture} from '@/app/auth/auth.api';
+  import { useRouter } from 'next/navigation';
+  import {useQuery} from "react-query";
+  import styles from "./gameStart.module.css"
+    
+  function MessageForm() {
+    //GET USER DATA FROM BACKEND AND STORE IN useState
+    let [userData, setuserData] = useState<UserAuthResponse>();
+    const { push } = useRouter();
+    const { isLoading, error, data, refetch } = useQuery('getUserInfo', () =>
+      getUserInfo().then(res => {
+        if (res == undefined)
+          push('/');
+        setuserData(res);
+      }), {refetchInterval: 1000 * 60 * 2, refetchOnWindowFocus: false}
+    );
+    useEffect(() => {
+      if (userData == undefined) {
+        refetch()
+      }
+    })
+    useEffect(() => {
+      //for setup action on userData refresh ?
+    },[userData])
+  
+    const socketRef = useRef<Socket | null>(null);
+    const [showUserInfo, setShowUserInfo] = useState(false);
+    const [socketId, setSocketId] = useState<string | null>(null);
+  
+    useEffect(() => {
+      return () => {
+        // disconnect socket when component unmounts
+        if (socketRef.current) {
+          socketRef.current.disconnect();
+        }
+      };
+    }, []);
+  
+    const handleSocketConnection = () => {
+      socketRef.current = io('http://localhost:4001');
+      if(socketRef.current){
+        socketRef.current.on('connect', () => {
+          if(socketRef.current) {
+            setSocketId(socketRef.current.id);
+          }
+        });
+      }
+      setShowUserInfo(true);
+    };
+  
+    return (
+      <div >
+        <button type="button" onClick={handleSocketConnection}>Connect to Socket Server</button>
+        {showUserInfo  && (
+          <div className={styles.containerGameStart}>
+            <p>Name: {userData?.displayname }</p>
+            <p>ID: {userData?.id}</p>
+            <p>Socket ID: {socketId}</p>
+          </div>
+        )}
+      </div>
+    );
+  }
+  
+  export default MessageForm;
+  

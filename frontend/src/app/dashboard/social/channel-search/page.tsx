@@ -20,7 +20,7 @@ const ChannelHome: React.FC<ChannelSearchProps> = ({}) => {
     //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     //HANDLE ERROR NOTIFICATION
     const [error, setError] = useState<boolean>(false);
-    const [headerError, setHeaderError] = useState<string>('');
+    const [headerError  , setHeaderError] = useState<string>('');
     const [errorMsg, setErrorMsg] = useState<string>('');
     //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 

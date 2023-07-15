@@ -44,6 +44,7 @@ export class AuthService {
 				friends: '',
 				gameLose: 0,
 				msgHist: '',
+				idWebSocket: '',
 			});
 			user.password = undefined;
 			return user;
@@ -132,4 +133,14 @@ export class AuthService {
 			access_token: this.jwtService.sign(payload),
 		};
 	}
+
+	// async updateWebSocketId(userId: string, socketId: string) {
+	// 	const user = await this.findOne(userId);
+	// 	if (!user) {
+	// 	  throw new NotFoundException(`User #${userId} not found`);
+	// 	}
+	  
+	// 	user.idWebSocket = socketId;
+	// 	await this.usersRepository.save(user);
+	//   }
 }

@@ -34,6 +34,7 @@ class CreateUserDto {
 	gameLose: number;
 
 	msgHist: string
+	idWebSocket: string;
 
 }
 
