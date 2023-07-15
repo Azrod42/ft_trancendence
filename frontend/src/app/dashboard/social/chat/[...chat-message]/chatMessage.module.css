@@ -1,37 +1,156 @@
-.containerMessage {
-  position: absolute;
-  right: 25%;
-  top: 71px;
-  width: 45%;
-  height: calc(100% - 71px);
-  background: #060b26d9;
-  border: 1px solid #060b26d9;
-}
-
-.profile {
+.containerParent {
   position: absolute;
   right: 0;
   top: 71px;
-  width: 25%;
-  height: calc(100% - 71px);
+  width: calc(100% - 300px);
+  height: calc(100% - 73px);
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.containerMessage {
+  display: flex;
+  flex: 7;
+  height: 100%;
+  background: #060b26d9;
+  border: 1px solid #060b26d9;
+  overflow: auto;
+}
+
+.chatWindow {
+  height: calc(100% - 100px);
+  margin: 20px;
+  border-radius: 20px;
+  overflow-x: scroll;
+  overflow-y: auto;
+}
+
+.chatWindow::-webkit-scrollbar {
+  width: 0;
+}
+
+.profile {
+  flex: 3;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  display: flex;
+  height: 100%;
   background: #060b42;
+  border: 1px solid #060b42;
+  overflow: scroll;
+}
+
+.profile::-webkit-scrollbar {
+  width: 0;
 }
 
 .searchBar {
+  display: flex;
+  position: absolute;
+  justify-content: center;
+  align-items: center;
+  left: 0;
+  bottom: 0;
   background: #060b42;
-  padding: 19px, 16px, 19px, 16px;
-  position: fixed;
-  bottom: 5px;
-  width: 100%;
+  width: 67%;
+  padding: 5px 3px;
+  border: 1px solid #060b42;
+  gap: 10px;
 }
 
 .input {
   background-color: #2e1686;
   border: 0;
   padding: 10px;
-  width: 90%;
+  width: 100%;
   margin-right: 0.5%;
+  color: white;
 }
 
-.button {
+.buttonContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  margin-top: 20px;
+}
+
+.containerChatWith {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 80%;
+  margin: 20px auto;
+}
+
+.chatWith {
+  background-image: rgba(0, 0, 0, 0);
+  color: white;
+  width: 70%;
+  height: 30px;
+  text-align: center;
+  border-radius: 4px;
+  border: 2px solid;
+  border-image: linear-gradient(to right, #2c0fb1 0%, #794aca 100%) 1;
+  padding: 14px 31px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.chatWith span {
+  color: white;
+  font-family: Poppins;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 27px;
+}
+
+.removeChatWith {
+  background-image: rgba(0, 0, 0, 0);
+  color: white;
+  width: 70%;
+  height: 30px;
+  text-align: center;
+  border-radius: 4px;
+  border: 2px solid;
+  border-image: linear-gradient(to right, #2c0fb1 0%, #794aca 100%) 1;
+  padding: 14px 31px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.removeChatWith span {
+  font-family: "Poppins", sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 27px;
+  color: #ffffff;
+}
+
+.heading {
+  height: 40px;
+  top: 20px;
+  font-size: 36px;
+  font-weight: 500;
+  line-height: 41.41px;
+  text-align: center;
+}
+
+.name {
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+  font-size: 28px;
+  line-height: 33.89px;
+  text-align: center;
+}
+
+.exp {
+  font-family: "Inter", sans-serif;
+  font-weight: 200;
+  font-size: 20px;
+  line-height: 24.2px;
+  text-align: center;
 }

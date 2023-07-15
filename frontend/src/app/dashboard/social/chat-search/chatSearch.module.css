@@ -2,8 +2,8 @@
   position: absolute;
   right: 0;
   top: 71px;
-  width: 70%;
-  height: calc(100% - 71px);
+  width: calc(100% - 300px);
+  height: calc(100% - 73px);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -104,9 +104,8 @@
 .userName,
 .userExp,
 .userLevel {
-  width: 100%;
-  max-width: 220px;
   flex: 1;
+  padding: 0 10px;
 }
 
 .userName {
@@ -126,5 +125,4 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 0 10px;
 }
