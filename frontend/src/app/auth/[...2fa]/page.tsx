@@ -18,6 +18,7 @@ const TowFa: React.FC<TowFaProps> = ({}) => {
     const { push } = useRouter();
     const [redirect, setRedirect] = useState<boolean>(false)
 
+
     useEffect(() => {
         if (uniqueIdentifier != '') {
             let hash = '';
