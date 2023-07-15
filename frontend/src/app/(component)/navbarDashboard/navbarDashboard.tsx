@@ -1,6 +1,13 @@
 import React, { useEffect, useState, useContext } from 'react'
 import styles from "./navbarDashboard.module.css"
-import {UserAuthResponse, logout, getUserInfo, getProfilePicture, PublicUserResponse} from '@/app/auth/auth.api';
+import {
+	UserAuthResponse,
+	logout,
+	getUserInfo,
+	getProfilePicture,
+	PublicUserResponse,
+	setGameNumber
+} from '@/app/auth/auth.api';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {useQuery} from "react-query";
@@ -170,6 +177,9 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
 	}
 
 	const handleAccept = () => {
+		setGameNumber(2).then((res) => {
+			console.log(res);
+		});
 		push(`/dashboard/game/${duelRequest?.idRoom}`);
 		setDuelRequest(null);
 	}

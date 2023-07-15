@@ -1,0 +1,14 @@
+apt update
+sudo apt-get update
+apt install openssh-server
+
+open PORT 22 3000 4000 5050
+
+apt install vim curl git zsh nodejs npm-y
+npm install --global yarn
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+apt-get install ca-certificates gnupg
+apt install docker.io docker-compose -y
+git clone https://github.com/Azrod42/ft_transcendence.git
+make
+

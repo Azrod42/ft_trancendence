@@ -390,3 +390,13 @@ export const setWebSocketId = async (id: any) => {
 		return undefined;
 	}
 }
+
+
+export const getPlayerSlot = async () => {
+	try {
+		const data = await Api.get<number>('/users/get-slot',)
+		return {status: true, data: data.data};
+	} catch (e: any) {
+		return {status: false, error: e};
+	}
+}

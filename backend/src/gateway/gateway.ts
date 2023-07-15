@@ -12,6 +12,7 @@ export class MyGateway implements OnModuleInit {
 
     sockets: { [id: string]: Socket } = {};
     connectedUser: any[];
+    ready: any[] = [];
 
     onModuleInit(): any {
         this.server.setMaxListeners(2000);
@@ -48,6 +49,22 @@ export class MyGateway implements OnModuleInit {
         this.server.socketsJoin(body);
     }
 
+    @SubscribeMessage('room-data')
+    onRoomData(@MessageBody() body: {id: string, data: any}) {
+        if (body.data?.ready != ''){
+            console.log(body.data, body.id);
+            for (let i = 0; this.ready[i]; i++) {
+                if (this.ready[i].id == body.id) {
+                    if (this.ready[i].idReady != body.data.ready) {
+                        this.server.in(body.id).emit(body.id, {game: true});
+                        return;
+                    }
+                }
+            }
+            this.ready.push({id: body.id, idReady: body.data?.ready});
+        }
+        this.server.in(body.id).emit(body.id, {data: body.data});
+    }
     @SubscribeMessage('gameRoom')
     onCreateGameRoom(@MessageBody() body: string) {
         this.server.socketsJoin(body);

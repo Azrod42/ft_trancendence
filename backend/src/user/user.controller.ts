@@ -402,4 +402,11 @@ export class UserController {
 	async  unblockUser (@Req() request: RequestWithUser, @Res() res, @Body() muteData: inviteToChannelDto): Promise<string> {
 		return res.send(await this.userService.unblockUser(request.user.id, muteData));
 	}
+
+	@HttpCode(200)
+	@UseGuards(JwtAuthGuard)
+	@Get('get-slot')
+	async getPlayerSlot(@Req() request: RequestWithUser, @Res() res) {
+		return res.send({slot: await this.userService.getPlayerSlot(request.user.id)});
+	}
 }

@@ -295,6 +295,16 @@ export class UserService {
 		return true;
 	}
 
+	async getPlayerSlot(userId: string) {
+		try {
+			const user = await this.findById(userId);
+			return user.gameNumber;
+		} catch (e) {
+			throw new HttpException('Somthing went wrong', HttpStatus.INTERNAL_SERVER_ERROR,);
+		}
+		return undefined;
+	}
+
 	// async getWebSocketIdByUserId(id: string) {
 	// 	try {
 	// 		const user = await this.findById(id);

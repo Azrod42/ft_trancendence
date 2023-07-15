@@ -4,7 +4,7 @@ import React, {useContext, useEffect, useRef, useState} from 'react';
 import styles from "./room.module.css";
 import {useParams, useRouter} from "next/navigation";
 import {WebsocketContext} from "@/app/(common)/WebsocketContext";
-import {getUserInfo, PublicUserResponse, UserAuthResponse} from "@/app/auth/auth.api";
+import {getPlayerSlot, getUserInfo, PublicUserResponse, UserAuthResponse} from "@/app/auth/auth.api";
 import {useQuery} from "react-query";
 import {mockSession} from "next-auth/client/__tests__/helpers/mocks";
 // import styles from "./game.module.css";
@@ -17,6 +17,12 @@ interface RoomProps {
 
 export type DataEndGame = {
   idGame: string;
+  idWinner: string;
+  idLoser: string;
+  scoreWinner: string;
+  scoreLoser: string;
+  winnerFastestBall: string; //si possible
+  loserFastestBall: string; //si possible
 };
 
 const Room: React.FC<RoomProps> = () => {
@@ -28,6 +34,8 @@ const Room: React.FC<RoomProps> = () => {
 
   const [mainPlayer, setMainPlayer] = useState<string | null>(null);
   const [count, setCount] = useState(0);
+  const [playerSlot, setPlayerSlot] = useState<number>(0);
+
 
   const [paddleY, setPaddleY] = useState(200); // Position initiale de la raquette
   const [paddle2Y, setPaddle2Y] = useState(200); // Position initiale de la raquette du joueur 2
@@ -39,6 +47,7 @@ const Room: React.FC<RoomProps> = () => {
   const [ballSpeed, setBallSpeed] = useState({dx: 5, dy: 0}); // Initial ball speed
   
   const [gameStatus, setGameStatus] = useState("notStarted"); // New state to control the game status
+
 
   //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
   //GET USERS DATA FROM BACKEND AND DISPLAY IT
@@ -59,14 +68,24 @@ const Room: React.FC<RoomProps> = () => {
   })
   useEffect(() => {
     //for setup action on userData refresh ?
+    getPlayerSlot().then((res) => {
+      setPlayerSlot(res?.data || 0);
+      console.log(res.data);
+    })
   },[userData])
   //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
 
   useEffect(() => {
     socket.emit('room', uniqueIdentifier);
     socket.on(`${uniqueIdentifier}`, (data) => {
+      if (data?.data?.ready != '') {
+        console.log(data?.data?.ready);
+      }
+      if (data?.game != '') {
+        console.log(data?.game);
+      }
       // console.log(`On est dans la socket de room`);
-      console.log(userData?.displayname, ": Y = ", data?.y);
+      // console.log(userData?.displayname, ": Y = ", data?.y);
       // console.log(userData?.user, ": Y = ", data?.y);
     })
     return () => {
@@ -103,6 +122,10 @@ const Room: React.FC<RoomProps> = () => {
     
     const startGame = () => {
     setGameStatus("running");
+    };
+    const ready = () => {
+      console.log('Emit');
+      socket.emit(`room-data`, {id: uniqueIdentifier, data: {ready: userData?.id}});
     };
   
   const resetGame = () => {
@@ -262,13 +285,22 @@ const Room: React.FC<RoomProps> = () => {
         ) : (
           <>
             {gameStatus !== "running" && (
-              <button
-                className={styles.buttonGame}
-                onClick={startGame}
-                disabled={gameStatus === "running"}
-              >
-              Start Game
-              </button>
+                <>
+                  <button
+                    className={styles.buttonGame}
+                    onClick={startGame}
+                    disabled={gameStatus === "running"}
+                  >
+                  Start Game
+                  </button>
+                  <button
+                      className={styles.buttonGame}
+                      onClick={ready}
+                      disabled={gameStatus === "running"}
+                  >
+                    Ready
+                  </button>
+                </>
             )}
             {gameStatus === "running" && (
               <div className={styles.scoreBoard}>
