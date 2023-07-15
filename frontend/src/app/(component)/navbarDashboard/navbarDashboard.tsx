@@ -16,7 +16,7 @@ import uuid from 'react-uuid'
 interface MyModalProps {
 	isOpen: boolean;
 	onClose: () => void;
-	children?: React.ReactNode;
+	children?: React.ReactNode; 
   }
   
   function MyModal({ isOpen, onClose, children }: MyModalProps) {
@@ -40,15 +40,18 @@ interface MyModalProps {
 	  >
 		<div
 		  style={{
-			backgroundColor: "white",
+			backgroundColor: "black",
+			color: "white",
+			textAlign: "center",
 			padding: "1em",
 			position: "relative",
+			border: "2px solid white",
 			zIndex: 1001,
 		  }}
 		  onClick={(e) => e.stopPropagation()}
 		>
 		  {children}
-		  <button onClick={onClose}>Close</button>
+		  {/* <button  onClick={onClose}>Close</button> */}
 		</div>
 	  </div>
 	);
@@ -72,7 +75,7 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
 	//GET PROFILE IMAGE
 	const [profilePicture, setProfilePicture] = useState<string>('');
 	const [ppGet, setPpGet] = useState<boolean>(false);
-	const [duelRequest, setDuelRequest] = useState<{ socketId: string, idRoom: string} | null>(null);
+	const [duelRequest, setDuelRequest] = useState<{ socketId: string, idRoom: string, currentUserId :string, currentUserName: string} | null>(null);
 	useEffect(() => {
 	if (!ppGet) {
 		getProfilePicture().then(
@@ -125,8 +128,8 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
 	const [socket] = useState(useContext(WebsocketContext))
 
 	useEffect(() => {
-		const handleDuelRequest = (data: { socketId: string, idRoom: string}) => {
-			alert(`Ca fonctionne`);
+		const handleDuelRequest = (data: { socketId: string, idRoom: string, currentUserId: string, currentUserName:string}) => {
+			// alert(`Ca fonctionne`);
     		setDuelRequest(data);
 		};
 	
@@ -170,7 +173,7 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
 
 	const handleAccept = () => {
 		  push(`/dashboard/game/${duelRequest?.idRoom}`);
-		  socket.emit('acceptDuel', { duelSocketId: duelRequest?.socketId, idRoom: duelRequest?.idRoom});
+		  socket.emit('acceptDuel', { duelSocketId: duelRequest?.socketId, idRoom: duelRequest?.idRoom, currentUserId: duelRequest?.currentUserId, currentUserName: duelRequest?.currentUserName});
 		  setDuelRequest(null);
 	}
 
@@ -202,11 +205,14 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
 					</motion.div>
 				}
 			</div>
-			<MyModal isOpen={duelRequest != null} onClose={handleDecline}>
-				<h1>On vous invite à un duel</h1>
-				<p>Accepter?</p>
-				<button onClick={handleAccept}>Accepter</button>
-				<button onClick={handleDecline}>Decliner</button>
+			<MyModal isOpen={duelRequest != null} onClose={handleDecline} >
+				{/* <div className={styles.modal}> */}
+					<h1>{duelRequest?.currentUserName} vous invite à un duel</h1>
+					{/* <h1>On vous invite à un duel</h1> */}
+					<p>Accepter?</p>
+					<button className={styles.buttonModal} onClick={handleAccept}>Accepter</button>
+					<button className={styles.buttonModal} onClick={handleDecline}>Decliner</button>
+				{/* </div> */}
 			</MyModal>
 		</nav>
 	)	
