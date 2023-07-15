@@ -223,29 +223,9 @@ export const Profile: React.FC<ProfileProps> = () => {
   const userId: string = usePathname().split("/").pop()!;
 
   const [userData, setUserData] = useState<any>();
-  const [userFriend, setUserFriend] = useState<any>();
-  const [userBlocked, setUserBlocked] = useState<any>();
-  const [currentUserData, setCurrentUserData] = useState<any>();
   const [error, setError] = useState<boolean>(false);
   const [headerError, setHeaderError] = useState<string>("");
   const [errorMsg, setErrorMsg] = useState<string>("");
-
-  const { data: currentUser, refetch: refetchUserInfo } = useQuery(
-    "getUserInfo",
-    () =>
-      getUserInfo().then((res) => {
-        if (res == undefined) push("/");
-        setCurrentUserData(res);
-      }),
-    { staleTime: 5000 }
-  );
-
-  useEffect(() => {
-    if (currentUser) {
-      setCurrentUserData(currentUser);
-      console.log(currentUser);
-    }
-  }, [currentUser]);
 
   useEffect(() => {
     getPublicUserInfo(userId).then((res) => {
@@ -253,48 +233,69 @@ export const Profile: React.FC<ProfileProps> = () => {
         setUserData(res.data);
       }
     });
-  }, [userId]);
+  }, [userId, userData]);
 
-  const { mutate: addFriendMutation } = useMutation(addFriend, {
-    onSuccess: (res) => {
-      if (res && res.data && res.data.error) {
+  function onClickAddFriend() {
+    const dtoId = { id: userId };
+    addFriend(dtoId).then((res) => {
+      if (!res?.data) {
         setHeaderError("Error:");
-        setErrorMsg(res.error);
+        setErrorMsg("Failed to add friend");
         setError(true);
         setTimeout(() => {
           setError(false);
         }, 5000);
       } else {
-        console.log("Friend added successfully");
+        console.log(res);
       }
-    },
-  });
-
-  function onClickAddFriend() {
-    // Votre logique pour ajouter un ami ici
-    const dtoId = { id: userId };
-    addFriendMutation(dtoId);
+    });
   }
 
   function onClickRemoveFriend() {
     const dtoId = { id: userId };
     removeFriend(dtoId).then((res) => {
-      console.log(res);
+      if (!res?.data) {
+        setHeaderError("Error:");
+        setErrorMsg("Failed to remove friend");
+        setError(true);
+        setTimeout(() => {
+          setError(false);
+        }, 5000);
+      } else {
+        console.log(res);
+      }
     });
   }
 
   function onClickAddBlock() {
     const dtoId = { id: userId };
     addBlock(dtoId).then((res) => {
-      console.log(res);
+      if (!res?.data) {
+        setHeaderError("Error:");
+        setErrorMsg("Failed to add block");
+        setError(true);
+        setTimeout(() => {
+          setError(false);
+        }, 5000);
+      } else {
+        console.log(res);
+      }
     });
-    push(`/dashboard/social/chat-search`);
   }
 
   function onClickRemoveBlock() {
     const dtoId = { id: userId };
     removeBlock(dtoId).then((res) => {
-      console.log(res);
+      if (!res?.data) {
+        setHeaderError("Error:");
+        setErrorMsg("Failed to remove block");
+        setError(true);
+        setTimeout(() => {
+          setError(false);
+        }, 5000);
+      } else {
+        console.log(res);
+      }
     });
   }
 
