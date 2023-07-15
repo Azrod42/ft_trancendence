@@ -26,9 +26,8 @@ const Room: React.FC<RoomProps> = () => {
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
-  const [player, setPlayer] = useState<string | null>(null);
-  const [player2, setPlayer2] = useState<string | null>(null);
-
+  const [mainPlayer, setMainPlayer] = useState<string | null>(null);
+  const [count, setCount] = useState(0);
 
   const [paddleY, setPaddleY] = useState(200); // Position initiale de la raquette
   const [paddle2Y, setPaddle2Y] = useState(200); // Position initiale de la raquette du joueur 2
@@ -65,14 +64,14 @@ const Room: React.FC<RoomProps> = () => {
   useEffect(() => {
     socket.emit('room', uniqueIdentifier);
     socket.on(`${uniqueIdentifier}`, (data) => {
-      setInputData(data);
-      console.log(data?.user, ": Y = ", data?.y);
+      console.log(`On est dans la socket de room`);
+      console.log(userData?.displayname, ": Y = ", data?.y);
       // console.log(userData?.user, ": Y = ", data?.y);
     })
     return () => {
       socket.off(`${uniqueIdentifier}`);
     }
-  },[inputData]);
+  },[]);
 
   useEffect(() => { // mouvements souris
     if (refDiv.current)
@@ -88,18 +87,17 @@ const Room: React.FC<RoomProps> = () => {
             });
   }, []);
 
-  // useEffect(() => { // affiliation souris
-  //   console.log("Ca a tourné une fois");
-  //   if (userData?.username) {
-  //     if (player != userData.username && player2 != userData.username)
-  //         setPlayer(userData.username);
-  //     else
-  //         setPlayer2(userData.username);  
-  // }
-  // console.log(`This is player = ${player}`);
-  // console.log(`This is player2 = ${player2}`);
+  /////////////// essaie reception data
 
-  // }, [gameStatus]);
+  useEffect(() => {
+    socket.on('acceptDuel', (data) => {
+      console.log(`On est dans le front de acceptDuel`, data);
+      // console.log(userData?.user, ": Y = ", data?.y);
+    })
+    return () => {
+      socket.off(`acceptDuel`);
+    }
+  },[]);
 
   ////////////////////////////////////////////////////////
     

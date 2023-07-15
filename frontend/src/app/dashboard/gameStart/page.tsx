@@ -71,10 +71,11 @@ const GameStart: React.FC<gameStartProps> = ({}) => {
     console.log(`Fight with user: ${id}`);
 
     getWebSocketIdByUserId(id).then((res) => {
-    console.log(`This is res.data = ${res?.data}`);
-    console.log(`This is currentUserId = ${currentUserId}`);
+    // console.log(`This is res.data = ${res?.data}`);
+    // console.log(`This is currentUserId = ${currentUserId}`);
     const uid = uuid();
     socket.emit('duelRequest', {socketId: res?.data, idRoom: uid, currentUserId: currentUserId, currentUserName: currentUserName});
+    socket.emit('acceptDuel', {socketId: res?.data, idRoom: uid, currentUserId: currentUserId, currentUserName: currentUserName});
     push(`/dashboard/game/${uid}`);
     })
 };
