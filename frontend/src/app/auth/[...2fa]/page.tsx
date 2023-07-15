@@ -13,21 +13,27 @@ interface TowFaProps {
 
 const TowFa: React.FC<TowFaProps> = ({}) => {
     Api.init()
-    const uniqueIdentifier = useParams();
+    const uniqueIdentifier:any = useParams()["2fa"];
     const { register, handleSubmit, formState: { errors } } = useForm<FormOtpPost>();
     const { push } = useRouter();
     const [redirect, setRedirect] = useState<boolean>(false)
 
-
-	if (uniqueIdentifier != '') {
-	const hash = uniqueIdentifier["2fa"][1];
-	login2faNeeded({hash: hash}).then((res) => {
-        	if (!res?.data)
-            	push('/dashboard/')
-        else
-            setRedirect(true);
-   	})
-	}
+    useEffect(() => {
+        if (uniqueIdentifier != '') {
+            let hash = '';
+            if (uniqueIdentifier[0] == '2')
+                hash = uniqueIdentifier.slice(4);
+            else
+                hash = uniqueIdentifier[1];
+            console.log(hash)
+            login2faNeeded({hash: hash}).then((res) => {
+                if (!res?.data)
+                    push('/dashboard/')
+                else
+                    setRedirect(true);
+            })
+        }
+    },[uniqueIdentifier]);
 
     const onSubmitForm: SubmitHandler<FormOtpPost> = data => {
         data.uniqueIdentifier = uniqueIdentifier;
