@@ -120,15 +120,15 @@ export  const getUserInfo = async() => {
 	}
 }
 
-export  const getUserInfoGame = async() => {
-	try {
-		const {data} = await Api.get<UserAuthResponseGame>('/users/getuserdataGame',);
-		// console.log(data);
-		return data;
-	} catch (e) {
-		return undefined;
-	}
-}
+// export  const getUserInfoGame = async() => {
+// 	try {
+// 		const {data} = await Api.get<UserAuthResponse>('/users/getuserdataGame',);
+// 		// console.log(data);
+// 		return data;
+// 	} catch (e) {
+// 		return undefined;
+// 	}
+// }
 
 export const getPublicUserInfo = async (id: any) => {
 	try {

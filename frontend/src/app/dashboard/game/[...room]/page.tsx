@@ -42,7 +42,7 @@ const Room: React.FC<RoomProps> = () => {
 
   //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
   //GET USERS DATA FROM BACKEND AND DISPLAY IT
-  let [userData, setuserData] = useState<UserAuthResponseGame>();
+  let [userData, setuserData] = useState<UserAuthResponse>();
   const { push } = useRouter();
   const { refetch } = useQuery('getUserInfo', () =>
       getUserInfo().then(res => {
@@ -55,7 +55,7 @@ const Room: React.FC<RoomProps> = () => {
     if (userData == undefined) {
       refetch()
     }
-    console.log(`This is userData.gameNumber = ${userData?.gameNumber}`)
+    // console.log(`This is userData.gameNumber = ${userData?.gameNumber}`)
   })
   useEffect(() => {
     //for setup action on userData refresh ?
