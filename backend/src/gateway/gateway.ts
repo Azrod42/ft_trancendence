@@ -55,9 +55,6 @@ export class MyGateway implements OnModuleInit {
             for (let i = 0; this.ready[i]; i++) {
                 if (this.ready[i].id == body.id) {
                     if (this.ready[i].idReady != body.data.ready) {
-<<<<<<< Updated upstream
-                        this.server.in(body.id).emit(body.id, {game: true});
-=======
                         // for(let j = 0; this.ready[j]; j++){
                         //     if (this.ready[j].id == body.id) {
                         //         this.ready[j].id = 'END';
@@ -67,20 +64,11 @@ export class MyGateway implements OnModuleInit {
                         // }
                         this.ready = [];
                         this.server.emit('global', {id: body.id, status: 'game', game: true});
->>>>>>> Stashed changes
-                        return;
-                    }
-                }
-            }
-            this.ready.push({id: body.id, idReady: body.data?.ready});
-<<<<<<< Updated upstream
-=======
-        } else {
+                } else {
             this.server.emit('global', {id: body.id, data: body.data});
->>>>>>> Stashed changes
         }
         this.server.in(body.id).emit(body.id, {data: body.data});
-    }
+    }}}}
     @SubscribeMessage('gameRoom')
     onCreateGameRoom(@MessageBody() body: string) {
         this.server.socketsJoin(body);
