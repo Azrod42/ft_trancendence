@@ -1,8 +1,6 @@
 'use client'
 import React from 'react'
 import styles from "./dashboard.module.css"
-import Link from 'next/link';
-import {WebSocket} from "@/app/(component)/WebSocket/WebSocket";
 import ConnectedUser from "@/app/(component)/connectedUser/connectedUser";
 import DashboardUser from "@/app/(component)/dashboardUser/dashboardUser";
 import {postGameData} from "@/app/dashboard/social/social.api";
