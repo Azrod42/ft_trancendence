@@ -9,7 +9,13 @@ import {useQuery} from "react-query";
 import {mockSession} from "next-auth/client/__tests__/helpers/mocks";
 // import styles from "./game.module.css";
 import { gameLose } from "@/app/auth/auth.api";
-import user = mockSession.user;
+import {createContext} from 'react';
+import {io, Socket} from 'socket.io-client';
+import socket from "../socketClient";
+
+
+
+
 
 
 interface RoomProps {
@@ -25,8 +31,13 @@ export type DataEndGame = {
 
 const Room: React.FC<RoomProps> = () => {
   const refDiv: React.MutableRefObject<any> = useRef();
-  const [socket] = useState(useContext(WebsocketContext));
-  const uniqueIdentifier = useParams()?.room;
+
+  const refAll: React.MutableRefObject<any> = useRef();
+
+  const [initRoom, setinitRoom] = useState<boolean>(false);
+  const [initMouse, setinitMouse] = useState<number>(0);
+
+  const uniqueIdentifier = useParams()['room'][0];
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
@@ -52,7 +63,7 @@ const Room: React.FC<RoomProps> = () => {
   //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
   //GET USERS DATA FROM BACKEND AND DISPLAY IT
   let [userData, setuserData] = useState<UserAuthResponse>();
-  const { push } = useRouter();
+  const { push, refresh } = useRouter();
   const { refetch } = useQuery('getUserInfo', () =>
       getUserInfo().then(res => {
         if (res == undefined)
@@ -71,35 +82,74 @@ const Room: React.FC<RoomProps> = () => {
     getPlayerSlot().then((res) => {
       setPlayerSlot(res?.data?.slot || 0);
       // console.log(`this is playerSlot = ${res?.data.slot}`, res?.data);
-      console.log(`this is playerSlot real = ${playerSlot}`);
+      // console.log(`this is playerSlot real = ${playerSlot}`);
     })
   },[playerSlot])
   //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
 
   useEffect(() => {
-    socket.emit('room', uniqueIdentifier);
-    socket.on(`${uniqueIdentifier}`, (data) => {
-      if (data?.data?.ready != '') {
-        console.log(data?.data?.ready);
-      }
-      if (data?.game != '') {
-        console.log(data?.game);
-      }
-      // console.log(`On est dans la socket de room`);
-      console.log(userData?.displayname, ": Y = ", data?.y);
-      // console.log(userData?.user, ": Y = ", data?.y);
-    })
-    return () => {
-      socket.off(`${uniqueIdentifier}`);
+    console.log(socket);
+    if (!initRoom && socket.connected == true) {
+      console.log("socket init", socket);
+      setinitRoom(true);
+      setInterval(() => {
+        socket.on(`global`, (data) => {
+          if (data?.id == uniqueIdentifier) {
+            // console.log(data);
+            if (data?.data?.status == 'ready') {
+              // console.log('ready');
+              // console.log(data?.data?.ready);
+            }
+            if (data?.status == 'game') {
+              // console.log(data?.game);
+              if (data.game == true)
+                setGameStatus("running");
+            }
+            if (playerSlot == 2 && data?.data?.status == 'ballPosition') {
+              setBallPosition(data?.data?.ballPosition);
+            }
+            if (playerSlot == 2 && data?.data?.status == 'paddleY') {
+              setPaddleY(data?.data?.paddleY);
+            }
+            if (playerSlot == 1 && data?.data?.status == 'paddle2Y') {
+              setPaddle2Y(data?.data?.paddle2Y);
+            }
+          }
+          // console.log(`On est dans la socket de room`);
+          // console.log(userData?.displayname, ": Y = ", data?.y);
+          // console.log(userData?.user, ": Y = ", data?.y);
+              return () => {
+                socket.off("global");
+              }
+        })
+      }, 2000);
+    }
+  },[userData]);
+// useEffect(() => {
+//     // return () => {
+//     //   socket.off("global");
+// }},[])
+
+
+  useEffect(() => {
+    if (playerSlot == 1) {
+      console.log("ballPosition");
+      socket.emit(`room-data`, {id: uniqueIdentifier, data: {status: 'ballPosition', ballPosition: ballPosition}});
     }
   },[]);
 
   useEffect(() => { // mouvements souris
-    if (refDiv.current)
-      refDiv.current.addEventListener('mousemove', (data : any) => {
-      socket.emit('move', {idRoom: uniqueIdentifier, user: userData?.username, y: data?.screenY})
-      let newY = data?.screenY- 350;
-      if (canvasRef.current) {
+
+    if (canvasRef.current && initMouse < 5) {
+      // console.log("MOUSE TRACK")
+      setinitMouse(initMouse + 1);
+      canvasRef.current.addEventListener('mousemove', (data: any) => {
+          if (userData?.username) {
+            // console.log("SEND", uniqueIdentifier, userData?.username, data.screenY)
+            socket.emit('move', {idRoom: uniqueIdentifier, user: userData?.username, y: data?.screenY})
+          }
+          let newY = data?.screenY - 350;
+          if (canvasRef.current) {
             // Ne depasse pas les rebords
             newY = Math.max(newY, 10);
             newY = Math.min(newY, canvasRef.current.height - 110);
@@ -107,20 +157,11 @@ const Room: React.FC<RoomProps> = () => {
           if (playerSlot === 1)
           setPaddleY(newY);
           else if (playerSlot === 2)
-            setDebouncedPaddle2Y(newY);
-        });
-  }, []);
 
-  /////////////// essaie reception data
-
-  useEffect(() => {
-    socket.on('acceptDuel', (data) => {
-      // console.log(`On est dans le front de acceptDuel`, data);
-    })
-    return () => {
-      socket.off(`acceptDuel`);
+            setPaddle2Y(newY);
+    });
     }
-  },[]);
+  });
 
 
   ////////////////////////////////////////////////////////
@@ -230,7 +271,7 @@ const Room: React.FC<RoomProps> = () => {
       if (playerScore >= 5 || player2Score >= 5) {
         if (player2Score >= 5)
           gameLose().then((res) => {
-            console.log(res);
+            // console.log(res);
           });
         setGameStatus("finished");
         clearInterval(interval);
