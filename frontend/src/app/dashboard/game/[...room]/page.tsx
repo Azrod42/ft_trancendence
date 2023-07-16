@@ -21,8 +21,6 @@ export type DataEndGame = {
   idLoser: string;
   scoreWinner: number;
   scoreLoser: number;
-  winnerFastestBall: number; //si possible
-  loserFastestBall: number; //si possible
 };
 
 const Room: React.FC<RoomProps> = () => {
