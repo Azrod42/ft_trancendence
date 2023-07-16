@@ -55,7 +55,6 @@ export class ChannelController {
     async fetchChannelInfo (@Req() request: RequestWithUser, @Res() res, @Body() channelInfo: chanIdDto): Promise<string> {
         return res.send( await this.channelService.findChannelById(channelInfo.id, request.user.id));
     }
-
     @HttpCode(200)
     @Post('channel-new-type')
     @UseGuards(JwtAuthGuard)

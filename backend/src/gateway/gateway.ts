@@ -16,17 +16,17 @@ export class MyGateway implements OnModuleInit {
     onModuleInit(): any {
         this.server.setMaxListeners(2000);
         this.server.on('connection', (socket) => {
-            console.log(`a user connected as = ${socket.id}`);
+            // console.log(`a user connected as = ${socket.id}`);
         this.sockets[socket.id] = socket;
 
             socket.on('storeClientInfo', async function (data) {
-            console.log(' We are in storeClientInfo, Received ID:', data.socketId, 'for user:', data.userId.user.id);
+            // console.log(' We are in storeClientInfo, Received ID:', data.socketId, 'for user:', data.userId.user.id);
             this.server.sockets.to(data.socketId).emit('newSocket', data);
             //this.userService.updateWebSocketId(data.userId.user.id, data.socketId);  
             });
 
             socket.on('disconnect', () => {
-                console.log(`User disconnected: ${socket.id}`);
+                // console.log(`User disconnected: ${socket.id}`);
                 delete this.sockets[socket.id];
             });
         })
@@ -45,13 +45,14 @@ export class MyGateway implements OnModuleInit {
 
     @SubscribeMessage('room')
     onCreateRoom(@MessageBody() body: string) {
+        console.log("Channel created on", body);
         this.server.socketsJoin(body);
     }
 
     @SubscribeMessage('room-data')
     onRoomData(@MessageBody() body: {id: string, data: any}) {
-        if (body.data?.ready != ''){
-            console.log(body.data, body.id);
+        if (body.data?.status == 'ready'){
+            console.log('ready');
             for (let i = 0; this.ready[i]; i++) {
                 if (this.ready[i].id == body.id) {
                     if (this.ready[i].idReady != body.data.ready) {
@@ -60,17 +61,20 @@ export class MyGateway implements OnModuleInit {
                         //         this.ready[j].id = 'END';
                         //         this.ready[j].idReady = 'END';
                         //         this.ready.clear();
-                        //     }
-                        // }
                         this.ready = [];
-                        this.server.emit('global', {id: body.id, status: 'game', game: true});
-                } else {
-            this.server.emit('global', {id: body.id, data: body.data});
+                        this.server.in(body.id).emit(body.id, {status: 'game', game: true});
+                        return;
+                    }
+                }
+            }
+            this.ready.push({id: body.id, data: body.data});
+        } else {
+            this.server.in(body.id).emit(body.id, {data: body.data});
         }
-        this.server.in(body.id).emit(body.id, {data: body.data});
-    }}}}
+    }
     @SubscribeMessage('gameRoom')
     onCreateGameRoom(@MessageBody() body: string) {
+        console.log("Channel created on", body);
         this.server.socketsJoin(body);
         this.server.in(body).emit(body, {message: 'A nerd join gameRoom'});
     }
@@ -102,8 +106,8 @@ export class MyGateway implements OnModuleInit {
     }
     @SubscribeMessage('duelRequest')
     onDuelRequest(@MessageBody() data: { socketId: string, idRoom: string }) {
-    console.log(`We are in 'duelRequest' event and this is socketId = ${data.socketId}`, "ID room", data?.idRoom);
-    console.log('yes -0-0-0-0-0-0- ', data.idRoom);
+    // console.log(`We are in 'duelRequest' event and this is socketId = ${data.socketId}`, "ID room", data?.idRoom);
+    // console.log('yes -0-0-0-0-0-0- ', data.idRoom);
     this.server.sockets.to(data.socketId).emit('duelRequest', data);
     }
 

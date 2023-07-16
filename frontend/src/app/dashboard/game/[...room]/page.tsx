@@ -10,8 +10,12 @@ import {mockSession} from "next-auth/client/__tests__/helpers/mocks";
 // import styles from "./game.module.css";
 import { gameLose } from "@/app/auth/auth.api";
 import {createContext} from 'react';
-import {io, Socket} from 'socket.io-client';
-import socket from "../socketClient";
+import { Socket} from 'socket.io-client';
+import * as io from 'socket.io-client';
+
+
+const socket = io.io("http://localhost:4001");
+
 
 
 
@@ -86,64 +90,47 @@ const Room: React.FC<RoomProps> = () => {
     })
   },[playerSlot])
   //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
+  useEffect(() => {
+    console.log(socket)
+  },[socket]);
 
   useEffect(() => {
-    console.log(socket);
     if (!initRoom && socket.connected == true) {
       console.log("socket init", socket);
       setinitRoom(true);
-      setInterval(() => {
-        socket.on(`global`, (data) => {
-          if (data?.id == uniqueIdentifier) {
-            // console.log(data);
-            if (data?.data?.status == 'ready') {
-              // console.log('ready');
-              // console.log(data?.data?.ready);
-            }
-            if (data?.status == 'game') {
-              // console.log(data?.game);
-              if (data.game == true)
-                setGameStatus("running");
-            }
-            if (playerSlot == 2 && data?.data?.status == 'ballPosition') {
-              setBallPosition(data?.data?.ballPosition);
-            }
-            if (playerSlot == 2 && data?.data?.status == 'paddleY') {
-              setPaddleY(data?.data?.paddleY);
-            }
-            if (playerSlot == 1 && data?.data?.status == 'paddle2Y') {
-              setPaddle2Y(data?.data?.paddle2Y);
-            }
+        socket.emit('gameRoom', `${uniqueIdentifier}`);
+        socket.on(`${uniqueIdentifier}`, (data) => {
+          console.log(data);
+          if (data?.data?.status == 'ready') {
+            // console.log('ready');
+            // console.log(data?.data?.ready);
           }
-          // console.log(`On est dans la socket de room`);
-          // console.log(userData?.displayname, ": Y = ", data?.y);
-          // console.log(userData?.user, ": Y = ", data?.y);
-              return () => {
-                socket.off("global");
-              }
-        })
-      }, 2000);
-    }
-  },[userData]);
-// useEffect(() => {
-//     // return () => {
-//     //   socket.off("global");
-// }},[])
+          if (data?.status == 'game') {
+            console.log(data?.game);
+            if (data.game == true)
+              setGameStatus("running");
+          }
+          if (playerSlot == 2 && data?.data?.status == 'ballPosition') {
+            setBallPosition(data?.data?.ballPosition);
+          }
+          if (playerSlot == 2 && data?.data?.status == 'paddleY') {
+            setPaddleY(data?.data?.paddleY);
+          }
+          if (playerSlot == 1 && data?.data?.status == 'paddle2Y') {
+            setPaddle2Y(data?.data?.paddle2Y);
+          }
+        // console.log(`On est dans la socket de room`);
+        // console.log(userData?.displayname, ": Y = ", data?.y);
+        // console.log(userData?.user, ": Y = ", data?.y);
+        //     return () => {
+        //       socket.off("global");
+        //     }
+      })
 
-
-  useEffect(() => {
-    if (playerSlot == 1) {
-      console.log("ballPosition");
-      socket.emit(`room-data`, {id: uniqueIdentifier, data: {status: 'ballPosition', ballPosition: ballPosition}});
-    }
-  },[]);
-
-  useEffect(() => { // mouvements souris
-
-    if (canvasRef.current && initMouse < 5) {
-      // console.log("MOUSE TRACK")
-      setinitMouse(initMouse + 1);
-      canvasRef.current.addEventListener('mousemove', (data: any) => {
+      if (canvasRef.current && initMouse < 1) {
+        // console.log("MOUSE TRACK")
+        setinitMouse(initMouse + 1);
+        canvasRef.current.addEventListener('mousemove', (data: any) => {
           if (userData?.username) {
             // console.log("SEND", uniqueIdentifier, userData?.username, data.screenY)
             socket.emit('move', {idRoom: uniqueIdentifier, user: userData?.username, y: data?.screenY})
@@ -155,13 +142,49 @@ const Room: React.FC<RoomProps> = () => {
             newY = Math.min(newY, canvasRef.current.height - 110);
           }
           if (playerSlot === 1)
-          setPaddleY(newY);
+            setPaddleY(newY);
           else if (playerSlot === 2)
-
             setPaddle2Y(newY);
-    });
+        });
+      }
     }
-  });
+  },[]);
+// useEffect(() => {
+//     // return () => {
+//     //   socket.off("global");
+// }},[])
+
+
+  useEffect(() => {
+    if (playerSlot == 1) {
+      console.log("ballPosition");
+      socket.emit(`room-data`, {id: uniqueIdentifier, data: {status: 'ballPosition', ballPosition: ballPosition}});
+    }
+  },[ballPosition]);
+
+  // useEffect(() => { // mouvements souris
+  //
+  //   if (canvasRef.current && initMouse < 1) {
+  //     // console.log("MOUSE TRACK")
+  //     setinitMouse(initMouse + 1);
+  //     canvasRef.current.addEventListener('mousemove', (data: any) => {
+  //         if (userData?.username) {
+  //           // console.log("SEND", uniqueIdentifier, userData?.username, data.screenY)
+  //           socket.emit('move', {idRoom: uniqueIdentifier, user: userData?.username, y: data?.screenY})
+  //         }
+  //         let newY = data?.screenY - 350;
+  //         if (canvasRef.current) {
+  //           // Ne depasse pas les rebords
+  //           newY = Math.max(newY, 10);
+  //           newY = Math.min(newY, canvasRef.current.height - 110);
+  //         }
+  //         if (playerSlot === 1)
+  //           setPaddleY(newY);
+  //         else if (playerSlot === 2)
+  //           setPaddle2Y(newY);
+  //   });
+  //   }
+  // });
 
 
   ////////////////////////////////////////////////////////
@@ -188,7 +211,7 @@ const Room: React.FC<RoomProps> = () => {
     };
     const ready = () => {
       console.log('Emit');
-      socket.emit(`room-data`, {id: uniqueIdentifier, data: {ready: userData?.id}});
+      socket.emit(`room-data`, {id: uniqueIdentifier, status: 'ready', data: {ready: userData?.id}});
     };
   
   const resetGame = (num: number) => {

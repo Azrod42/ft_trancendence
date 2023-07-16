@@ -9,11 +9,10 @@ import { AuthModule } from './auth/auth.module';
 import { ChannelModule } from './channel/channel.module';
 import JwtStrategy from './auth/interface/jwt.strategy';
 import {GatewayModule} from "./gateway/gateway.module";
-import { GatewayModule2 } from './socket/gateway2.module';
 
 
 @Module({
-  imports: [GatewayModule2, DatabaseModule, ConfigModule.forRoot(), UserModule, AuthModule, GatewayModule],
+  imports: [DatabaseModule, ConfigModule.forRoot(), UserModule, AuthModule, GatewayModule, ChannelModule],
   controllers: [AppController, UserController],
   providers: [AppService, JwtStrategy],
 })

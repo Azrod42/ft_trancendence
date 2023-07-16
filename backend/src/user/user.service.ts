@@ -10,12 +10,8 @@ import {response} from "express";
 import {inviteToChannelDto, messageReqDto, muteUserDto, newGameDto} from "../channel/dtos/channel.dto";
 import Channel from "../channel/channel.entity";
 
-
-
-
 @Injectable()
 export class UserService {
-
 	constructor(@InjectRepository(User) private userRepo: Repository<User>) {}
 
 	async findById (id: string){
