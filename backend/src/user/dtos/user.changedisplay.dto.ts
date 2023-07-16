@@ -21,3 +21,21 @@ export class socketId {
 	@IsNotEmpty()
 	id: string;
 }
+
+export class messageUser {
+	@IsNotEmpty()
+	idSender : string;
+
+	@IsNotEmpty()
+	idTarget: string;
+
+	@IsNotEmpty()
+	time: number;
+
+	@IsNotEmpty()
+	displaynameSender: string;
+
+	@IsNotEmpty()
+	message: string;
+
+}

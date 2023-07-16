@@ -122,4 +122,6 @@ export class ChannelController {
     async  getMsgHistory (@Req() request: RequestWithUser, @Res() res, @Body() inviteData: inviteToChannelDto): Promise<string> {
         return res.send(await this.channelService.getMsgHistory(request.user.id, inviteData.id, inviteData.chanId));
     }
+
+
 }

@@ -6,7 +6,7 @@ interface ChatMessageProps {}
 
 const ChatMessage: React.FC<ChatMessageProps> = () => {
   return (
-    <div>
+    <div className={styles.containerParent}>
       <ChatWindow />
       <Profile />
     </div>

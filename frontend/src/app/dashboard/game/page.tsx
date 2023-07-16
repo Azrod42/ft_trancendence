@@ -163,6 +163,15 @@ useEffect(() => { // mouvements souris
     }
   }, [paddleY, ballPosition]);
 
+  useEffect(() => {
+	  setInterval(() => {
+		  let vw = Math.max(window.innerWidth);
+		  let scale = vw / 1000 > 0.99 ? 1 : vw / 1000;
+		  console.log(vw, scale)
+		  canvasRef.current ? canvasRef.current.style.transform = String('scale(' + scale  + ')') : undefined;
+	  }, 1500);
+  },[])
+
   return (
     <div className={styles.container}>
       <h1>Game</h1>
@@ -196,7 +205,7 @@ useEffect(() => { // mouvements souris
         <div>Ball x: {ballSpeed.dx} Ball y: {ballSpeed.dy} </div>
               </div>
             )}
-            <canvas ref={canvasRef} width={800} height={400} />
+            <canvas ref={canvasRef}  width={800} height={400} className={styles.canvas}/>
           </>
         )}
       </div>

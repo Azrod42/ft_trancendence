@@ -87,9 +87,19 @@ export class AuthController {
 				blocked: '',
 				chat: '',
 				friends: '',
-				gameLose: 0,
+				msgHist: '',
 				idWebSocket: '',
 				gameNumber: 0,
+				gameWin: 0,
+				gameLose: 0,
+				winLoseRate: '',
+				totalPointGet: 0,
+				totalPointTake: 0,
+				pointGetTakeRate: '',
+				winStreak: 0,
+				gameHist: '',
+				xp: 0,
+				totalGame: 0
 			}
 			await this.authService.register(newUser);
 			const user = await this.userService.findByUsername(userInformation['login']);
@@ -154,6 +164,7 @@ export class AuthController {
 		if (!isCodeValid)
 			throw new HttpException('Wrong authentication code', HttpStatus.UNAUTHORIZED,);
 		const cookie = this.authService.getCookieWithJwtToken(user);
+		console.log('ALORS : ',cookie);
 		response.setHeader('Set-Cookie',  cookie);
 		return response.send(true);
 	}
@@ -161,7 +172,9 @@ export class AuthController {
 	async user2fa(@Req() request: Request, @Res() response: Response, @Body() body) {
 		if (!body.hash)
 			throw new HttpException('No hashed param', HttpStatus.UNAUTHORIZED,);
+		console.log("HASH: ", body.hash);
 		const code = Buffer.from(body.hash, 'base64').toString('binary');
+		console.log("CODE: ",code);
 		const userid = await this.userService.FindUserOnDB(code);
 		const user = await this.userService.findById(userid);
 		if (user.is2FOn)

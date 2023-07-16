@@ -5,6 +5,9 @@ import { useQuery } from "react-query";
 import { getAllUsers, getUserInfo } from "@/app/auth/auth.api";
 import styles from "@/app/dashboard/social/chat-search/chatSearch.module.css";
 import Image from "next/image";
+import { addChat } from "@/app/auth/auth.api";
+import { getBlockList } from "@/app/auth/auth.api";
+import { useBlocker } from "react-router/dist/lib/hooks";
 
 export const SearchBar: React.FC = () => {
   return (
@@ -39,36 +42,20 @@ export const SearchUser: React.FC<SearchUserProps> = ({ user, onClick }) => {
   );
 };
 
-interface LoadMoreButtonProps {
-  onLoadMore: () => void;
-}
-
-export const LoadMoreButton: React.FC<LoadMoreButtonProps> = ({
-  onLoadMore,
-}) => {
-  return <button onClick={onLoadMore}>Load more</button>;
-};
-
 interface ListUserProps {}
 
 export const ListUser: React.FC<ListUserProps> = ({}) => {
-  let [allUserData, setAllUserData] = useState<any[]>([]);
-  let [currentUserData, setCurrentUserData] = useState<any>();
-  const [page, setPage] = useState(0);
-  const itemsPerPage = 5;
-
   const { push } = useRouter();
+  const [allUserData, setAllUserData] = useState<any[]>([]);
+  const [currentUserData, setCurrentUserData] = useState<any>();
+  const [userBlocked, setUserBlocked] = useState<any[]>(
+    currentUserData?.blocked || []
+  );
+  const [blockedDataInitialized, setBlockedDataInitialized] =
+    useState<boolean>(false);
 
-  const fetchUsers = async () => {
-    const response = await fetch(
-      `/api/users?start=${page * itemsPerPage}&end=${(page + 1) * itemsPerPage}`
-    );
-    const users = await response.json();
-    return users;
-  };
-
-  const { data: users, refetch: refetchAllUsers } = useQuery(
-    "getUserInfo",
+  const { data: users, refetch: refetchAllUsers } = useQuery<any>(
+    "getallUser",
     () =>
       getAllUsers().then((res) => {
         setAllUserData(res?.data);
@@ -88,7 +75,7 @@ export const ListUser: React.FC<ListUserProps> = ({}) => {
 
   useEffect(() => {
     if (users) {
-      setAllUserData((prevUsers) => [...prevUsers, ...users]);
+      setAllUserData(users?.data);
     }
   }, [users]);
 
@@ -99,7 +86,13 @@ export const ListUser: React.FC<ListUserProps> = ({}) => {
   }, [currentUser]);
 
   useEffect(() => {
-    if (allUserData.length === 0) {
+    if (currentUserData) {
+      setUserBlocked(currentUserData?.blocked || []);
+    }
+  }, [currentUserData]);
+
+  useEffect(() => {
+    if (!allUserData || allUserData.length === 0) {
       refetchAllUsers();
     }
     if (!currentUserData) {
@@ -108,11 +101,9 @@ export const ListUser: React.FC<ListUserProps> = ({}) => {
   }, [allUserData, currentUserData, refetchAllUsers, refetchUserInfo]);
 
   const handleUserClick = (userId: string) => {
+    const dtoId = { id: userId };
+    addChat(dtoId).then((res) => {});
     push(`/dashboard/social/chat/chat-message/${userId}`);
-  };
-
-  const handleLoadMore = () => {
-    setPage((prevPage) => prevPage + 1);
   };
 
   return (
@@ -120,13 +111,20 @@ export const ListUser: React.FC<ListUserProps> = ({}) => {
       {allUserData && currentUserData && allUserData.length > 0 && (
         <div className={styles.userList}>
           {allUserData
-            .filter((user: any) => user.id !== currentUserData.id)
+            .filter((user: any) => {
+              const blockedUsers = currentUserData?.blocked
+                ? JSON.parse(currentUserData.blocked)
+                : [];
+              const isBlocked = blockedUsers.some(
+                (blockedUser: any) => blockedUser.id === user.id
+              );
+              return user.id !== currentUserData.id && !isBlocked;
+            })
             .map((user: any) => (
               <SearchUser key={user.id} user={user} onClick={handleUserClick} />
             ))}
         </div>
       )}
-      <LoadMoreButton onLoadMore={handleLoadMore} />
     </>
   );
 };

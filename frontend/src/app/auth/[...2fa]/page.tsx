@@ -25,7 +25,7 @@ const TowFa: React.FC<TowFaProps> = ({}) => {
                 hash = uniqueIdentifier.slice(4);
             else
                 hash = uniqueIdentifier[1];
-            console.log(hash);
+
             login2faNeeded({hash: hash}).then((res) => {
                 if (!res?.data)
                     push('/dashboard/')
@@ -34,6 +34,7 @@ const TowFa: React.FC<TowFaProps> = ({}) => {
             })
         }
     },[uniqueIdentifier]);
+
     const onSubmitForm: SubmitHandler<FormOtpPost> = data => {
         data.uniqueIdentifier = uniqueIdentifier;
         login2fa(data).then((rep) => {

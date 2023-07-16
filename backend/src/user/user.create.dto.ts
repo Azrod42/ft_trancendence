@@ -1,4 +1,5 @@
 import { IsEmail,IsString,IsNotEmpty,MinLength } from "class-validator";
+import {Column} from "typeorm";
 class CreateUserDto {
 	@IsString()
 	@IsNotEmpty()
@@ -31,12 +32,31 @@ class CreateUserDto {
 
 	chat: string;
 
-	gameLose: number;
+	msgHist: string;
 
 	idWebSocket: string;
 
 	gameNumber : number;
 
+	gameWin: number;
+
+	gameLose:number;
+
+	winLoseRate: string;
+
+	totalPointGet: number;
+
+	totalPointTake: number;
+
+	pointGetTakeRate: string;
+
+	winStreak: number;
+
+	gameHist: string;
+
+	xp: number;
+
+	totalGame: number;
 }
 
 export default CreateUserDto;

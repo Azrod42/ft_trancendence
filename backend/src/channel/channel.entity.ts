@@ -31,7 +31,6 @@ class Channel {
 
     @Column()
     owner: string;
-
 }
 
 export default Channel

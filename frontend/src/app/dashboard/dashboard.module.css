@@ -29,7 +29,7 @@
 
 .layoutDiv {
 	width: 100vw;
-	min-width: 700px;
+	min-width: 100px;
 	height: 100%;
 	margin: -10px;
 }

@@ -39,13 +39,43 @@ class User {
     chat: string;
 
     @Column()
-    gameLose: number;
+    msgHist: string;
 
     @Column()
     idWebSocket: string;
 
     @Column()
     gameNumber: number;
+
+    @Column()
+    gameWin: number;
+
+    @Column()
+    gameLose:number;
+
+    @Column()
+    winLoseRate: string;
+
+    @Column()
+    totalPointGet: number;
+
+    @Column()
+    totalPointTake: number;
+
+    @Column()
+    pointGetTakeRate: string;
+
+    @Column()
+    winStreak: number;
+
+    @Column()
+    gameHist: string;
+
+    @Column()
+    xp: number;
+
+    @Column()
+    totalGame: number;
 
 }
 
