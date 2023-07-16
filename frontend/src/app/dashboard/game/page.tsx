@@ -87,8 +87,8 @@ const resetWholeGame = () => {
     // Player 2 follows the ball
     setPaddle2Y(ballPosition.y - 50);
 
-    if (playerScore >= 3 || player2Score >= 3) {
-      if (player2Score >= 3)
+    if (playerScore >= 10 || player2Score >= 10) {
+      if (player2Score >= 10)
         gameLose().then((res) => {
           console.log(res);
         });

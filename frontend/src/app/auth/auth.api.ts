@@ -120,16 +120,6 @@ export  const getUserInfo = async() => {
 	}
 }
 
-// export  const getUserInfoGame = async() => {
-// 	try {
-// 		const {data} = await Api.get<UserAuthResponse>('/users/getuserdataGame',);
-// 		// console.log(data);
-// 		return data;
-// 	} catch (e) {
-// 		return undefined;
-// 	}
-// }
-
 export const getPublicUserInfo = async (id: any) => {
 	try {
 		const userId: UserId = { id: id};
@@ -394,7 +384,7 @@ export const setWebSocketId = async (id: any) => {
 
 export const getPlayerSlot = async () => {
 	try {
-		const data = await Api.get<number>('/users/get-slot',)
+		const data = await Api.get<any>('/users/get-slot',)
 		return {status: true, data: data.data};
 	} catch (e: any) {
 		return {status: false, error: e};

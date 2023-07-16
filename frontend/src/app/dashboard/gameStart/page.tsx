@@ -44,8 +44,6 @@ const GameStart: React.FC<gameStartProps> = ({}) => {
       const local = localStorage.getItem('connectedUser');
       setCurrentUserId(userData?.id);
       setCurrentUserName(userData?.username);
-      console.log(`this is currentUserId au niveau du changement = ${currentUserId}`) 
-      console.log(`this is currentUserName au niveau du changement = ${currentUserName}`) 
       if (local && currentUserId) {
         let userLog = JSON.parse(local);
         if (currentUserId) {
@@ -77,13 +75,7 @@ const GameStart: React.FC<gameStartProps> = ({}) => {
     const uid = uuid();
     socket.emit('duelRequest', {socketId: res?.data, idRoom: uid, currentUserId: currentUserId, currentUserName: currentUserName});
     // socket.emit('acceptDuel', {socketId: res?.data, idRoom: uid, currentUserId: currentUserId, currentUserName: currentUserName});
-      console.log("On etait au debut backend changement de chiffre");
-      console.log("On etait au debut backend changement de chiffre");
-      console.log("On etait au debut backend changement de chiffre");
       setGameNumber(1).then((res) => {
-      console.log("On etait en fin de backend changement de chiffre", res);
-      console.log("On etait en fin de backend changement de chiffre");
-      console.log("On etait en fin de backend changement de chiffre");
 		});
     push(`/dashboard/game/${uid}`);
     })

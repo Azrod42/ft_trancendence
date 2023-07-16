@@ -84,7 +84,7 @@ const Login: React.FC<LoginProps> = ({}) => {
 			toggleDisplayOn()
 			document.getElementById('alert-box')?.setAttribute("style", "background-color: green;");
 			if (errorEl)
-				errorEl.innerText = `Wellcome ${user.username}`;
+				errorEl.innerText = `Welcome ${user.username}`;
 			setTimeout(() => {
 				toggleDisplayOff()
 				push(`/auth/2fa/${user.hash}`);
