@@ -1,8 +1,9 @@
 .container {
 	text-align: center;
 	color: white;
-    /* background-color: blue; */
+     /*background-color: blue;*/
     margin: 0 auto;
+    height: 90vh;
     /* display: flex; */
     /* flex-direction: column; */
     /* text-align: left; */
@@ -39,6 +40,7 @@
   }
 
   .containerCanvas {
+      width: 100%;
     display: flex;
     flex-direction: column;
     gap: 30px;
@@ -79,6 +81,14 @@
     .canvas {
         scale: 0.55;
       }
+    /* .containerCanvas {
+      margin-right: 190px;
+    } */
+}
+@media (max-width: 330px) {
+    .canvas {
+        scale: 0.35;
+    }
     /* .containerCanvas {
       margin-right: 190px;
     } */

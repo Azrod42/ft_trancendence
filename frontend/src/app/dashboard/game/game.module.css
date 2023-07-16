@@ -1,9 +1,10 @@
-/* .container {
+.container {
 	text-align: center;
 	color: white;
 	overflow: hidden;
 	width: 100vw;
-	/*background-color: #EF5DA8;*/
+	background-color: #EF5DA8;
+	height: 100%;
 }
 
 .buttonGame {

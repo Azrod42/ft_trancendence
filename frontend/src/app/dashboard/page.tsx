@@ -21,8 +21,8 @@ const Dashboard: React.FC<DashboardProps> = ({}) => {
 	function testRequest() {
 		const data : DataEndGameDB = {
 			idGame: 'e8e878c7-ds3c-461b-a7cf-bbefed7b87de',
-			idWinner: '786cf0bd-f2e0-443e-8e79-cc3d6b6e5201',
-			idLoser: '878c2f45-6307-465a-8e78-948acc556f87',
+			idWinner: 'ad807ef0-9179-422b-a506-44327228a569',
+			idLoser: 'efad3a20-be3b-40e0-b118-4e96d08039a2',
 			scoreLoser: 2,
 			scoreWinner: 3,
 			ranked: true
