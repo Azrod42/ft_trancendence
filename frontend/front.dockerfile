@@ -8,5 +8,6 @@ RUN apk update && apk upgrade
 
 EXPOSE 3000
 
+
 ENTRYPOINT [ "/bin/sh", "-c", "yarn add next && yarn dev" ]
 #ENTRYPOINT [ "/bin/sh", "-c", "yarn add next && yarn build && yarn start" ]

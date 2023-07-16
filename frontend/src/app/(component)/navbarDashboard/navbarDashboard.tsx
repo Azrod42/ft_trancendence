@@ -1,6 +1,13 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import styles from "./navbarDashboard.module.css"
-import {UserAuthResponse, logout, getUserInfo, getProfilePicture, PublicUserResponse} from '@/app/auth/auth.api';
+import {
+	UserAuthResponse,
+	logout,
+	getUserInfo,
+	getProfilePicture,
+	PublicUserResponse,
+	setGameNumber
+} from '@/app/auth/auth.api';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {useQuery} from "react-query";
@@ -9,6 +16,54 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import io from 'socket.io-client';
 import {WebSocket} from "@/app/(component)/WebSocket/WebSocket";
+import { newWebSocket } from "@/app/auth/auth.api";
+import {WebsocketContext} from "@/app/(common)/WebsocketContext";
+import uuid from 'react-uuid'
+
+interface MyModalProps {
+	isOpen: boolean;
+	onClose: () => void;
+	children?: React.ReactNode; 
+  }
+  
+  function MyModal({ isOpen, onClose, children }: MyModalProps) {
+	if (!isOpen) return null;
+  
+	return (
+	  <div
+		style={{
+		  position: "fixed",
+		  top: 0,
+		  left: 0,
+		  right: 0,
+		  bottom: 0,
+		  backgroundColor: "rgba(0,0,0,0.3)",
+		  display: "flex",
+		  justifyContent: "center",
+		  alignItems: "center",
+		  zIndex: 1000,
+		}}
+		onClick={onClose}
+	  >
+		<div
+		  style={{
+			backgroundColor: "black",
+			color: "white",
+			textAlign: "center",
+			padding: "1em",
+			position: "relative",
+			border: "2px solid white",
+			zIndex: 1001,
+		  }}
+		  onClick={(e) => e.stopPropagation()}
+		>
+		  {children}
+		  {/* <button  onClick={onClose}>Close</button> */}
+		</div>
+	  </div>
+	);
+  }
+
 
 
 interface NavBarProps {
@@ -27,6 +82,7 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
 	//GET PROFILE IMAGE
 	const [profilePicture, setProfilePicture] = useState<string>('');
 	const [ppGet, setPpGet] = useState<boolean>(false);
+	const [duelRequest, setDuelRequest] = useState<{ socketId: string, idRoom: string, currentUserId :string, currentUserName: string} | null>(null);
 	useEffect(() => {
 	if (!ppGet) {
 		getProfilePicture().then(
@@ -74,54 +130,99 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
 		push('/');
 	}
 	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
-	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
-	//CONNECT TO WEBSOCKET 
-	// useEffect(() => {
-	// 	const socket = io('http://localhost:3003');  // Établit une connexion WebSocket avec le serveur
 	
-	// 	socket.on('connect', () => {
-	// 	  console.log('Connected to the server');
-	// 	  // Ici, vous pouvez effectuer des opérations supplémentaires une fois la connexion établie, si nécessaire
-	// 	});
-	// 	socket.on('disconnect', () => {
-	// 	  console.log('Disconnected from the server');
-	// 	  // Effectuez des opérations supplémentaires lors de la déconnexion, si nécessaire
-	// 	});
+	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==- MISE EN DUEL=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
+	const [socket] = useState(useContext(WebsocketContext))
+
+	useEffect(() => {
+		const handleDuelRequest = (data: { socketId: string, idRoom: string, currentUserId: string, currentUserName:string}) => {
+    		setDuelRequest(data);
+		};
 	
-	// 	return () => {
-	// 	  socket.disconnect(); // Déconnecte le socket lorsque le composant est démonté
-	// 	};
-	//   }, []);
-	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
+		socket.on('duelRequest', (data) => handleDuelRequest(data));	
+		return () => {
+			socket.off('duelRequest', handleDuelRequest);
+		};
+	}, [socket]);
+
+	useEffect(() => {
+		console.log(duelRequest);
+	}, [duelRequest])
+
+	  //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==- MISE EN DUEL FIN=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
+
+	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==- MAJ SOCKET AT RELOAD=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
+
+	useEffect(() => {
+		const handleNewSocket = (data: any) => {
+			try {
+				newWebSocket(data.socketId).then((res) => {
+				})
+			} catch (error) {
+				console.error('Error while updating new socket', error);
+			}
+		};
+	
+		socket.on('newSocket', (data) => handleNewSocket(data));	
+		return () => {
+			socket.off('newSocket', handleNewSocket);
+		};
+	}, [socket]);
+	
+
+	  //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==- MAJ SOCKET AT RELOAD FIN=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
+		
+	  const handleDecline = () => {
+		setDuelRequest(null);
+	}
+
+	const handleAccept = () => {
+		setGameNumber(2).then((res) => {
+			console.log(res);
+		});
+		push(`/dashboard/game/${duelRequest?.idRoom}`);
+		setDuelRequest(null);
+	}
 
 	//REFRESH TOPBAR DATA eatch 30s
 	// setInterval(refetch, 3000);
-  return (
-	<nav className={styles.container}>
-		<div >
-		</div>
-		<div className={styles.navLeft}>
-			<Link className={styles.linktxt} href="/dashboard/">Home</Link>
-			<Link className={styles.linktxt} href="/dashboard/game">Game</Link>
-			<Link className={styles.linktxt} href="/dashboard/social/chat-home">Social</Link>
-			<Link className={styles.linktxt} href="/dashboard/leaderboard">Leaderboard</Link>
-			{/*<Link className={styles.linktxt} href="/dashboard/users">users</Link>*/}
-		</div>
-		<div className={styles.navRight}>
-			{isUserData ? <WebSocket user={userData}/> : <></>}
-			<p className={styles.displaynametxt}>{userData?.displayname}</p>
-			{profilePicture && (<Image className={styles.profilePicture} src={!ppGet ? "/media/logo-login.png" : profilePicture} alt="profile-picture" width={56} height={56} priority={true} onClick={oncMenu}/>)}
-			{open && <motion.div className={styles.menu}
-								 initial={{opacity: 0}}
-								 animate={{opacity: 1}}
-								 transition={{duration: 0.4}}
+	return (
+		<nav className={styles.container}>
+			<div>
+			</div>
+			<div className={styles.navLeft}>
+				<Link className={styles.linktxt} href="/dashboard/">Home</Link>
+				<Link className={styles.linktxt} href="/dashboard/gameStart">Game</Link>
+				<Link className={styles.linktxt} href="/dashboard/social/chat-home">Social</Link>
+				<Link className={styles.linktxt} href="/dashboard/leaderboard">Leaderboard</Link>
+				{/*<Link className={styles.linktxt} href="/dashboard/users">users</Link>*/}
+			</div>
+			<div className={styles.navRight}>
+				{isUserData ? <WebSocket user={userData}/> : <></>}
+				<p className={styles.displaynametxt}>{userData?.displayname}</p>
+				{profilePicture && (<Image className={styles.profilePicture} src={!ppGet ? "/media/logo-login.png" : profilePicture} alt="profile-picture" width={56} height={56} priority={true} onClick={oncMenu}/>)}
+				{open && 
+					<motion.div className={styles.menu}
+								initial={{opacity: 0}}
+								animate={{opacity: 1}}
+								transition={{duration: 0.4}}
 					>
-				<Link className={styles.linktxt} href="/dashboard/profile" onClick={oncMenu}>Profile</Link>
-				<p className={styles.linktxt} onClick={onSubmit}>Logout</p>
-			</motion.div>}
-		</div>
-	</nav>
-  )
+						<Link className={styles.linktxt} href="/dashboard/profile" onClick={oncMenu}>Profile</Link>
+						<p className={styles.linktxt} onClick={onSubmit}>Logout</p>
+					</motion.div>
+				}
+			</div>
+			<MyModal isOpen={duelRequest != null} onClose={handleDecline} >
+				{/* <div className={styles.modal}> */}
+					<h1>{duelRequest?.currentUserName} vous invite à un duel</h1>
+					{/* <h1>On vous invite à un duel</h1> */}
+					<p>Accepter?</p>
+					<button className={styles.buttonModal} onClick={handleAccept}>Accepter</button>
+					<button className={styles.buttonModal} onClick={handleDecline}>Decliner</button>
+				{/* </div> */}
+			</MyModal>
+		</nav>
+	)	
 }
 
 export default NavBar;

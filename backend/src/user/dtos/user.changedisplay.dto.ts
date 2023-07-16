@@ -17,6 +17,10 @@ export class UserId {
 	@IsNotEmpty()
 	id: string;
 }
+export class socketId {
+	@IsNotEmpty()
+	id: string;
+}
 
 export class messageUser {
 	@IsNotEmpty()

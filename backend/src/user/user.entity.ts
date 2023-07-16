@@ -45,6 +45,9 @@ class User {
     idWebSocket: string;
 
     @Column()
+    gameNumber: number;
+
+    @Column()
     gameWin: number;
 
     @Column()

@@ -1,70 +1,117 @@
-  "use client"
+'use client'  
 
-  import React, { useEffect, useRef, useState } from 'react';
-  import { io, Socket } from 'socket.io-client';
-  import {UserAuthResponse, logout, getUserInfo, getProfilePicture} from '@/app/auth/auth.api';
-  import { useRouter } from 'next/navigation';
-  import {useQuery} from "react-query";
-  import styles from "./gameStart.module.css"
-    
-  function MessageForm() {
-    //GET USER DATA FROM BACKEND AND STORE IN useState
-    let [userData, setuserData] = useState<UserAuthResponse>();
-    const { push } = useRouter();
-    const { isLoading, error, data, refetch } = useQuery('getUserInfo', () =>
-      getUserInfo().then(res => {
-        if (res == undefined)
-          push('/');
-        setuserData(res);
-      }), {refetchInterval: 1000 * 60 * 2, refetchOnWindowFocus: false}
-    );
-    useEffect(() => {
-      if (userData == undefined) {
-        refetch()
+import React, { useEffect, useState, useRef, useContext } from 'react';
+import styles from './gameStart.module.css';
+import { useRouter } from 'next/navigation';
+import LoadingPage from '@/app/(component)/loadingPage/loadingPage';
+import Image from 'next/image';
+import {getUserInfo, postProfilePicture} from "@/app/auth/auth.api";
+import {WebsocketContext} from "@/app/(common)/WebsocketContext";
+import { getWebSocketIdByUserId } from "@/app/auth/auth.api";
+import { setGameNumber } from "@/app/auth/auth.api";
+import uuid from "react-uuid"
+
+
+
+interface UserLog {
+  id: string;
+  displayname: string;
+  img: string;
+}
+
+interface gameStartProps {}
+
+const GameStart: React.FC<gameStartProps> = ({}) => {
+  const [userLogs, setUserLogs] = useState<UserLog[]>([]);
+  const [userData, setUserData] = useState<any>();
+  const [currentUserId, setCurrentUserId] = useState<string>("");
+  const [currentUserName, setCurrentUserName] = useState<string>("");
+  const [isLoading, setIsLoading] = useState(true);
+  const { push, refresh } = useRouter();
+  const [socket] = useState(useContext(WebsocketContext))
+
+
+  useEffect(() => {
+    getUserInfo().then((data) => {
+      if (data) {
+        setUserData(data);
       }
-    })
-    useEffect(() => {
-      //for setup action on userData refresh ?
-    },[userData])
-  
-    const socketRef = useRef<Socket | null>(null);
-    const [showUserInfo, setShowUserInfo] = useState(false);
-    const [socketId, setSocketId] = useState<string | null>(null);
-  
-    useEffect(() => {
-      return () => {
-        // disconnect socket when component unmounts
-        if (socketRef.current) {
-          socketRef.current.disconnect();
+    });
+  },[]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const local = localStorage.getItem('connectedUser');
+      setCurrentUserId(userData?.id);
+      setCurrentUserName(userData?.username);
+      if (local && currentUserId) {
+        let userLog = JSON.parse(local);
+        if (currentUserId) {
+          userLog = userLog.filter((user: UserLog) => user.id !== currentUserId);
         }
-      };
-    }, []);
-  
-    const handleSocketConnection = () => {
-      socketRef.current = io('http://localhost:4001');
-      if(socketRef.current){
-        socketRef.current.on('connect', () => {
-          if(socketRef.current) {
-            setSocketId(socketRef.current.id);
-          }
-        });
+        for (let i = 0; userLog[i]; i++) {
+          const img = await postProfilePicture(userLog[i].id);
+          userLog[i].img = img?.data;
+        }
+        setUserLogs(userLog);
+        setIsLoading(false);
+      } else {
+        setTimeout(() => {
+          refresh();
+        }, 5000);
       }
-      setShowUserInfo(true);
     };
-  
-    return (
-      <div >
-        <button type="button" onClick={handleSocketConnection}>Connect to Socket Server</button>
-        {showUserInfo  && (
-          <div className={styles.containerGameStart}>
-            <p>Name: {userData?.displayname }</p>
-            <p>ID: {userData?.id}</p>
-            <p>Socket ID: {socketId}</p>
+    if(userData) {
+      fetchData();
+    }
+  }, [userData, currentUserId, currentUserName]);
+
+  const handleFightClick = (id: string) => {
+    console.log(`Fight with user: ${id}`);
+
+    getWebSocketIdByUserId(id).then((res) => {
+    // console.log(`This is res.data = ${res?.data}`);
+    // console.log(`This is currentUserId = ${currentUserId}`);
+    const uid = uuid();
+    socket.emit('duelRequest', {socketId: res?.data, idRoom: uid, currentUserId: currentUserId, currentUserName: currentUserName});
+    // socket.emit('acceptDuel', {socketId: res?.data, idRoom: uid, currentUserId: currentUserId, currentUserName: currentUserName});
+      setGameNumber(1).then((res) => {
+		});
+    push(`/dashboard/game/${uid}`);
+    })
+};
+
+
+
+  return (
+    <div className={styles.container}>
+      <h2 className={styles.title}>Liste des utilisateurs connectés</h2>
+      <div className={styles.users}>
+        {isLoading ? (
+          <LoadingPage />
+        ) : (
+          <div className={styles.userContainer}>
+            {userLogs.map((user) => (
+              <div key={user.id} className={styles.userlogcontainer}>
+                <div onClick={() => push(`/dashboard/user/${user.id}`)} className={styles.row}>
+                  <Image
+                    className={styles.img}
+                    src={`data:image/png;base64,${user.img}`}
+                    alt={user.displayname}
+                    width={50}
+                    height={50}
+                  />
+                  <p className={`${styles.userlogp} ${styles.whiteText}`}>{user.displayname}</p>
+                </div>
+                  <button onClick={() => handleFightClick(user.id)} className={styles.fightButton}>Fight</button>
+              </div>
+            ))}
           </div>
         )}
       </div>
-    );
-  }
-  
-  export default MessageForm;
-  
+    </div>
+  );
+};
+
+
+export default GameStart;

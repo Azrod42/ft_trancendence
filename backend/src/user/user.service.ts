@@ -211,6 +211,11 @@ export class UserService {
 		await this.userRepo.save(user);
 	}
 
+	async setNewGameNumber(user: User, num:number) {
+		user.gameNumber = num;
+		await this.userRepo.save(user);
+	}
+
 	async updateWebSocketId(userId: string, socketId: string) {
 		const user = await this.findById(userId);
 		if (!user) {
@@ -297,6 +302,17 @@ export class UserService {
 		await this.userRepo.save(user);
 		return true;
 	}
+
+	async getPlayerSlot(userId: string) {
+		try {
+			const user = await this.findById(userId);
+			return user.gameNumber;
+		} catch (e) {
+			throw new HttpException('Somthing went wrong', HttpStatus.INTERNAL_SERVER_ERROR,);
+		}
+		return undefined;
+	}
+
 	async newUserMessage (userTrig: string, messageData: messageUser) {
 		const userS: User = await this.userRepo.findOneBy({id: messageData.idSender});
 		const userT = await this.userRepo.findOneBy({id: messageData.idTarget});

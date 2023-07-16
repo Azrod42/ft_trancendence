@@ -72,3 +72,17 @@
 	padding-top: 10px;
 	z-index: 1;
 }
+
+.modal {
+
+	background-color: yellow;
+	color: blue;
+}
+
+.buttonModal{
+	background-color: transparent;
+	color: white;
+	border: 2px solid white;
+	margin-left: 10px;
+	
+}

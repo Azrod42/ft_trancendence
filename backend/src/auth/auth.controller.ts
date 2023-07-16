@@ -89,6 +89,7 @@ export class AuthController {
 				friends: '',
 				msgHist: '',
 				idWebSocket: '',
+				gameNumber: 0,
 				gameWin: 0,
 				gameLose: 0,
 				winLoseRate: '',

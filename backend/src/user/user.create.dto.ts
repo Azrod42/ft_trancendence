@@ -36,6 +36,8 @@ class CreateUserDto {
 
 	idWebSocket: string;
 
+	gameNumber : number;
+
 	gameWin: number;
 
 	gameLose:number;

@@ -46,6 +46,15 @@ export interface UserAuthResponse {
 	is2FOn: boolean;
 }
 
+// export interface UserAuthResponseGame {
+// 	id:string;
+// 	username: string;
+// 	email: string;
+// 	displayname: string;
+// 	is2FOn: boolean;
+// 	gameNumber: number;
+// }
+
 export interface PublicUserResponse {
 	id:string;
 	avatar: string;
@@ -323,6 +332,34 @@ export const gameLose = async () => {
 	}
 }
 
+export const setGameNumber = async (num: number) => {
+	try {
+		const data = await Api.get<any>(`/users/set-game-number/${num}`,)
+		return data;
+	} catch (e) {
+		return undefined;
+	}
+}
+
+export const getWebSocketIdByUserId = async (id: string) => {
+    try {
+        const  data= await Api.get<any>(`/users/get-web-socket-id-by-user-id/${id}`);
+        return data;
+    } catch (e) {
+        return undefined;
+    }
+}
+
+export const newWebSocket = async (socketId: string) => {
+    try {
+        const  data= await Api.get<any>(`/users/new-web-socket/${socketId}`);
+        return data;
+    } catch (e) {
+        return undefined;
+    }
+}
+
+
 export const idWebSocket = async () => {
 	try {
 		const data = await Api.get<any>('/users/id-web-socket',)
@@ -332,3 +369,24 @@ export const idWebSocket = async () => {
 	}
 }
 
+export const setWebSocketId = async (id: any) => {
+	try {
+		const data = await Api.post<string, any>({
+			url: '/users/id-web-socket',
+			data: id
+		},)
+		return data;
+	} catch (e) {
+		return undefined;
+	}
+}
+
+
+export const getPlayerSlot = async () => {
+	try {
+		const data = await Api.get<any>('/users/get-slot',)
+		return {status: true, data: data.data};
+	} catch (e: any) {
+		return {status: false, error: e};
+	}
+}

@@ -1,12 +1,83 @@
-.test {
-	color: white;
-	background-color: aliceblue;
-}
-
 .container {
-	color: wheat;
+	padding: 0;
+	color: white;
+	display: flex;
+	flex-direction: column;
+	margin: 100px auto;
+  }
+
+  
+  .title {
+	color: white; 
+	margin-bottom: 25px;
+	white-space: nowrap;
+	text-align: center;
+
+  }
+  
+  .userlogp {
+	font-size: 1.1rem;
+	font-weight: 500;
+	color: white;
+  }
+  
+  .userlogcontainer {
+	display: flex;
+	gap: 15px;
+	padding: 4px 10px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	border: solid white 1px;
+	margin: 0 300px;
+  }
+  
+  .img {
+	object-fit: cover;
+	border-radius: 50px;
+  }
+
+	.whiteText {
+		color: white;
+	}
+
+.fightButton {
+	/* height:30px; */
+	margin-right: 50px;
+	background-color: transparent;
+	color: white;
+	border: 2px solid white;
+	padding: 4px 15px;
+	font-size: 1rem;
+	font-weight: 900;
+	cursor: pointer;
 }
 
-.containerGameStart {
-	color: white;
+.row {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	/* background-color: blue; */
+	gap: 30px;
+}
+
+@media (max-width: 1030px) {
+	.userlogcontainer {
+		border: none;
+		/* background-color: red; */
+	  }
+}
+
+@media (max-width: 800px) {
+	.userlogcontainer {
+		margin-left: 200px;
+		/* background-color: red; */
+	  }
+}
+
+@media (max-width: 900px) {
+.userlogcontainer {
+	margin-left: 250px;
+	/* background-color: red; */
+	}
 }

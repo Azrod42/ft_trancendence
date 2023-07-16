@@ -1,0 +1,91 @@
+.container {
+	text-align: center;
+	color: white;
+    /* background-color: blue; */
+    margin: 0 auto;
+    /* display: flex; */
+    /* flex-direction: column; */
+    /* text-align: left; */
+}
+
+.buttonGame {
+	background-color: transparent;
+	color: white;
+	border: 2px solid white;
+	padding: 10px 20px;
+	font-size: 1.2rem;
+    cursor: pointer;
+  }
+
+  .buttonGameMode {
+    background-color: transparent;
+	color: white;
+	border: 2px solid white;
+	padding: 7px 20px;
+	font-size: 1.2rem;
+    cursor: pointer;
+  }
+
+  .buttonMode {
+    display: flex;
+    gap: 30px;
+  }
+
+  .contentGame {
+	display: flex;
+	align-items: center;
+	flex-direction: column;
+	margin: 0 auto;
+  }
+
+  .containerCanvas {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+
+    /* background-color: blue; */
+  }
+
+
+@media (max-width: 780px) {
+    .canvas {
+        scale: 0.9;
+      }
+}
+@media (max-width: 730px) {
+    .canvas {
+        scale: 0.8;
+      }
+}
+@media (max-width: 680px) {
+    .canvas {
+        scale: 0.7;
+      }
+}
+@media (max-width: 630px) {
+    .canvas {
+        scale: 0.65;
+      }
+}
+@media (max-width: 580px) {
+    .canvas {
+        scale: 0.60;
+      }
+}
+@media (max-width: 530px) {
+    .canvas {
+        scale: 0.55;
+      }
+    /* .containerCanvas {
+      margin-right: 190px;
+    } */
+}
+
+.canvas {
+    transform: scale(1);
+    /* margin: 0 auto; */
+  }
+  
