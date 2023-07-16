@@ -26,7 +26,6 @@ const TowFa: React.FC<TowFaProps> = ({}) => {
                 hash = uniqueIdentifier.slice(4);
             else
                 hash = uniqueIdentifier[1];
-            console.log(hash)
             login2faNeeded({hash: hash}).then((res) => {
                 if (!res?.data)
                     push('/dashboard/')

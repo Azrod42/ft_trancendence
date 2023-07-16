@@ -160,6 +160,7 @@
   /*border: 1px solid red;*/
   width: 90%;
   height: 85%;
+  max-height: 700px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -167,7 +168,13 @@
   align-items: center;
   gap: 8px;
   padding-top: 10px;
+  overflow: scroll;
 }
+
+.section_d_games::-webkit-scrollbar {
+  display: none;
+}
+
 
 .section_d_gamesitems {
   /*border: 1px solid green;*/

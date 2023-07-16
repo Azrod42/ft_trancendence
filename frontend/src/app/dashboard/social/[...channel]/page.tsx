@@ -43,7 +43,7 @@ interface ChannelProps {}
 const Channel: React.FC<ChannelProps> = ({}) => {
   const { push } = useRouter();
   let userRef: any = useRef(this);
-  const uniqueIdentifier = useParams()["channel"].slice(8);
+  const uniqueIdentifier: string = useParams()["channel"][1];
   const [chanData, setChanData] = useState<any>(undefined);
   const [localConnectedUser, setLocalConnectedUser] = useState<any>(undefined);
   const [popup, setPopup] = useState<boolean>(false);

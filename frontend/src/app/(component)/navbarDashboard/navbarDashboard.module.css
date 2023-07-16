@@ -9,6 +9,7 @@
 	justify-content: space-between;
 	gap: 30px;
 	box-shadow: 0 0 10px #EF5DA8;
+	overflow: hidden;
 }
 
 .navRight {

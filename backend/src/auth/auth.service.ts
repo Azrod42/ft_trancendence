@@ -34,7 +34,7 @@ export class AuthService {
 				displayname: registerData.username,
 				email: registerData.email,
 				password: hashoedPassword,
-				passwordRepeat: "",
+				passwordRepeat: '',
 				is2FOn: false,
 				secret2F: "undefine",
 				avatar: "notset",
@@ -42,9 +42,18 @@ export class AuthService {
 				chat: '',
 				blocked: '',
 				friends: '',
-				gameLose: 0,
 				msgHist: '',
 				idWebSocket: '',
+				gameWin: 0,
+				gameLose: 0,
+				winLoseRate: '',
+				totalPointGet: 0,
+				totalPointTake: 0,
+				pointGetTakeRate: '',
+				winStreak: 0,
+				gameHist: '',
+				xp: 0,
+				totalGame: 0
 			});
 			user.password = undefined;
 			return user;
@@ -52,6 +61,7 @@ export class AuthService {
 			if (e?.code === postgresErrorCode.UniqueViolation) {
 				throw new HttpException('Username is already taken', HttpStatus.BAD_REQUEST);
 			}
+			console.log(e);
 			throw new HttpException('Somthing went fucking wrong', HttpStatus.INTERNAL_SERVER_ERROR,);
 
 		}

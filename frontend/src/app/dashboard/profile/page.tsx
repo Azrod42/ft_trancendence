@@ -1,5 +1,5 @@
 "use client";
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, {ChangeEvent, useEffect, useRef, useState} from "react";
 import styles from "./profile.module.css";
 import stylesGrid from "./grid.module.css";
 import Image from "next/image";
@@ -18,6 +18,7 @@ import { useMutation, useQuery } from "react-query";
 import Api from "@/app/api/api";
 import { useRouter } from "next/navigation";
 import LoadingComponent from "@/app/(component)/loadingPage/loadingPage";
+import {postGameHist, postUserStats} from "@/app/dashboard/social/social.api";
 
 export type FormDisplayName = {
   displayname: string;
@@ -142,6 +143,49 @@ const Profile: React.FC<ProfileProps> = ({}) => {
   const [pointGetTakeRate, setPointGetTakeRate] = useState("");
   const [winStreak, setWinStreak] = useState(0);
   const [totalGame, setTotalGame] = useState(0);
+  const refHist:  React.MutableRefObject<any> = useRef();
+  useEffect(() => {
+    if (userData?.id) {
+      postUserStats({id: userData?.id!}).then((res: any) => {
+        setElo(parseInt(res?.data?.elo));
+        setXp(res?.data?.xp);
+        setGameWin(res?.data?.gameWin);
+        setGameLose(res?.data?.gameLose);
+        setWinLoseRate(res?.data?.winLoseRate);
+        setTotalPointGet(res?.data?.totalPointGet);
+        setTotalPointTake(res?.data?.totalPointTake);
+        setPointGetTakeRate(res?.data?.pointGetTakeRate);
+        setWinStreak(res?.data?.winStreak);
+        setTotalGame(res?.data?.totalGame);
+      });
+      postGameHist({id: userData?.id!}).then((res: any) => {
+        let tab = [];
+        if (res.data)
+          tab = JSON.parse(JSON.stringify(res.data));
+        let html = `<style>
+                                .gameHist {
+                                  width: 90%;
+                                  height: 50px;
+                                  border-radius: 5px;
+                                  box-shadow: 0 0 3px #ef5da8;
+                                  color: whitesmoke;
+                                  display: flex;
+                                  align-items: center;
+                                  justify-content: center;
+                                  background-color: #060b18cc;
+                                  min-height: 50px;
+                                }
+                            </style>`;
+        for (let i = 0; tab[i]; i++ ){
+          const ranked: string = tab[i].ranked ? "Ranked" : "Unranked";
+          html += `<div class="gameHist">${tab[i].dnW} ${tab[i].scoreW} - ${tab[i].scoreL} ${tab[i].dnL} &nbsp&nbsp&nbsp|&nbsp&nbsp&nbsp ${ranked}</div>`
+        }
+        refHist.current.innerHTML = html;
+      });
+    }
+  }, [userData]);
+
+
 
   return (
     <div className={stylesGrid.container}>
@@ -374,19 +418,8 @@ const Profile: React.FC<ProfileProps> = ({}) => {
         <div className={styles.section_d_container}>
           <h1 className={styles.section_d_h1}>Last games</h1>
           <hr className={styles.hr} />
-          <div className={styles.section_d_games}>
-            <div className={styles.section_d_gamesitems}>
-              Game 1 Need Game and Chat
-            </div>
-            <div className={styles.section_d_gamesitems}>
-              Game 2 Need Game and Chat
-            </div>
-            <div className={styles.section_d_gamesitems}>
-              Game 3 Need Game and Chat
-            </div>
-            <div className={styles.section_d_gamesitems}>
-              Game 4 Need Game and Chat
-            </div>
+          <div className={styles.section_d_games} ref={refHist}>
+              <LoadingComponent />
           </div>
         </div>
       </div>

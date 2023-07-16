@@ -2,8 +2,8 @@
 import React, { useEffect, useState, useContext, useRef } from "react";
 import styles from "./chatMessage.module.css";
 import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
-import { getPublicUserInfo, getUserInfo } from "@/app/auth/auth.api";
+import {useParams, usePathname, useRouter} from "next/navigation";
+import {getPublicUserInfo, getUserInfo, PublicUserResponse} from "@/app/auth/auth.api";
 import {
   addFriend,
   removeFriend,
@@ -27,7 +27,11 @@ interface ChatWindowProps {}
 
 export const ChatWindow: React.FC<ChatWindowProps> = ({}) => {
   const [user1Id, setUser1Id] = useState<string>("");
-  const user2Id: string = usePathname().split("/").pop()!;
+  const user2Id: string = useParams()["chat-message"][1];
+  const [roomID, setRoomID] = useState<string>("");
+  const [createRoom, setCreateRoom] = useState<boolean>(false);
+
+
   const [message, setMessage] = useState("");
   const [socket] = useState(useContext(WebsocketContext));
   const [userData, setUserData] = useState<any>();
@@ -44,37 +48,50 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({}) => {
     getUserInfo().then((res) => {
       if (res && res.id) {
         setUser1Id(res.id);
+        for (let i = 0; user1Id[i]; i++) {
+          if (user1Id[i] > user2Id[i]){
+            setRoomID(user1Id + user2Id);
+            return;
+          } else {
+            setRoomID(user2Id + user1Id);
+            return;
+          }
+        }
       }
     });
-  }, []);
+  }, [userData]);
 
   useEffect(() => {
+    if (createRoom == false)
+      setCreateRoom(true)
+  }, [roomID]);
+
+    useEffect(() => {
     setCurrentUserId(user2Id);
   }, [user2Id]);
 
-  const userQuery = useQuery(
-    "fetchUserChatData",
-    () =>
-      getUserInfo().then((res) => {
-        setUserData(res);
-      }),
-    { staleTime: 5000, refetchOnWindowFocus: false }
-  );
+    const userQuery = useQuery(
+        "fetchUserChatData",
+        () =>
+            getUserInfo().then((res) => {
+              setUserData(res);
+            }),
+        {staleTime: 5000, refetchOnWindowFocus: false}
+    );
+    const messageUserQuery = useQuery(
+        "fetchMsgUserData",
+        () =>
+            getUserMessageApi({id: user2Id}).then((res) => {
+              if (res?.status == true) setMsgUserData(res.data);
+            }),
+        {staleTime: 1000, refetchOnWindowFocus: false}
+    );
 
-  const messageUserQuery = useQuery(
-    "fetchMsgUserData",
-    () =>
-      getUserMessageApi({ id: user2Id }).then((res) => {
-        if (res?.status == true) setMsgUserData(res.data);
-      }),
-    { staleTime: 500, refetchOnWindowFocus: false }
-  );
-
-  useEffect(() => {
-    if (currentUserId) {
-      messageUserQuery.refetch();
-    }
-  }, [currentUserId, messageUserQuery]);
+  // useEffect(() => {
+  //   if (currentUserId) {
+  //     messageUserQuery.refetch();
+  //   }
+  // }, [currentUserId, messageUserQuery]);
 
   useEffect(() => {
     if (msgUserData) {
@@ -135,22 +152,23 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({}) => {
         chatWindow.scrollHeight;
 
       htmlMsgInput.current.innerHTML = html;
-
-      if (shouldScrollToBottom) {
-        htmlMsgInput.current.scrollTop = htmlMsgInput.current.scrollHeight;
-      }
+      htmlMsgInput.current.scrollTop = htmlMsgInput.current.scrollHeight;
     }
   }, [msgUserData]);
 
   useEffect(() => {
-    socket.emit(`newMessage`, `${user2Id}`);
-    socket.on(`onMessage`, (data) => {
-      messageUserQuery.refetch();
-    });
-    return () => {
-      socket.off(`${user2Id}`);
-    };
-  }, [messageUserQuery, socket, user2Id]);
+    if (roomID != '') {
+        socket.emit(`room`, `${roomID}`);
+        socket.on(`${roomID}`, (data) => {
+          setTimeout(() => {
+            messageUserQuery.refetch();
+          }, 100);
+        });
+        return () => {
+          socket.off(`${roomID}`);
+        };
+    }
+  }, [roomID]);
 
   const onSubmitSendMessage: SubmitHandler<FormValueUserSendMessage> = (
     data
@@ -173,10 +191,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({}) => {
           setError(false);
         }, 3000);
       } else {
-        socket.emit(`newMessage`, {
-          userId: `${user2Id}`,
-          message: data.message,
-        });
+        socket.emit(`channelMessage`, {channel: roomID, message: true});
       }
     });
     sendMsg.reset();
@@ -227,13 +242,12 @@ export const Profile: React.FC<ProfileProps> = () => {
   const [headerError, setHeaderError] = useState<string>("");
   const [errorMsg, setErrorMsg] = useState<string>("");
 
-  useEffect(() => {
-    getPublicUserInfo(userId).then((res) => {
-      if (res && res.data) {
-        setUserData(res.data);
-      }
-    });
-  }, [userId, userData]);
+  const publicQuery = useQuery('getUserInfo', () =>
+      getPublicUserInfo(userId).then(res => {
+        if (res && res.data)
+          setUserData(res.data);
+        }), {refetchInterval: 4000 , refetchOnWindowFocus: false}
+  );
 
   function onClickAddFriend() {
     const dtoId = { id: userId };

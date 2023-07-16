@@ -22,7 +22,7 @@ import {v4 as uuidv4} from 'uuid';
 import * as path from "path";
 import * as process from "process";
 import * as fs from 'fs'
-import {chanIdDto, inviteToChannelDto, messageReqDto, muteUserDto} from "../channel/dtos/channel.dto";
+import {chanIdDto, inviteToChannelDto, messageReqDto, muteUserDto, newGameDto} from "../channel/dtos/channel.dto";
 
 @Controller('users')
 export class UserController {
@@ -372,5 +372,27 @@ export class UserController {
 	@UseGuards(JwtAuthGuard)
 	async  getMsgHistory (@Req() request: RequestWithUser, @Res() res, @Body() inviteData: chanIdDto): Promise<string> {
 		return res.send(await this.userService.getUserMsgHistory(request.user.id, inviteData.id));
+	}
+
+	@HttpCode(200)
+	@UseGuards(JwtAuthGuard)
+	@Post('game-end')
+	async newGameEnd(@Req() request: RequestWithUser, @Res() res, @Body() gameInfo: newGameDto) {
+		await this.userService.addNewGame(gameInfo);
+		return res.send(true);
+	}
+
+	@HttpCode(200)
+	@Post('get-match-hist')
+	@UseGuards(JwtAuthGuard)
+	async  getMatchHistory (@Req() request: RequestWithUser, @Res() res, @Body() data: chanIdDto): Promise<any> {
+		return res.send(await this.userService.getMatchHistory(data.id));
+	}
+
+	@HttpCode(200)
+	@Post('get-user-stats')
+	@UseGuards(JwtAuthGuard)
+	async  getUserStats (@Req() request: RequestWithUser, @Res() res, @Body() data: chanIdDto): Promise<any> {
+		return res.send(await this.userService.getUserStats(data.id));
 	}
 }

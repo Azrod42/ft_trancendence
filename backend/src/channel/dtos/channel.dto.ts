@@ -8,6 +8,26 @@ export class chanJoinDto {
     password: string;
 }
 
+export class newGameDto {
+    @IsNotEmpty()
+    idGame: string;
+
+    @IsNotEmpty()
+    idWinner: string;
+
+    @IsNotEmpty()
+    idLoser: string;
+
+    @IsNotEmpty()
+    scoreWinner: number;
+
+    @IsNotEmpty()
+    scoreLoser: number;
+
+    @IsNotEmpty()
+    ranked: boolean;
+}
+
 export class chanIdDto {
     @IsNotEmpty()
     id: string;

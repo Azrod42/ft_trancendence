@@ -5,6 +5,7 @@ import {
 } from "@/app/auth/auth.api";
 import { Simulate } from "react-dom/test-utils";
 import error = Simulate.error;
+import {DataEndGameDB} from "@/app/dashboard/page";
 
 export type userChannelType = {
   id: string;
@@ -308,6 +309,47 @@ export const getUserMessageApi = async (formData: FormValueIdChannel) => {
   try {
     const data = await Api.post<string, FormValueIdChannel>({
       url: "/users/get-msg-hist",
+      data: formData,
+    });
+    return { status: true, data: data.data };
+  } catch (e: any) {
+    if (e.name == "AxiosError")
+      return { status: false, error: e.response.data.message };
+    return { status: false, error: e };
+  }
+};
+export const postGameData = async (formData: DataEndGameDB) => {
+  try {
+    const data = await Api.post<string, DataEndGameDB>({
+      url: "/users/game-end",
+      data: formData,
+    });
+    return { status: true, data: data.data };
+  } catch (e: any) {
+    if (e.name == "AxiosError")
+      return { status: false, error: e.response.data.message };
+    return { status: false, error: e };
+  }
+};
+
+export const postGameHist = async (formData: FormValueIdChannel) => {
+  try {
+    const data = await Api.post<string, FormValueIdChannel>({
+      url: "/users/get-match-hist",
+      data: formData,
+    });
+    return { status: true, data: data.data };
+  } catch (e: any) {
+    if (e.name == "AxiosError")
+      return { status: false, error: e.response.data.message };
+    return { status: false, error: e };
+  }
+};
+
+export const postUserStats = async (formData: FormValueIdChannel) => {
+  try {
+    const data = await Api.post<string, FormValueIdChannel>({
+      url: "/users/get-user-stats",
       data: formData,
     });
     return { status: true, data: data.data };

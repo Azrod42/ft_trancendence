@@ -24,5 +24,4 @@ class Api {
 		return Api.axiosInstance.post<ResponseType>(url, data);
 	}
 }
-
 export default Api;

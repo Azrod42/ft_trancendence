@@ -7,7 +7,7 @@ import {ChangeDisplayNameDto, messageUser} from './dtos/user.changedisplay.dto';
 import { toDataURL } from 'qrcode';
 import * as bcrypt from 'bcrypt';
 import {response} from "express";
-import {inviteToChannelDto, messageReqDto, muteUserDto} from "../channel/dtos/channel.dto";
+import {inviteToChannelDto, messageReqDto, muteUserDto, newGameDto} from "../channel/dtos/channel.dto";
 import Channel from "../channel/channel.entity";
 
 
@@ -319,5 +319,58 @@ export class UserService {
 			}
 		}
 		return JSON.stringify(history);
+	}
+	async addNewGame(gameInfo: newGameDto) {
+		const userW = await this.findById(gameInfo.idWinner);
+		const userL = await this.findById(gameInfo.idLoser);
+
+
+		userW.totalGame += 1;
+		userL.totalGame += 1;
+		userW.gameWin += 1;
+		userL.gameLose += 1;
+		userW.winStreak += 1;
+		userL.winStreak = 0;
+		userW.winLoseRate = ((userW.gameWin * 100) / (userW.gameWin + userW.gameLose)).toString();
+		userL.winLoseRate = ((userL.gameWin * 100) / (userL.gameWin + userL.gameLose)).toString();
+		console.log((25 / (userW.elo / userL.elo)));
+		if (gameInfo.ranked) {
+			userW.elo = Math.round(userW.elo + (25 / (userW.elo / userL.elo)));
+			userL.elo = Math.round(userL.elo - (25 / (userW.elo / userL.elo)));
+		}
+		userW.xp += 100;
+		userL.xp += 50;
+		userW.totalPointTake += gameInfo.scoreLoser;
+		userW.totalPointGet += gameInfo.scoreWinner;
+		userL.totalPointTake += gameInfo.scoreWinner;
+		userL.totalPointGet += gameInfo.scoreLoser;
+		userW.pointGetTakeRate = (userW.totalPointGet / userW.totalPointTake).toString();
+		userL.pointGetTakeRate = (userW.totalPointGet / userL.totalPointTake).toString();
+
+		let userWGHist = [];
+		let userLGHist = [];
+		if (userW.gameHist != '')
+			userWGHist = JSON.parse(userW.gameHist);
+		if (userL.gameHist != '')
+			userLGHist = JSON.parse(userL.gameHist);
+		userWGHist.push({dnW: userW.displayname, dnL: userL.displayname, scoreW: gameInfo.scoreWinner, scoreL: gameInfo.scoreLoser, ranked: gameInfo.ranked});
+		userLGHist.push({dnW: userW.displayname, dnL: userL.displayname, scoreW: gameInfo.scoreWinner, scoreL: gameInfo.scoreLoser, ranked: gameInfo.ranked});
+		userW.gameHist = JSON.stringify(userWGHist);
+		userL.gameHist = JSON.stringify(userLGHist);
+		await this.userRepo.save(userW);
+		await this.userRepo.save(userL);
+	}
+
+	async getMatchHistory(userID: string) {
+		const user = await this.findById(userID);
+		if (user)
+			return user.gameHist;
+		return ''
+	}
+	async getUserStats(userID: string) {
+		const user = await this.findById(userID);
+		if (user)
+			return {gameWin: user.gameWin, gameLose: user.gameLose, winLoseRate: user.winLoseRate, totalPointGet: user.totalPointGet, totalPointTake: user.totalPointTake, pointGetTakeRate: user.pointGetTakeRate, winStreak: user.winStreak, totalGame: user.totalGame, elo: user.elo, xp: user.xp};
+		return ''
 	}
 }

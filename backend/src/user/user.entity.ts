@@ -42,10 +42,38 @@ class User {
     msgHist: string;
 
     @Column()
-    gameLose: number;
+    idWebSocket: string;
 
     @Column()
-    idWebSocket: string;
+    gameWin: number;
+
+    @Column()
+    gameLose:number;
+
+    @Column()
+    winLoseRate: string;
+
+    @Column()
+    totalPointGet: number;
+
+    @Column()
+    totalPointTake: number;
+
+    @Column()
+    pointGetTakeRate: string;
+
+    @Column()
+    winStreak: number;
+
+    @Column()
+    gameHist: string;
+
+    @Column()
+    xp: number;
+
+    @Column()
+    totalGame: number;
+
 }
 
 export default User;
