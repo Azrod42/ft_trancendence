@@ -10,7 +10,6 @@ import { io } from 'socket.io-client';
 import { idWebSocket } from "@/app/auth/auth.api";
 import {socket, WebSocketProvider} from "@/app/(common)/WebsocketContext";
 import {Barlow} from "next/font/google";
-import  {WebsocketContext} from '../(common)/WebsocketContext'
 
 const font = Barlow({
 	weight: ['400', '700', '100', '200'],

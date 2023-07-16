@@ -77,11 +77,7 @@ const GameStart: React.FC<gameStartProps> = ({}) => {
     // socket.emit('acceptDuel', {socketId: res?.data, idRoom: uid, currentUserId: currentUserId, currentUserName: currentUserName});
       setGameNumber(1).then((res) => {
 		});
-      socket.emit('room', `${uid}`);
-      setTimeout(() => {
-        push(`/dashboard/game/${uid}`);
-      }, 1000);
-
+    push(`/dashboard/game/${uid}`);
     })
 };
 

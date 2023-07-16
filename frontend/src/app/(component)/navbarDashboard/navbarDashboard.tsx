@@ -180,11 +180,7 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
 		setGameNumber(2).then((res) => {
 			console.log(res);
 		});
-		const pushDest =`/dashboard/game/${duelRequest?.idRoom}`;
-		socket.emit('room', `${duelRequest?.idRoom}`);
-		setTimeout(() => {
-			push(pushDest);
-		},1000);
+		push(`/dashboard/game/${duelRequest?.idRoom}`);
 		setDuelRequest(null);
 	}
 

@@ -50,28 +50,19 @@ export class MyGateway implements OnModuleInit {
 
     @SubscribeMessage('room-data')
     onRoomData(@MessageBody() body: {id: string, data: any}) {
-        if (body.data?.status == 'ready'){
-            console.log(this.ready);
+        if (body.data?.ready != ''){
+            console.log(body.data, body.id);
             for (let i = 0; this.ready[i]; i++) {
                 if (this.ready[i].id == body.id) {
                     if (this.ready[i].idReady != body.data.ready) {
-                        // for(let j = 0; this.ready[j]; j++){
-                        //     if (this.ready[j].id == body.id) {
-                        //         this.ready[j].id = 'END';
-                        //         this.ready[j].idReady = 'END';
-                        //         this.ready.clear();
-                        //     }
-                        // }
-                        this.ready = [];
-                        this.server.in(body.id).emit(body.id, {status: 'game', game: true});
+                        this.server.in(body.id).emit(body.id, {game: true});
                         return;
                     }
                 }
             }
             this.ready.push({id: body.id, idReady: body.data?.ready});
-        } else {
-            this.server.in(body.id).emit(body.id, {data: body.data});
         }
+        this.server.in(body.id).emit(body.id, {data: body.data});
     }
     @SubscribeMessage('gameRoom')
     onCreateGameRoom(@MessageBody() body: string) {
@@ -119,6 +110,7 @@ export class MyGateway implements OnModuleInit {
 
     @SubscribeMessage('move')
     onMove(@MessageBody() data: { idRoom: string, user:string, y: string}) {
+        // console.log('On etait dans le back end de move ', data.idRoom);
         this.server.in(data.idRoom).emit(data.idRoom, data);
     }
 

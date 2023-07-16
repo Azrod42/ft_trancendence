@@ -27,13 +27,8 @@ export type DataEndGame = {
 
 const Room: React.FC<RoomProps> = () => {
   const refDiv: React.MutableRefObject<any> = useRef();
-  const refAll: React.MutableRefObject<any> = useRef();
-
-  const [initRoom, setinitRoom] = useState<boolean>(false);
-  const [initMouse, setinitMouse] = useState<boolean>(false);
-
   const [socket] = useState(useContext(WebsocketContext));
-  const uniqueIdentifier = useParams()['room'][0];
+  const uniqueIdentifier = useParams()?.room;
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
@@ -84,89 +79,43 @@ const Room: React.FC<RoomProps> = () => {
   //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
 
   useEffect(() => {
-    if (!initRoom && userData?.username ) {
-      setinitRoom(true);
-      console.log(uniqueIdentifier)
-      socket.emit('room', `${uniqueIdentifier}`);
-      socket.on(`${uniqueIdentifier}`, (data) => {
-        if (data?.data?.status == 'ready') {
-          console.log('ready');
-          console.log(data?.data?.ready);
-        }
-        if (data?.status == 'game') {
-          console.log(data?.game);
-          if (data.game == true)
-            setGameStatus("running");
-        }
-        if (playerSlot == 2 && data?.data?.status == 'ballPosition') {
-            setBallPosition(data?.data?.ballPosition);
-        }
-        if (playerSlot == 2 && data?.data?.status == 'paddleY') {
-          setPaddleY(data?.data?.paddleY);
-        }
-        if (playerSlot == 1 && data?.data?.status == 'paddle2Y') {
-          setPaddle2Y(data?.data?.paddle2Y);
-        }
-        // console.log(`On est dans la socket de room`);
-        // console.log(userData?.displayname, ": Y = ", data?.y);
-        // console.log(userData?.user, ": Y = ", data?.y);
-      })
-
-    }
-  },[userData]);
-useEffect(() => {
+    socket.emit('room', uniqueIdentifier);
+    socket.on(`${uniqueIdentifier}`, (data) => {
+      if (data?.data?.ready != '') {
+        console.log(data?.data?.ready);
+      }
+      if (data?.game != '') {
+        console.log(data?.game);
+      }
+      // console.log(`On est dans la socket de room`);
+      console.log(userData?.displayname, ": Y = ", data?.y);
+      // console.log(userData?.user, ": Y = ", data?.y);
+    })
     return () => {
       socket.off(`${uniqueIdentifier}`);
-}},[])
-
-  useEffect(() => {
-    if (playerSlot == 1) {
-      console.log("ballPosition");
-      socket.emit(`room-data`, {id: uniqueIdentifier, data: {status: 'ballPosition', ballPosition: ballPosition}});
     }
-  },[ballPosition])
-
-  useEffect(() => {
-    if (playerSlot == 1) {
-      console.log("paddleY");
-      socket.emit(`room-data`, {id: uniqueIdentifier, data: {status: 'paddleY', paddleY: paddleY}});
-    }
-  },[paddleY])
-
-  useEffect(() => {
-    if (playerSlot == 2) {
-      console.log("paddle2Y");
-      socket.emit(`room-data`, {id: uniqueIdentifier, data: {status: 'paddle2Y', paddle2Y: paddle2Y}});
-    }
-  },[paddle2Y])
-
+  },[]);
 
   useEffect(() => { // mouvements souris
-    if (!initMouse && userData?.username) {
-      setinitMouse(true);
-      canvasRef.current?.addEventListener('mousemove', (data: any) => {
-          if (userData?.username) {
-            // console.log("SEND", uniqueIdentifier, userData?.username, data.screenY)
-            socket.emit('move', {idRoom: uniqueIdentifier, user: userData?.username, y: data?.screenY})
-          }
-          let newY = data?.screenY - 350;
-          if (canvasRef.current) {
+    if (refDiv.current)
+      refDiv.current.addEventListener('mousemove', (data : any) => {
+      socket.emit('move', {idRoom: uniqueIdentifier, user: userData?.username, y: data?.screenY})
+      let newY = data?.screenY- 350;
+      if (canvasRef.current) {
             // Ne depasse pas les rebords
             newY = Math.max(newY, 10);
             newY = Math.min(newY, canvasRef.current.height - 110);
           }
           if (playerSlot === 1)
-            setPaddleY(newY);
+          setPaddleY(newY);
           else if (playerSlot === 2)
-            setPaddle2Y(newY);
-    });
-    }
-  }, [userData]);
+            setDebouncedPaddle2Y(newY);
+        });
+  }, []);
 
   /////////////// essaie reception data
 
   useEffect(() => {
-    console.log("off");
     socket.on('acceptDuel', (data) => {
       // console.log(`On est dans le front de acceptDuel`, data);
     })
@@ -190,8 +139,8 @@ useEffect(() => {
     };
   }
   
-  const setDebouncedPaddleY = debounce(setPaddleY, 4);
-  const setDebouncedPaddle2Y = debounce(setPaddle2Y, 4);
+  const setDebouncedPaddleY = debounce(setPaddleY, 20);
+  const setDebouncedPaddle2Y = debounce(setPaddle2Y, 20);
 
   
 
@@ -199,7 +148,8 @@ useEffect(() => {
     setGameStatus("running");
     };
     const ready = () => {
-      socket.emit(`room-data`, {id: uniqueIdentifier, data: {status: 'ready', ready: userData?.id}});
+      console.log('Emit');
+      socket.emit(`room-data`, {id: uniqueIdentifier, data: {ready: userData?.id}});
     };
   
   const resetGame = (num: number) => {
@@ -243,8 +193,7 @@ useEffect(() => {
   
       let newX = ballPosition.x + ballSpeed.dx;
           let newY = ballPosition.y + ballSpeed.dy;
-          if (playerSlot == 1)
-            setBallPosition({x: newX, y: newY});
+          setBallPosition({x: newX, y: newY});
   
           if (newX < 40 && newY > paddleY - 10 && newY < paddleY + 120) // player 1 rebond
       {
@@ -295,51 +244,48 @@ useEffect(() => {
       };
     }, [ballPosition, ballSpeed, paddleY, paddle2Y, gameStatus]);
 
-
-  useEffect(() => {},[])
-
+  
     useEffect(() => {
+      if (canvasRef.current) {
+        const canvas = canvasRef.current;
+        const context = canvas.getContext('2d');
+  
+      if (context) {
+        context.clearRect(0, 0, canvas.width, canvas.height); // nettoie le canvas pour actualiser les positions
+      if (isBlack) {
+        context.fillStyle = '#000000'; 
+        context.fillRect(0, 0, canvas.width, canvas.height);
+      }
 
-        if (canvasRef.current) {
-          const canvas = canvasRef.current;
-          const context = canvas.getContext('2d');
+        context.strokeStyle = 'white'; // couleur contour
+        context.strokeRect(0, 0, canvas.width, canvas.height); // contour
+          
+          //ligne de séparation du terrain
+          context.beginPath();
+          context.setLineDash([10, 5]);
+          context.moveTo(canvas.width / 2, 0);
+          context.lineTo(canvas.width / 2, canvas.height);
+          context.stroke();
+  
+          // Raquette joueur 1
+          context.fillStyle = '#FFFFFF';
+      context.fillRect(20, paddleY, 15, 100);
+  
+      // Raquette joueur 2
+      context.fillRect(canvas.width - 35, paddle2Y, 15, 100);
+  
+      //balle
+          context.beginPath();
+      if(ballForm)
+          context.fillRect(ballPosition.x -7, ballPosition.y - 7, 15, 15);
+      else
+          context.arc(ballPosition.x, ballPosition.y, 10, 0, Math.PI * 2, false);
 
-          if (context) {
-            context.clearRect(0, 0, canvas.width, canvas.height); // nettoie le canvas pour actualiser les positions
-            if (isBlack) {
-              context.fillStyle = '#000000';
-              context.fillRect(0, 0, canvas.width, canvas.height);
-            }
-
-            context.strokeStyle = 'white'; // couleur contour
-            context.strokeRect(0, 0, canvas.width, canvas.height); // contour
-
-            //ligne de séparation du terrain
-            context.beginPath();
-            context.setLineDash([10, 5]);
-            context.moveTo(canvas.width / 2, 0);
-            context.lineTo(canvas.width / 2, canvas.height);
-            context.stroke();
-
-            // Raquette joueur 1
-            context.fillStyle = '#FFFFFF';
-            context.fillRect(20, paddleY, 15, 100);
-
-            // Raquette joueur 2
-            context.fillRect(canvas.width - 35, paddle2Y, 15, 100);
-
-            //balle
-            context.beginPath();
-            if (ballForm)
-              context.fillRect(ballPosition.x - 7, ballPosition.y - 7, 15, 15);
-            else
-              context.arc(ballPosition.x, ballPosition.y, 10, 0, Math.PI * 2, false);
-
-            context.fill();
-
-            // Réinitialise les paramètres de ligne pour les prochains dessins
-            context.setLineDash([]); //contour plein et non pointillé
-          }
+      context.fill();
+  
+          // Réinitialise les paramètres de ligne pour les prochains dessins
+          context.setLineDash([]); //contour plein et non pointillé
+        }
       }
     }, [paddleY, paddle2Y, ballPosition, isBlack, ballForm]);
 
@@ -401,7 +347,7 @@ useEffect(() => {
               <button className={styles.buttonGameMode} onClick={() => setIsBlack(!isBlack)}>Change Background</button>
               <button className={styles.buttonGameMode} onClick={() => setBallForm(!ballForm)}>Change Ball Form</button>
             </div>
-            {/*<div style={{ marginBottom: '200px' }}></div>*/}
+            <div style={{ marginBottom: '200px' }}></div>
           </div>
         )}
       </div>
