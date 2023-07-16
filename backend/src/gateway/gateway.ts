@@ -1,23 +1,11 @@
-<<<<<<< HEAD
 import {MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer} from "@nestjs/websockets";
 import {OnModuleInit} from "@nestjs/common";
 import  { Server, Socket } from 'socket.io'
 import { UserService } from '../user/user.service';
-=======
-import {
-  MessageBody,
-  SubscribeMessage,
-  WebSocketGateway,
-  WebSocketServer,
-} from '@nestjs/websockets';
-import { OnModuleInit } from '@nestjs/common';
-import { Server } from 'socket.io';
->>>>>>> master
 
 
 @WebSocketGateway(4001, { cors: { origin: ['http://localhost:3000'] } })
 export class MyGateway implements OnModuleInit {
-<<<<<<< HEAD
     @WebSocketServer()
     server: Server;
     constructor(private readonly userService: UserService) {}
@@ -25,12 +13,6 @@ export class MyGateway implements OnModuleInit {
     sockets: { [id: string]: Socket } = {};
     connectedUser: any[];
     ready: any[] = [];
-=======
-  @WebSocketServer()
-  server: Server;
->>>>>>> master
-
-  connectedUser: any[];
     onModuleInit(): any {
         this.server.setMaxListeners(2000);
         this.server.on('connection', (socket) => {
@@ -113,8 +95,6 @@ export class MyGateway implements OnModuleInit {
         content: body?.message
     })
     }
-<<<<<<< HEAD
-
     @SubscribeMessage('duelRequest')
     onDuelRequest(@MessageBody() data: { socketId: string, idRoom: string }) {
     console.log(`We are in 'duelRequest' event and this is socketId = ${data.socketId}`, "ID room", data?.idRoom);
@@ -135,8 +115,3 @@ export class MyGateway implements OnModuleInit {
     }
 
 }
-    
-
-=======
-}
->>>>>>> master
