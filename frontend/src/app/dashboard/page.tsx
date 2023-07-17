@@ -98,8 +98,6 @@ const Dashboard: React.FC<DashboardProps> = ({}) => {
         <ConnectedUser />
       </div>
       <div className={styles3.section_a_containerBottom}>
-        <h1 className={styles3.h1_section_a}>STATS</h1>
-        <hr className={styles3.hr} />
         <p className={styles3.p_section_a}>
           Game Win: <span className={styles3.p_section_a_value}>{gameWin}</span>
         </p>
@@ -134,11 +132,6 @@ const Dashboard: React.FC<DashboardProps> = ({}) => {
       </div>
       <div className={stylesGrid.section_b}>
         <div className={styles3.section_b_container}>
-          <p
-            className={`${styles3.section_d_gamesitems} ${styles3.section_b_header}`}
-          >
-            RANK
-          </p>
           {elo >= 400 && elo <= 600 && (
             <div className={styles3.rankIcon}>
               <Image
@@ -207,15 +200,9 @@ const Dashboard: React.FC<DashboardProps> = ({}) => {
         </div>
       </div>
       <div className={styles3.section_c_container}>
-        <p
-          className={`${styles3.section_d_gamesitems} ${styles3.section_b_header}`}
-        >
-          LEVEL
-        </p>
+        <p className={`${styles3.section_d_gamesitems} ${styles3.section_b_header}`}>LEVEL</p>
         <div className={styles3.levelContainer}>
-          <p className={styles3.levelText}>
-            Level {Math.floor(Math.sqrt(xp / 100) + 1)}
-          </p>
+          <p className={styles3.levelText}>Level {Math.floor(Math.sqrt(xp / 100) + 1)}</p>
           <p className={styles3.xpText}>{xp} XP</p>
         </div>
       </div>

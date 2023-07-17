@@ -71,11 +71,10 @@
 }
 
 .buttonContainer {
-  display: flex;
+  display: 100px;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  margin-top: 20px;
 }
 
 .containerChatWith {
@@ -87,17 +86,26 @@
 }
 
 .chatWith {
-  background-image: rgba(0, 0, 0, 0);
   color: white;
   width: 70%;
   height: 30px;
   text-align: center;
-  border-radius: 4px;
-  border: 2px solid;
-  border-image: linear-gradient(to right, #2c0fb1 0%, #794aca 100%) 1;
+  border: 2px solid #2c0fb1;
+  background-color: #2e168644;
+  border-radius: 10px;
   padding: 14px 31px;
   margin-bottom: 10px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  transition-duration: 0.5s;
+}
+
+.chatWith:hover {
+  background-color: #2e1686ff;
+  box-shadow: 0 0 10px #2c0fb1;
 }
 
 .chatWith span {
