@@ -53,3 +53,137 @@
 	}
 
 }
+
+.section_a_containerBottom {
+	background-color: #060b26cc;
+	width: 400px;
+	height: 300px;
+	margin: 15px;
+	border-radius: 10px;
+	padding: 1px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+	box-shadow: 0 0 2px #ef5da8;
+	border: 0.1px solid #ef5da8;
+}
+.p_section_a {
+	font-family: Inter;
+	font-weight: 500;
+	font-size: 16px;
+	line-height: 22.4px;
+	color: #ffffff;
+	text-align: left;
+	margin: 0;
+}
+
+
+.p_section_a_value {
+	font-family: Inter;
+	font-weight: 500;
+	font-size: 16px;
+	line-height: 22.4px;
+	color: #ffffff;
+	text-align: right;
+}
+
+.section_b_container {
+	background-color: #060b26cc;
+	width: 400px;
+	height: 300px;
+	margin: 15px;
+	border-radius: 10px;
+	padding: 1px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-start;
+	gap: 10px;
+	box-shadow: 0 0 2px #ef5da8;
+	border: 0.1px solid #ef5da8;
+}
+
+
+.rankIcon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 128px;
+	height: 128px;
+	margin-top: 50px;
+}
+
+.rankNameContainer {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	height: 100%;
+	flex: 1;
+	justify-content: flex-end;
+}
+
+.section_c_container {
+	background-color: #060b26cc;
+	width: 400px;
+	height: 300px;
+	margin: 15px;
+	border-radius: 10px;
+	padding: 1px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-start;
+	gap: 10px;
+	box-shadow: 0 0 2px #ef5da8;
+	border: 0.1px solid #ef5da8;
+}
+
+.section_d_gamesitems {
+	background-color: #060b26cc;
+	width: 400px;
+	height: 300px;
+	margin: 15px;
+	border-radius: 10px;
+	padding: 1px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-start;
+	gap: 10px;
+	box-shadow: 0 0 2px #ef5da8;
+	border: 0.1px solid #ef5da8;
+}
+
+.section_b_header {
+	font-size: 24px;
+}
+
+.levelContainer {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: center;
+	gap: 8px;
+	margin-top: 16px;
+}
+.levelText {
+	font-family: Inter;
+	font-weight: 700;
+	font-size: 24px;
+	line-height: 33.6px;
+	color: #ffffff;
+	text-align: center;
+	margin-bottom: 90px;
+}
+.xpText {
+	font-family: Inter;
+	font-weight: 500;
+	font-size: 16px;
+	line-height: 22.4px;
+	color: #ffffff;
+	margin-bottom: 50px;
+}
