@@ -2,12 +2,17 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useQuery } from "react-query";
-import { getAllUsers, getUserInfo } from "@/app/auth/auth.api";
+import {
+  getAllUsers,
+  getUserInfo,
+  UserAuthResponse,
+} from "@/app/auth/auth.api";
 import styles from "@/app/dashboard/social/chat-search/chatSearch.module.css";
 import Image from "next/image";
 import { addChat } from "@/app/auth/auth.api";
 import { getBlockList } from "@/app/auth/auth.api";
 import { useBlocker } from "react-router/dist/lib/hooks";
+import { postUserStats } from "@/app/dashboard/social/social.api";
 
 export const SearchBar: React.FC = () => {
   return (
@@ -24,6 +29,37 @@ interface SearchUserProps {
 }
 
 export const SearchUser: React.FC<SearchUserProps> = ({ user, onClick }) => {
+  const [xp, setXp] = useState<number>(0);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  let [userData, setuserData] = useState<UserAuthResponse>();
+  const { push } = useRouter();
+  const { refetch } = useQuery(
+    "getUserInfo",
+    () =>
+      getUserInfo().then((res) => {
+        if (res == undefined) push("/");
+        setuserData(res);
+      }),
+    { staleTime: 5000 }
+  );
+  useEffect(() => {
+    if (userData == undefined) {
+      refetch();
+    }
+  });
+  useEffect(() => {
+    //for setup action on userData refresh ?
+    setLoading(false);
+  }, [userData]);
+
+  useEffect(() => {
+    if (userData?.id) {
+      postUserStats({ id: userData?.id! }).then((res: any) => {
+        setXp(res?.data?.xp);
+      });
+    }
+  }, [userData]);
   return (
     <div className={styles.user} key={user.id} onClick={() => onClick(user.id)}>
       <Image
@@ -36,7 +72,9 @@ export const SearchUser: React.FC<SearchUserProps> = ({ user, onClick }) => {
       <div className={styles.userDetails}>
         <span className={styles.userName}>{user.displayname}</span>
         <span className={styles.userExp}>{user.elo} XP</span>
-        <span className={styles.userLevel}>Level 1</span>
+        <span className={styles.userLevel}>
+          Level {Math.floor(Math.sqrt(xp / 100) + 1)}
+        </span>
       </div>
     </div>
   );

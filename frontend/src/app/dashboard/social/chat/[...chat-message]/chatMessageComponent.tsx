@@ -2,8 +2,8 @@
 import React, { useEffect, useState, useContext, useRef } from "react";
 import styles from "./chatMessage.module.css";
 import Image from "next/image";
-import {useParams, usePathname, useRouter} from "next/navigation";
-import {getPublicUserInfo, getUserInfo, PublicUserResponse} from "@/app/auth/auth.api";
+import { useParams, usePathname, useRouter } from "next/navigation";
+import { getPublicUserInfo, getUserInfo } from "@/app/auth/auth.api";
 import {
   addFriend,
   removeFriend,
@@ -20,8 +20,9 @@ import { useQuery } from "react-query";
 import { SubmitHandler, useForm } from "react-hook-form";
 import ErrorNotification from "@/app/(component)/errorNotification/errorNotification";
 import LoadingPage from "@/app/(component)/loadingPage/loadingPage";
-import { getBlockList, getFriendList } from "@/app/auth/auth.api";
-import { useMutation } from "react-query";
+import { getWebSocketIdByUserId } from "@/app/auth/auth.api";
+import uuid from "react-uuid";
+import { setGameNumber } from "@/app/auth/auth.api";
 
 interface ChatWindowProps {}
 
@@ -30,7 +31,6 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({}) => {
   const user2Id: string = useParams()["chat-message"][1];
   const [roomID, setRoomID] = useState<string>("");
   const [createRoom, setCreateRoom] = useState<boolean>(false);
-
 
   const [message, setMessage] = useState("");
   const [socket] = useState(useContext(WebsocketContext));
@@ -49,7 +49,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({}) => {
       if (res && res.id) {
         setUser1Id(res.id);
         for (let i = 0; user1Id[i]; i++) {
-          if (user1Id[i] > user2Id[i]){
+          if (user1Id[i] > user2Id[i]) {
             setRoomID(user1Id + user2Id);
             return;
           } else {
@@ -62,30 +62,29 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({}) => {
   }, [userData]);
 
   useEffect(() => {
-    if (createRoom == false)
-      setCreateRoom(true)
+    if (createRoom == false) setCreateRoom(true);
   }, [roomID]);
 
-    useEffect(() => {
+  useEffect(() => {
     setCurrentUserId(user2Id);
   }, [user2Id]);
 
-    const userQuery = useQuery(
-        "fetchUserChatData",
-        () =>
-            getUserInfo().then((res) => {
-              setUserData(res);
-            }),
-        {staleTime: 5000, refetchOnWindowFocus: false}
-    );
-    const messageUserQuery = useQuery(
-        "fetchMsgUserData",
-        () =>
-            getUserMessageApi({id: user2Id}).then((res) => {
-              if (res?.status == true) setMsgUserData(res.data);
-            }),
-        {staleTime: 1000, refetchOnWindowFocus: false}
-    );
+  const userQuery = useQuery(
+    "fetchUserChatData",
+    () =>
+      getUserInfo().then((res) => {
+        setUserData(res);
+      }),
+    { staleTime: 5000, refetchOnWindowFocus: false }
+  );
+  const messageUserQuery = useQuery(
+    "fetchMsgUserData",
+    () =>
+      getUserMessageApi({ id: user2Id }).then((res) => {
+        if (res?.status == true) setMsgUserData(res.data);
+      }),
+    { staleTime: 1000, refetchOnWindowFocus: false }
+  );
 
   // useEffect(() => {
   //   if (currentUserId) {
@@ -157,16 +156,16 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({}) => {
   }, [msgUserData]);
 
   useEffect(() => {
-    if (roomID != '') {
-        socket.emit(`room`, `${roomID}`);
-        socket.on(`${roomID}`, (data) => {
-          setTimeout(() => {
-            messageUserQuery.refetch();
-          }, 100);
-        });
-        return () => {
-          socket.off(`${roomID}`);
-        };
+    if (roomID != "") {
+      socket.emit(`room`, `${roomID}`);
+      socket.on(`${roomID}`, (data) => {
+        setTimeout(() => {
+          messageUserQuery.refetch();
+        }, 100);
+      });
+      return () => {
+        socket.off(`${roomID}`);
+      };
     }
   }, [roomID]);
 
@@ -191,7 +190,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({}) => {
           setError(false);
         }, 3000);
       } else {
-        socket.emit(`channelMessage`, {channel: roomID, message: true});
+        socket.emit(`channelMessage`, { channel: roomID, message: true });
       }
     });
     sendMsg.reset();
@@ -234,19 +233,19 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({}) => {
 interface ProfileProps {}
 
 export const Profile: React.FC<ProfileProps> = () => {
-  const { push } = useRouter();
   const userId: string = usePathname().split("/").pop()!;
 
-  const [userData, setUserData] = useState<any>();
   const [error, setError] = useState<boolean>(false);
   const [headerError, setHeaderError] = useState<string>("");
   const [errorMsg, setErrorMsg] = useState<string>("");
 
-  const publicQuery = useQuery('getUserInfo', () =>
-      getPublicUserInfo(userId).then(res => {
-        if (res && res.data)
-          setUserData(res.data);
-        }), {refetchInterval: 4000 , refetchOnWindowFocus: false}
+  const publicQuery = useQuery(
+    "getUserInfo",
+    () =>
+      getPublicUserInfo(userId).then((res) => {
+        if (res && res.data) setUserData(res.data);
+      }),
+    { refetchInterval: 4000, refetchOnWindowFocus: false }
   );
 
   function onClickAddFriend() {
@@ -317,6 +316,47 @@ export const Profile: React.FC<ProfileProps> = () => {
     push(`/dashboard/user/${userId}`);
   }
 
+  useEffect(() => {
+    getUserInfo().then((data) => {
+      if (data) {
+        setUserData(data);
+      }
+    });
+  }, []);
+
+  const { push, refresh } = useRouter();
+  const [userData, setUserData] = useState<any>();
+  const [currentUserId, setCurrentUserId] = useState<string>("");
+  const [currentUserName, setCurrentUserName] = useState<string>("");
+  const [socket] = useState(useContext(WebsocketContext));
+
+  useEffect(() => {
+    getUserInfo().then((data) => {
+      if (data) {
+        setUserData(data);
+      }
+    });
+  }, []);
+
+  const handleFightClick = (id: string) => {
+    console.log(`Fight with user: ${id}`);
+
+    getWebSocketIdByUserId(id).then((res) => {
+      // console.log(`This is res.data = ${res?.data}`);
+      // console.log(`This is currentUserId = ${currentUserId}`);
+      const uid = uuid();
+      socket.emit("duelRequest", {
+        socketId: res?.data,
+        idRoom: uid,
+        currentUserId: currentUserId,
+        currentUserName: currentUserName,
+      });
+      // socket.emit('acceptDuel', {socketId: res?.data, idRoom: uid, currentUserId: currentUserId, currentUserName: currentUserName});
+      setGameNumber(1).then((res) => {});
+      push(`/dashboard/game/${uid}`);
+    });
+  };
+
   return (
     <>
       <div className={styles.profile}>
@@ -326,6 +366,12 @@ export const Profile: React.FC<ProfileProps> = () => {
           <p className={styles.exp}>Exp: {userData?.elo}</p>
           <div className={styles.chatWith} onClick={onClickProfile}>
             <span>See all profile</span>
+          </div>
+          <div
+            className={styles.chatWith}
+            onClick={() => handleFightClick(userId)}
+          >
+            <span>PLAY</span>
           </div>
         </div>
         <div className={styles.buttonContainer}>
