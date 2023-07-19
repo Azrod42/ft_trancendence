@@ -385,4 +385,14 @@ export class UserService {
 			return {gameWin: user.gameWin, gameLose: user.gameLose, winLoseRate: user.winLoseRate, totalPointGet: user.totalPointGet, totalPointTake: user.totalPointTake, pointGetTakeRate: user.pointGetTakeRate, winStreak: user.winStreak, totalGame: user.totalGame, elo: user.elo, xp: user.xp};
 		return ''
 	}
+
+	async updateGameID(userID: string, socketID: string) {
+		const user = await this.findById(userID);
+		if (user) {
+			user.socketID = socketID;
+			this.userRepo.save(user);
+			return true;
+		}
+		return false;
+	}
 }

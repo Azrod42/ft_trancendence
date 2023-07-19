@@ -276,13 +276,13 @@ const User: React.FC<UserProps> = ({}) => {
             </div>
             <div className={styles2.buttonContainer}>
               <div
-                className={styles2.removeChatWith}
+                className={styles2.chatWith}
                 onClick={onClickRemoveFriend}
               >
                 Remove-friend
               </div>
               <div
-                className={styles2.removeChatWith}
+                className={styles2.chatWith}
                 onClick={onClickRemoveBlock}
               >
                 Remove-block

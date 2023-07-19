@@ -444,4 +444,11 @@ export class UserController {
 	async  getUserStats (@Req() request: RequestWithUser, @Res() res, @Body() data: chanIdDto): Promise<any> {
 		return res.send(await this.userService.getUserStats(data.id));
 	}
+
+	@HttpCode(200)
+	@Post('update-game-id')
+	@UseGuards(JwtAuthGuard)
+	async  updateGameId (@Req() request: RequestWithUser, @Res() res, @Body() data: chanIdDto): Promise<any> {
+		return res.send(await this.userService.updateGameID(request.user.id, data.id));
+	}
 }

@@ -1,7 +1,6 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
 import styles from "./dashboard.module.css";
-import styles3 from "@/app/dashboard/profile/profile.module.css";
 import ConnectedUser from "@/app/(component)/connectedUser/connectedUser";
 import DashboardUser from "@/app/(component)/dashboardUser/dashboardUser";
 import { postGameData } from "@/app/dashboard/social/social.api";
@@ -97,50 +96,43 @@ const Dashboard: React.FC<DashboardProps> = ({}) => {
         <h2 className={styles.h2ConUsr}>Connected users:</h2>
         <ConnectedUser />
       </div>
-      <div className={styles3.section_a_containerBottom}>
-        <h1 className={styles3.h1_section_a}>STATS</h1>
-        <hr className={styles3.hr} />
-        <p className={styles3.p_section_a}>
-          Game Win: <span className={styles3.p_section_a_value}>{gameWin}</span>
+      <div className={styles.section_a_containerBottom}>
+        <p className={styles.p_section_a}>
+          Game Win: <span className={styles.p_section_a_value}>{gameWin}</span>
         </p>
-        <p className={styles3.p_section_a}>
+        <p className={styles.p_section_a}>
           Game Lose:{" "}
-          <span className={styles3.p_section_a_value}>{gameLose}</span>
+          <span className={styles.p_section_a_value}>{gameLose}</span>
         </p>
-        <p className={styles3.p_section_a}>
+        <p className={styles.p_section_a}>
           Win/Lose Rate:{" "}
-          <span className={styles3.p_section_a_value}>{winLoseRate}</span>
+          <span className={styles.p_section_a_value}>{winLoseRate}</span>
         </p>
-        <p className={styles3.p_section_a}>
+        <p className={styles.p_section_a}>
           Total Points Get:{" "}
-          <span className={styles3.p_section_a_value}>{totalPointGet}</span>
+          <span className={styles.p_section_a_value}>{totalPointGet}</span>
         </p>
-        <p className={styles3.p_section_a}>
+        <p className={styles.p_section_a}>
           Total Points Take:{" "}
-          <span className={styles3.p_section_a_value}>{totalPointTake}</span>
+          <span className={styles.p_section_a_value}>{totalPointTake}</span>
         </p>
-        <p className={styles3.p_section_a}>
+        <p className={styles.p_section_a}>
           Point Get/Take Rate:{" "}
-          <span className={styles3.p_section_a_value}>{pointGetTakeRate}</span>
+          <span className={styles.p_section_a_value}>{pointGetTakeRate}</span>
         </p>
-        <p className={styles3.p_section_a}>
+        <p className={styles.p_section_a}>
           Win Streak:{" "}
-          <span className={styles3.p_section_a_value}>{winStreak}</span>
+          <span className={styles.p_section_a_value}>{winStreak}</span>
         </p>
-        <p className={styles3.p_section_a}>
+        <p className={styles.p_section_a}>
           Total Games:{" "}
-          <span className={styles3.p_section_a_value}>{totalGame}</span>
+          <span className={styles.p_section_a_value}>{totalGame}</span>
         </p>
       </div>
       <div className={stylesGrid.section_b}>
-        <div className={styles3.section_b_container}>
-          <p
-            className={`${styles3.section_d_gamesitems} ${styles3.section_b_header}`}
-          >
-            RANK
-          </p>
+        <div className={styles.section_b_container}>
           {elo >= 400 && elo <= 600 && (
-            <div className={styles3.rankIcon}>
+            <div className={styles.rankIcon}>
               <Image
                 src={"/media/rank/Bronze_3_Rank.png"}
                 width={128}
@@ -150,7 +142,7 @@ const Dashboard: React.FC<DashboardProps> = ({}) => {
             </div>
           )}
           {elo >= 601 && elo <= 800 && (
-            <div className={styles3.rankIcon}>
+            <div className={styles.rankIcon}>
               <Image
                 src={"/media/rank/Silver_3_Rank.png"}
                 width={128}
@@ -160,7 +152,7 @@ const Dashboard: React.FC<DashboardProps> = ({}) => {
             </div>
           )}
           {elo >= 801 && elo <= 1000 && (
-            <div className={styles3.rankIcon}>
+            <div className={styles.rankIcon}>
               <Image
                 src={"/media/rank/Gold_3_Rank.png"}
                 width={128}
@@ -170,7 +162,7 @@ const Dashboard: React.FC<DashboardProps> = ({}) => {
             </div>
           )}
           {elo >= 1001 && elo <= 1200 && (
-            <div className={styles3.rankIcon}>
+            <div className={styles.rankIcon}>
               <Image
                 src={"/media/rank/Diamond_3_Rank.png"}
                 width={128}
@@ -180,7 +172,7 @@ const Dashboard: React.FC<DashboardProps> = ({}) => {
             </div>
           )}
           {elo >= 1201 && (
-            <div className={styles3.rankIcon}>
+            <div className={styles.rankIcon}>
               <Image
                 src={"/media/rank/Silver_3_Rank.png"}
                 width={128}
@@ -189,34 +181,27 @@ const Dashboard: React.FC<DashboardProps> = ({}) => {
               />
             </div>
           )}
-          <div className={styles3.rankNameContainer}>
+          <div className={styles.rankNameContainer}>
             {elo >= 400 && elo <= 600 && (
-              <p className={styles3.rankName}>Bronze</p>
+              <p className={styles.rankName}>Bronze</p>
             )}
             {elo >= 601 && elo <= 800 && (
-              <p className={styles3.rankName}>Silver</p>
+              <p className={styles.rankName}>Silver</p>
             )}
             {elo >= 801 && elo <= 1000 && (
-              <p className={styles3.rankName}>Gold</p>
+              <p className={styles.rankName}>Gold</p>
             )}
             {elo >= 1001 && elo <= 1200 && (
-              <p className={styles3.rankName}>Diamond</p>
+              <p className={styles.rankName}>Diamond</p>
             )}
-            {elo >= 1201 && <p className={styles3.rankName}>Platinum</p>}
+            {elo >= 1201 && <p className={styles.rankName}>Platinum</p>}
           </div>
         </div>
       </div>
-      <div className={styles3.section_c_container}>
-        <p
-          className={`${styles3.section_d_gamesitems} ${styles3.section_b_header}`}
-        >
-          LEVEL
-        </p>
-        <div className={styles3.levelContainer}>
-          <p className={styles3.levelText}>
-            Level {Math.floor(Math.sqrt(xp / 100) + 1)}
-          </p>
-          <p className={styles3.xpText}>{xp} XP</p>
+      <div className={styles.section_c_container}>
+        <div className={styles.levelContainer}>
+          <p className={styles.levelText}>Level {Math.floor(Math.sqrt(xp / 100) + 1)}</p>
+          <p className={styles.xpText}>{xp} XP</p>
         </div>
       </div>
       <div className={styles.containerchild}>

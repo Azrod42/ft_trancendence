@@ -5,7 +5,6 @@ import { AppModule } from './app.module';
 import * as cookieParser from "cookie-parser";
 import * as bodyParser from 'body-parser';
 import * as process from "process";
-import * as sockjs from 'sockjs';
 
 
 async function bootstrap() {
@@ -15,6 +14,7 @@ async function bootstrap() {
 	exceptionFactory: (errors) => new BadRequestException(errors),
   }));
   app.enableCors({credentials:true, origin: 'http://localhost:3000',})
+  // app.useWebSocketAdapter(new WsAdapter(app));
   app.use(bodyParser.json({limit: '50mb'}));
   app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
   app.use(cookieParser());

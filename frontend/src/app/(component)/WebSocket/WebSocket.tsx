@@ -19,9 +19,9 @@ export const WebSocket = (user: any) => {
     const router = useRouter();
     
     useEffect(() => {
-        setTimeout(() => {
-            needRefresh ? router.refresh() : () => {};
-        },10000);
+        // setTimeout(() => {
+        //     needRefresh ? router.refresh() : () => {};
+        // },10000);
         socket.on(`ping`, (data) => {
             socket.emit('pong', user);
         });
@@ -30,7 +30,7 @@ export const WebSocket = (user: any) => {
             localStorage.setItem('connectedUser', JSON.stringify(data?.data));
             setNeedRefresh(false)
         });
-        console.log(`this is user.id avant le emit = ${user.id}`)
+        // console.log(`this is user.id avant le emit = ${user.id}`)
         socket.emit('storeClientInfo', {
             userId: user,
             socketId: socket.id,
