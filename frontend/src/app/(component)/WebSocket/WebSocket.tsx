@@ -13,7 +13,7 @@ import { getPublicUserInfo, PublicUserResponse } from "@/app/auth/auth.api";
 import { AxiosResponse } from "axios";
 
 export const WebSocket = (user: any) => {
-    const [socket] = useState(useContext(WebsocketContext))
+    const [socket, setSocket] = useState(useContext(WebsocketContext))
     const [needRefresh, setNeedRefresh] = useState<boolean>(true);
     const refDiv: MutableRefObject<any> = useRef();
     const router = useRouter();

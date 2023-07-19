@@ -173,9 +173,7 @@ export class AuthController {
 	async user2fa(@Req() request: Request, @Res() response: Response, @Body() body) {
 		if (!body.hash)
 			throw new HttpException('No hashed param', HttpStatus.UNAUTHORIZED,);
-		console.log("HASH: ", body.hash);
 		const code = Buffer.from(body.hash, 'base64').toString('binary');
-		console.log("CODE: ",code);
 		const userid = await this.userService.FindUserOnDB(code);
 		const user = await this.userService.findById(userid);
 		if (user.is2FOn)

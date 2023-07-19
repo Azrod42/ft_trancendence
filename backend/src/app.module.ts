@@ -11,6 +11,7 @@ import JwtStrategy from './auth/interface/jwt.strategy';
 import {GatewayModule} from "./gateway/gateway.module";
 import {SocketModule2} from './socket/socket.module'
 
+
 @Module({
   imports: [DatabaseModule, ConfigModule.forRoot(), UserModule, AuthModule, GatewayModule, ChannelModule],
   controllers: [AppController, UserController],

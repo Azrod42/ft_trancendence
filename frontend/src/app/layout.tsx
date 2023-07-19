@@ -3,11 +3,10 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from "react-query/devtools"
 import styles from './globals.module.css'
 import backgound from '../../public/background/main-backgound.jpg'
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 
 //QUERY CLIENT don't touch for now
 const queryClient = new QueryClient({});
-
 
 export default function RootLayout({children}: { children: React.ReactNode }) {
 	return (

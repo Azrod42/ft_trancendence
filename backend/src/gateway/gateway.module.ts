@@ -8,5 +8,4 @@ import {UserModule} from "../user/user.module"; // import UserModule
     providers: [MyGateway, UserService] // include UserService in providers array
 })
 export class GatewayModule {
-
 }
