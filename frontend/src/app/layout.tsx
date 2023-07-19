@@ -5,12 +5,12 @@ import styles from './globals.module.css'
 import backgound from '../../public/background/main-backgound.jpg'
 import React from 'react';
 
-
 //QUERY CLIENT don't touch for now
 const queryClient = new QueryClient({});
 
+
 export default function RootLayout({children}: { children: React.ReactNode }) {
-return (
+	return (
     <html lang="en" className={styles.html}>
 			<body style={{
 					backgroundImage: `url(${backgound.src})`,

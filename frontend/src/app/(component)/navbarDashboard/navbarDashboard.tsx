@@ -6,7 +6,8 @@ import {
 	getUserInfo,
 	getProfilePicture,
 	PublicUserResponse,
-	setGameNumber
+	setGameNumber,
+	updateWebSocketId
 } from '@/app/auth/auth.api';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -134,6 +135,14 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
 	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==- MISE EN DUEL=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
 	const [socket] = useState(useContext(WebsocketContext))
 
+	useEffect(( )=> {
+		if (socket?.id != undefined) {
+			updateWebSocketId({id : socket.id}).then((res) => {
+				// console.log(res);
+			})
+		}
+	},[socket])
+
 	useEffect(() => {
 		const handleDuelRequest = (data: { socketId: string, idRoom: string, currentUserId: string, currentUserName:string}) => {
     		setDuelRequest(data);
@@ -146,7 +155,7 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
 	}, [socket]);
 
 	useEffect(() => {
-		console.log(duelRequest);
+		// console.log(duelRequest);
 	}, [duelRequest])
 
 	  //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==- MISE EN DUEL FIN=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
@@ -178,7 +187,7 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
 
 	const handleAccept = () => {
 		setGameNumber(2).then((res) => {
-			console.log(res);
+			// console.log(res);
 		});
 		push(`/dashboard/game/${duelRequest?.idRoom}`);
 		setDuelRequest(null);

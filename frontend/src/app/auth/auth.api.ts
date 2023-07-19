@@ -390,3 +390,15 @@ export const getPlayerSlot = async () => {
 		return {status: false, error: e};
 	}
 }
+
+export const updateWebSocketId = async (id: any) => {
+	try {
+		const data = await Api.post<string, any>({
+			url: '/users/update-game-id',
+			data: id
+		},)
+		return data;
+	} catch (e) {
+		return undefined;
+	}
+}

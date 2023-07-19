@@ -1,24 +1,11 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import { io, Socket } from 'socket.io-client';
+import WebSocket from 'ws';
+
 @Injectable()
-export class SocketClient implements OnModuleInit {
-  public socketClient: Socket;
+export class SocketClient {
 
-  constructor() {
-    this.socketClient = io('http://localhost:4002');
-  }
+  ws = new WebSocket('ws://localhost:4042', {
+    perMessageDeflate: false
+  });
 
-  onModuleInit(): any {
-    this.registerConsumerEvents();
-  }
-
-  private registerConsumerEvents() {
-    //    this.socketClient.emit('newMessage', { msg: 'hey there' });
-    this.socketClient.on('connect', () => {
-      console.log('connected to gateway');
-    });
-    this.socketClient.on('onMessage', (payload: any) => {
-      console.log(payload);
-    });
-  }
 }

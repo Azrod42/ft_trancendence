@@ -77,6 +77,9 @@ class User {
     @Column()
     totalGame: number;
 
+    @Column()
+    socketID: string;
+
 }
 
 export default User;

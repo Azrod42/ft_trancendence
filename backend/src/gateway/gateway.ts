@@ -4,7 +4,7 @@ import  { Server, Socket } from 'socket.io'
 import { UserService } from '../user/user.service';
 
 
-@WebSocketGateway(4001, { cors: { origin: ['http://localhost:3000'] } })
+@WebSocketGateway(4042, { cors: { origin: ['http://localhost:3000']}})
 export class MyGateway implements OnModuleInit {
     @WebSocketServer()
     server: Server;

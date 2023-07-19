@@ -1,5 +1,4 @@
 "use client"
-
 import React, { useEffect, useRef, useState } from 'react';
 import styles from "./game.module.css";
 import { gameLose } from "@/app/auth/auth.api";

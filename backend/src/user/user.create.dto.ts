@@ -57,6 +57,8 @@ class CreateUserDto {
 	xp: number;
 
 	totalGame: number;
+
+	socketID: string;
 }
 
 export default CreateUserDto;

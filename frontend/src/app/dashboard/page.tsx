@@ -1,7 +1,6 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
 import styles from "./dashboard.module.css";
-// import styles3 from "@/app/dashboard/profile/profile.module.css";
 import ConnectedUser from "@/app/(component)/connectedUser/connectedUser";
 import DashboardUser from "@/app/(component)/dashboardUser/dashboardUser";
 import { postGameData } from "@/app/dashboard/social/social.api";
