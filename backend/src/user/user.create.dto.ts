@@ -59,6 +59,9 @@ class CreateUserDto {
 	totalGame: number;
 
 	socketID: string;
+
+	slot: number;
+
 }
 
 export default CreateUserDto;

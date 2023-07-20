@@ -24,7 +24,14 @@ import * as path from "path";
 import * as process from "process";
 import * as fs from 'fs'
 import {socketId} from '../user/dtos/user.changedisplay.dto'
-import {chanIdDto, inviteToChannelDto, messageReqDto, muteUserDto, newGameDto} from "../channel/dtos/channel.dto";
+import {
+	chanIdDto,
+	idNumberDto,
+	inviteToChannelDto,
+	messageReqDto,
+	muteUserDto,
+	newGameDto
+} from "../channel/dtos/channel.dto";
 
 
 @Controller('users')
@@ -450,5 +457,19 @@ export class UserController {
 	@UseGuards(JwtAuthGuard)
 	async  updateGameId (@Req() request: RequestWithUser, @Res() res, @Body() data: chanIdDto): Promise<any> {
 		return res.send(await this.userService.updateGameID(request.user.id, data.id));
+	}
+
+	@HttpCode(200)
+	@Post('update-slot-nu')
+	@UseGuards(JwtAuthGuard)
+	async  updateSlotId (@Req() request: RequestWithUser, @Res() res, @Body() data: idNumberDto): Promise<any> {
+		return res.send(await this.userService.updateSlotID(request.user.id, data.id));
+	}
+
+	@HttpCode(200)
+	@Get('get-slot-nu')
+	@UseGuards(JwtAuthGuard)
+	async  getSlotNu (@Req() request: RequestWithUser, @Res() res): Promise<number> {
+		return res.send(await this.userService.getSlotID(request.user.id));
 	}
 }

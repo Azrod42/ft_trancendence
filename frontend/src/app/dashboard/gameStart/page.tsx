@@ -1,11 +1,11 @@
-'use client'  
+'use client'
 
 import React, { useEffect, useState, useRef, useContext } from 'react';
 import styles from './gameStart.module.css';
 import { useRouter } from 'next/navigation';
 import LoadingPage from '@/app/(component)/loadingPage/loadingPage';
 import Image from 'next/image';
-import {getUserInfo, postProfilePicture} from "@/app/auth/auth.api";
+import {getUserInfo, postProfilePicture, setSlot} from "@/app/auth/auth.api";
 import {WebsocketContext} from "@/app/(common)/WebsocketContext";
 import { getWebSocketIdByUserId } from "@/app/auth/auth.api";
 import { setGameNumber } from "@/app/auth/auth.api";
@@ -68,13 +68,10 @@ const GameStart: React.FC<gameStartProps> = ({}) => {
 
   const handleFightClick = (id: string) => {
     console.log(`Fight with user: ${id}`);
-
+    setSlot({id: 1}).then((res) => {});
     getWebSocketIdByUserId(id).then((res) => {
-    // console.log(`This is res.data = ${res?.data}`);
-    // console.log(`This is currentUserId = ${currentUserId}`);
     const uid = uuid();
     socket.emit('duelRequest', {socketId: res?.data, idRoom: uid, currentUserId: currentUserId, currentUserName: currentUserName});
-    // socket.emit('acceptDuel', {socketId: res?.data, idRoom: uid, currentUserId: currentUserId, currentUserName: currentUserName});
       setGameNumber(1).then((res) => {
 		});
     push(`/dashboard/game/${uid}`);

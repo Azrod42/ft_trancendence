@@ -33,6 +33,11 @@ export class chanIdDto {
     id: string;
 }
 
+export class idNumberDto {
+    @IsNotEmpty()
+    id: number;
+}
+
 export class chanNewTypeDto {
     @IsNotEmpty()
     id: string;

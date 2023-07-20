@@ -4,23 +4,17 @@ import React, {useContext, useEffect, useRef, useState} from 'react';
 import styles from "./room.module.css";
 import {useParams, useRouter} from "next/navigation";
 import {WebsocketContext} from "@/app/(common)/WebsocketContext";
-import {getPlayerSlot, getUserInfo, PublicUserResponse, UserAuthResponse} from "@/app/auth/auth.api";
+import {getPlayerSlot, getSlot, getUserInfo, PublicUserResponse, UserAuthResponse} from "@/app/auth/auth.api";
 import {useQuery} from "react-query";
 import {mockSession} from "next-auth/client/__tests__/helpers/mocks";
-// import styles from "./game.module.css";
 import { gameLose } from "@/app/auth/auth.api";
 import {createContext} from 'react';
 import { Socket} from 'socket.io-client';
 import * as io from 'socket.io-client';
+import { socket as sock } from '@/app/socket'
 
 
-const socket = io.io("http://localhost:4001");
-
-
-
-
-
-
+const socket = sock.connect();
 
 interface RoomProps {
 }
@@ -82,49 +76,51 @@ const Room: React.FC<RoomProps> = () => {
     // console.log(`This is userData.gameNumber = ${userData?.gameNumber}`)
   })
   useEffect(() => {
-    //for setup action on userData refresh ?
-    getPlayerSlot().then((res) => {
-      setPlayerSlot(res?.data?.slot || 0);
-      // console.log(`this is playerSlot = ${res?.data.slot}`, res?.data);
-      // console.log(`this is playerSlot real = ${playerSlot}`);
-    })
-  },[playerSlot])
+      getSlot().then((res) => {
+        const slot: any =  res?.data['slot'];
+        // console.log(slot);
+        if (slot == 1 || slot == 2)
+          setPlayerSlot(res?.data['slot']);
+      })
+  },[])
+  useEffect(() => {
+    console.log(playerSlot);
+  }, [playerSlot])
   //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
   useEffect(() => {
     console.log(socket)
   },[socket]);
 
   useEffect(() => {
-    if (!initRoom && socket.connected == true) {
-      console.log("socket init", socket);
+    if (!initRoom && socket.connected) {
       setinitRoom(true);
-        socket.emit('gameRoom', `${uniqueIdentifier}`);
-        socket.on(`${uniqueIdentifier}`, (data) => {
-          console.log(data);
-          if (data?.data?.status == 'ready') {
-            // console.log('ready');
-            // console.log(data?.data?.ready);
-          }
-          if (data?.status == 'game') {
-            console.log(data?.game);
-            if (data.game == true)
+        // socket.emit('gameRoom', `${uniqueIdentifier}`);
+        socket.on(`global`, (data) => {
+          console.log(playerSlot, data);
+          if (data?.roomID == uniqueIdentifier) {
+            if (data?.data?.status == 'ready') {
+              console.log('ready');
+            }
+            if (data?.status == 'ready')
+              console.log('A player is ready')
+            if (data?.status == 'game') {
+              console.log(data?.game);
               setGameStatus("running");
+            }
+            if (playerSlot == 2 && data?.data?.status == 'ballPosition') {
+              console.log("ballPosition");
+              setBallPosition(data?.data?.ballPosition);
+            }
+            if (playerSlot == 2 && data?.data?.status == 'paddleY') {
+              setPaddleY(data?.data?.paddleY);
+            }
+            if (playerSlot == 1 && data?.data?.status == 'paddle2Y') {
+              setPaddle2Y(data?.data?.paddle2Y);
+            }
+            return () => {
+              socket.off("global");
+            }
           }
-          if (playerSlot == 2 && data?.data?.status == 'ballPosition') {
-            setBallPosition(data?.data?.ballPosition);
-          }
-          if (playerSlot == 2 && data?.data?.status == 'paddleY') {
-            setPaddleY(data?.data?.paddleY);
-          }
-          if (playerSlot == 1 && data?.data?.status == 'paddle2Y') {
-            setPaddle2Y(data?.data?.paddle2Y);
-          }
-        // console.log(`On est dans la socket de room`);
-        // console.log(userData?.displayname, ": Y = ", data?.y);
-        // console.log(userData?.user, ": Y = ", data?.y);
-        //     return () => {
-        //       socket.off("global");
-        //     }
       })
 
       if (canvasRef.current && initMouse < 1) {
@@ -148,7 +144,7 @@ const Room: React.FC<RoomProps> = () => {
         });
       }
     }
-  },[]);
+  },[socket]);
 // useEffect(() => {
 //     // return () => {
 //     //   socket.off("global");
@@ -157,7 +153,7 @@ const Room: React.FC<RoomProps> = () => {
 
   useEffect(() => {
     if (playerSlot == 1) {
-      console.log("ballPosition");
+      console.log('upd');
       socket.emit(`room-data`, {id: uniqueIdentifier, data: {status: 'ballPosition', ballPosition: ballPosition}});
     }
   },[ballPosition]);
@@ -210,7 +206,6 @@ const Room: React.FC<RoomProps> = () => {
     setGameStatus("running");
     };
     const ready = () => {
-      console.log('Emit');
       socket.emit(`room-data`, {id: uniqueIdentifier, status: 'ready', data: {ready: userData?.id}});
     };
   
@@ -255,6 +250,7 @@ const Room: React.FC<RoomProps> = () => {
   
       let newX = ballPosition.x + ballSpeed.dx;
           let newY = ballPosition.y + ballSpeed.dy;
+          if (playerSlot == 1)
           setBallPosition({x: newX, y: newY});
   
           if (newX < 40 && newY > paddleY - 10 && newY < paddleY + 120) // player 1 rebond

@@ -395,4 +395,26 @@ export class UserService {
 		}
 		return false;
 	}
+
+	async updateSlotID(userID: string, id: number) {
+		const user = await this.findById(userID);
+		if (user) {
+			user.slot = id;
+			this.userRepo.save(user);
+			return true;
+		}
+		return false;
+	}
+
+	async getSlotID(userID: string) {
+		const user = await this.findById(userID);
+		if (user) {
+			return {slot: user.slot};
+		}
+		return {slot: 0};
+	}
+
+	async hello() {
+		return 'hello';
+	}
 }

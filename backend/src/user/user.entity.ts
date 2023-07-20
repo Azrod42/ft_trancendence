@@ -80,6 +80,8 @@ class User {
     @Column()
     socketID: string;
 
+    @Column()
+    slot: number;
 }
 
 export default User;

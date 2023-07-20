@@ -55,7 +55,8 @@ export class AuthService {
 				gameHist: '',
 				xp: 0,
 				totalGame: 0,
-				socketID: ''
+				socketID: '',
+				slot: 0
 			});
 			user.password = undefined;
 			return user;

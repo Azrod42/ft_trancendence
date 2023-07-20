@@ -7,7 +7,7 @@ import {
 	getProfilePicture,
 	PublicUserResponse,
 	setGameNumber,
-	updateWebSocketId
+	updateWebSocketId, setSlot
 } from '@/app/auth/auth.api';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -186,8 +186,8 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
 	}
 
 	const handleAccept = () => {
-		setGameNumber(2).then((res) => {
-			// console.log(res);
+		setSlot({id : 2}).then((res) => {
+
 		});
 		push(`/dashboard/game/${duelRequest?.idRoom}`);
 		setDuelRequest(null);

@@ -402,3 +402,24 @@ export const updateWebSocketId = async (id: any) => {
 		return undefined;
 	}
 }
+
+export const setSlot = async (id: any) => {
+	try {
+		const data = await Api.post<string, any>({
+			url: '/users/update-slot-nu',
+			data: id
+		},)
+		return data;
+	} catch (e) {
+		return undefined;
+	}
+}
+
+export const getSlot = async () => {
+	try {
+		const data = await Api.get<any>('/users/get-slot-nu')
+		return data;
+	} catch (e) {
+		return undefined;
+	}
+}

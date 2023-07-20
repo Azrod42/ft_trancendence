@@ -14,33 +14,30 @@ export class MyGateway implements OnModuleInit {
     connectedUser: any[];
     ready: any[] = [];
     onModuleInit(): any {
-        this.server.setMaxListeners(2000);
         this.server.on('connection', (socket) => {
             // console.log(`a user connected as = ${socket.id}`);
-        this.sockets[socket.id] = socket;
-
+            this.sockets[socket.id] = socket;
             socket.on('storeClientInfo', async function (data) {
-            // console.log(' We are in storeClientInfo, Received ID:', data.socketId, 'for user:', data.userId.user.id);
-            this.server.sockets.to(data.socketId).emit('newSocket', data);
-            //this.userService.updateWebSocketId(data.userId.user.id, data.socketId);  
+                this.server.sockets.to(data.socketId).emit('newSocket', data);
             });
 
             socket.on('disconnect', () => {
                 // console.log(`User disconnected: ${socket.id}`);
                 delete this.sockets[socket.id];
             });
-        })
+        });
+
         setInterval(() => {
             this.connectedUser = [];
             this.server.emit('ping', {
                 data: 'ping'
             })
-            }, 5000)
+            }, 1000)
         setInterval(() => {
             this.server.emit('connectedUser', {
                 data: this.connectedUser,
             })
-        }, 6000)
+        }, 1400)
     }
 
     @SubscribeMessage('room')
@@ -50,26 +47,22 @@ export class MyGateway implements OnModuleInit {
     }
 
     @SubscribeMessage('room-data')
-    onRoomData(@MessageBody() body: {id: string, data: any}) {
-        if (body.data?.status == 'ready'){
+    onRoomData(@MessageBody() body: {id: string, status: string,  data: any}) {
+        if (body?.status == 'ready'){
+            this.server.emit('global', {roomID: body.id, status: 'ready'});
             console.log('ready');
             for (let i = 0; this.ready[i]; i++) {
                 if (this.ready[i].id == body.id) {
+                    console.log(this.ready);
                     if (this.ready[i].idReady != body.data.ready) {
-                        // for(let j = 0; this.ready[j]; j++){
-                        //     if (this.ready[j].id == body.id) {
-                        //         this.ready[j].id = 'END';
-                        //         this.ready[j].idReady = 'END';
-                        //         this.ready.clear();
-                        this.ready = [];
-                        this.server.in(body.id).emit(body.id, {status: 'game', game: true});
+                        this.server.emit('global', {roomID: body.id, status: 'game', game: true});
                         return;
                     }
                 }
             }
             this.ready.push({id: body.id, data: body.data});
         } else {
-            this.server.in(body.id).emit(body.id, {data: body.data});
+            this.server.emit('global', {roomID: body.id, data: body.data});
         }
     }
     @SubscribeMessage('gameRoom')
