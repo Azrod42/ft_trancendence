@@ -10,6 +10,7 @@ import stylesGrid from "@/app/dashboard/profile/grid.module.css";
 import { useQuery } from "react-query";
 import { getUserInfo } from "@/app/auth/auth.api";
 import { useRouter } from "next/navigation";
+import {location} from "@sideway/pinpoint";
 
 interface DashboardProps {}
 
@@ -22,6 +23,10 @@ export type DataEndGameDB = {
   ranked: boolean;
 };
 const Dashboard: React.FC<DashboardProps> = ({}) => {
+  if (!localStorage.getItem('reload')) {
+    localStorage.setItem('reload', '1');
+    window.location.reload();
+  }
   let [userData, setuserData] = useState<any>();
   const [loading, setLoading] = useState<boolean>(true);
 

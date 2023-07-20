@@ -126,6 +126,7 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
 	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
 	//LOGOUT ON SUBIMIT HANDLE 
 	function onSubmit() {
+		localStorage.clear();
 		oncMenu();
 		logout();
 		push('/');
@@ -186,10 +187,9 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
 	}
 
 	const handleAccept = () => {
-		setSlot({id : 2}).then((res) => {
-
-		});
-		push(`/dashboard/game/${duelRequest?.idRoom}`);
+		setSlot({id : 2}).then((res) => {});
+		setGameNumber(2).then((res) => {});
+		push(`/dashboard/game/${duelRequest?.idRoom}2`);
 		setDuelRequest(null);
 	}
 

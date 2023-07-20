@@ -3,6 +3,8 @@
 import React, {useContext, useEffect, useRef, useState} from 'react';
 import styles from "./room.module.css";
 import {useParams, useRouter} from "next/navigation";
+import { useRouter as use2Router } from 'next/router';
+
 import {WebsocketContext} from "@/app/(common)/WebsocketContext";
 import {getPlayerSlot, getSlot, getUserInfo, PublicUserResponse, UserAuthResponse} from "@/app/auth/auth.api";
 import {useQuery} from "react-query";
@@ -12,6 +14,8 @@ import {createContext} from 'react';
 import { Socket} from 'socket.io-client';
 import * as io from 'socket.io-client';
 import { socket as sock } from '@/app/socket'
+import {postGameData} from "@/app/dashboard/social/social.api";
+import {DataEndGameDB} from "@/app/dashboard/page";
 
 
 const socket = sock.connect();
@@ -29,33 +33,33 @@ export type DataEndGame = {
 
 const Room: React.FC<RoomProps> = () => {
   const refDiv: React.MutableRefObject<any> = useRef();
-
   const refAll: React.MutableRefObject<any> = useRef();
-
+  // const [pSlot, setSlot] = useState(0);
   const [initRoom, setinitRoom] = useState<boolean>(false);
   const [initMouse, setinitMouse] = useState<number>(0);
-
-  const uniqueIdentifier = useParams()['room'][0];
+  const uniqueIdentifier = useParams()['room'][0].substring(0, useParams()['room'][0].length-1);;
+  var pSlot: number = Number(useParams()['room'][0].substr(useParams()['room'][0].length - 1) ?? 0);
+  const mmr: boolean = useParams()['room'][0][0] == 'R' ? true : false;
+  const mmu: boolean = useParams()['room'][0][0] == 'U' ? true : false;
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-
   const [mainPlayer, setMainPlayer] = useState<string | null>(null);
   const [count, setCount] = useState(0);
-  const [playerSlot, setPlayerSlot] = useState<number>(0);
-
-
   const [paddleY, setPaddleY] = useState(200); // Position initiale de la raquette
   const [paddle2Y, setPaddle2Y] = useState(200); // Position initiale de la raquette du joueur 2
   const [inputData, setInputData] = useState<{ socketId: string, idRoom: string, currentUserId :string, currentUserName: string} | null>(null);
-  const [playerScore, setPlayerScore] = useState(0); 
-  const [player2Score, setPlayer2Score] = useState(0); 
-  
+  const [playerScore, setPlayerScore] = useState(0);
+  const [player2Score, setPlayer2Score] = useState(0);
   const [ballPosition, setBallPosition] = useState({x: 400, y: 200}); // Initial ball position
   const [ballSpeed, setBallSpeed] = useState({dx: 5, dy: 2}); // Initial ball speed
-  
   const [gameStatus, setGameStatus] = useState("notStarted"); // New state to control the game status
   const [isBlack, setIsBlack] = useState(false);
   const [ballForm, setBallForm] = useState(false);
+  const [ranked, setRanked] = useState(false);
+  const [scoreSend, setScoreSend] = useState<boolean>(false);
+
+
+
 
 
   //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
@@ -73,60 +77,143 @@ const Room: React.FC<RoomProps> = () => {
     if (userData == undefined) {
       refetch()
     }
-    // console.log(`This is userData.gameNumber = ${userData?.gameNumber}`)
   })
-  useEffect(() => {
-      getSlot().then((res) => {
-        const slot: any =  res?.data['slot'];
-        // console.log(slot);
-        if (slot == 1 || slot == 2)
-          setPlayerSlot(res?.data['slot']);
-      })
-  },[])
-  useEffect(() => {
-    console.log(playerSlot);
-  }, [playerSlot])
-  //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
-  useEffect(() => {
-    console.log(socket)
-  },[socket]);
 
   useEffect(() => {
-    if (!initRoom && socket.connected) {
-      setinitRoom(true);
-        // socket.emit('gameRoom', `${uniqueIdentifier}`);
-        socket.on(`global`, (data) => {
-          console.log(playerSlot, data);
-          if (data?.roomID == uniqueIdentifier) {
-            if (data?.data?.status == 'ready') {
-              console.log('ready');
-            }
-            if (data?.status == 'ready')
-              console.log('A player is ready')
-            if (data?.status == 'game') {
-              console.log(data?.game);
-              setGameStatus("running");
-            }
-            if (playerSlot == 2 && data?.data?.status == 'ballPosition') {
-              console.log("ballPosition");
-              setBallPosition(data?.data?.ballPosition);
-            }
-            if (playerSlot == 2 && data?.data?.status == 'paddleY') {
-              setPaddleY(data?.data?.paddleY);
-            }
-            if (playerSlot == 1 && data?.data?.status == 'paddle2Y') {
-              setPaddle2Y(data?.data?.paddle2Y);
-            }
-            return () => {
-              socket.off("global");
-            }
-          }
-      })
+    socket.on(`global`, (data) => {
+      if (mmr == true)
+        setRanked(true);
+      if (data?.roomID == uniqueIdentifier) {
+        if (data?.data?.status == 'ready') {
+          console.log('ready');
+        }
+        if (data?.status == 'ready')
+          console.log('A player is ready', pSlot)
+        if (data?.status == 'game') {
+          console.log(data?.game);
+          setGameStatus("running");
+        }
+        if (data?.data?.status == 'ballPosition') {
+          newPos(data?.data?.status, data?.data?.ballPosition)
+        }
+        if (data?.data?.status == 'paddleY') {
+          newPos(data?.data?.status, data?.data?.paddleY);
+        }
+        if (data?.data?.status == 'paddle2Y') {
+          newPos(data?.data?.status, data?.data?.paddle2Y);
+        }
+        if (data?.data?.status == 'playerScore') {
+          newPos(data?.data?.status, data?.data?.playerScore);
+        }
+        if (data?.data?.status == 'player2Score') {
+          newPos(data?.data?.status, data?.data?.player2Score);
+        }
+        if (data?.status == 'ranked') {
+          newPos(data?.status, data?.ranked);
+        }
+        if (data?.status == 'game-users') {
+          newPos(data?.status, data);
+        }
+        return () => {
+          socket.off("global");
+        }
+      }
+    })
 
-      if (canvasRef.current && initMouse < 1) {
-        // console.log("MOUSE TRACK")
-        setinitMouse(initMouse + 1);
-        canvasRef.current.addEventListener('mousemove', (data: any) => {
+  },[]);
+// useEffect(() => {
+//     // return () => {
+//     //   socket.off("global");
+// }},[])
+
+  function newPos(key: string, value: any ) {
+    const slot = pSlot;
+    if (key == 'ballPosition' && slot == 2){
+      setBallPosition(value);
+    }
+    if (key == 'paddleY' && slot == 2) {
+      setPaddleY(value)
+    }
+    if (key == 'paddle2Y' && slot == 1) {
+      setPaddle2Y(value)
+    }
+    if (key == 'playerScore' && slot == 2) {
+      setPlayerScore(value)
+    }
+    if (key == 'player2Score' && slot == 2) {
+      setPlayer2Score(value)
+    }
+    if (key == 'ranked') {
+      setRanked(value)
+    }
+    if (key == 'game-users' && !scoreSend) {
+      setScoreSend(true);
+      if (pSlot == 1) {
+        if (player2Score >= 5) {
+          const data: DataEndGameDB = {
+            idGame: uniqueIdentifier,
+            idWinner: value?.p2,
+            idLoser: value?.p1,
+            scoreLoser: value?.p1S,
+            scoreWinner: value?.p2S,
+            ranked: ranked,
+          };
+          postGameData(data).then((res) => {
+            console.log(res);
+          });
+        } else {
+          const data: DataEndGameDB = {
+            idGame: uniqueIdentifier,
+            idWinner: value?.p1,
+            idLoser: value?.p2,
+            scoreLoser: value?.p2S,
+            scoreWinner: value?.p1S,
+            ranked: value?.ranked,
+          };
+          postGameData(data).then((res) => {
+            console.log(res);
+          });
+        }
+      }
+    }
+  }
+
+  useEffect(() => {
+    if (pSlot == 1) {
+       socket.emit(`room-data`, {id: uniqueIdentifier, data: {status: 'ballPosition', ballPosition: ballPosition}});
+    }
+  },[ballPosition]);
+
+  useEffect(() => {
+    if (pSlot == 1) {
+      socket.emit(`room-data`, {id: uniqueIdentifier, data: {status: 'paddleY', paddleY: paddleY}});
+    }
+  },[paddleY]);
+
+  useEffect(() => {
+    if (pSlot == 2) {
+      socket.emit(`room-data`, {id: uniqueIdentifier, data: {status: 'paddle2Y', paddle2Y: paddle2Y}});
+    }
+  },[paddle2Y]);
+
+  useEffect(() => {
+    if (pSlot == 1) {
+      socket.emit(`room-data`, {id: uniqueIdentifier, data: {status: 'playerScore', playerScore: playerScore}});
+    }
+  },[playerScore]);
+
+  useEffect(() => {
+    if (pSlot == 1) {
+      socket.emit(`room-data`, {id: uniqueIdentifier, data: {status: 'player2Score', player2Score: player2Score}});
+    }
+  },[player2Score]);
+
+  useEffect(() => { // mouvements souris
+
+    if (refDiv.current && initMouse < 1) {
+      // console.log("MOUSE TRACK")
+      setinitMouse(initMouse + 1);
+      refDiv.current.addEventListener('mousemove', (data: any) => {
           if (userData?.username) {
             // console.log("SEND", uniqueIdentifier, userData?.username, data.screenY)
             socket.emit('move', {idRoom: uniqueIdentifier, user: userData?.username, y: data?.screenY})
@@ -137,50 +224,13 @@ const Room: React.FC<RoomProps> = () => {
             newY = Math.max(newY, 10);
             newY = Math.min(newY, canvasRef.current.height - 110);
           }
-          if (playerSlot === 1)
+          if (pSlot === 1)
             setPaddleY(newY);
-          else if (playerSlot === 2)
+          else if (pSlot === 2)
             setPaddle2Y(newY);
-        });
-      }
+    });
     }
-  },[socket]);
-// useEffect(() => {
-//     // return () => {
-//     //   socket.off("global");
-// }},[])
-
-
-  useEffect(() => {
-    if (playerSlot == 1) {
-      console.log('upd');
-      socket.emit(`room-data`, {id: uniqueIdentifier, data: {status: 'ballPosition', ballPosition: ballPosition}});
-    }
-  },[ballPosition]);
-
-  // useEffect(() => { // mouvements souris
-  //
-  //   if (canvasRef.current && initMouse < 1) {
-  //     // console.log("MOUSE TRACK")
-  //     setinitMouse(initMouse + 1);
-  //     canvasRef.current.addEventListener('mousemove', (data: any) => {
-  //         if (userData?.username) {
-  //           // console.log("SEND", uniqueIdentifier, userData?.username, data.screenY)
-  //           socket.emit('move', {idRoom: uniqueIdentifier, user: userData?.username, y: data?.screenY})
-  //         }
-  //         let newY = data?.screenY - 350;
-  //         if (canvasRef.current) {
-  //           // Ne depasse pas les rebords
-  //           newY = Math.max(newY, 10);
-  //           newY = Math.min(newY, canvasRef.current.height - 110);
-  //         }
-  //         if (playerSlot === 1)
-  //           setPaddleY(newY);
-  //         else if (playerSlot === 2)
-  //           setPaddle2Y(newY);
-  //   });
-  //   }
-  // });
+  }, []);
 
 
   ////////////////////////////////////////////////////////
@@ -221,8 +271,6 @@ const Room: React.FC<RoomProps> = () => {
     setBallPosition({x: 350, y: 200});
     setBallSpeed({dx: 5, dy: generateRandomYDirection()});
     setGameStatus("running");
-    setPlayerScore(0);
-    setPlayer2Score(0);
     }
 
     const generateRandomYDirection = () => {
@@ -250,9 +298,9 @@ const Room: React.FC<RoomProps> = () => {
   
       let newX = ballPosition.x + ballSpeed.dx;
           let newY = ballPosition.y + ballSpeed.dy;
-          if (playerSlot == 1)
-          setBallPosition({x: newX, y: newY});
-  
+          if (pSlot == 1)
+            setBallPosition({x: newX, y: newY});
+
           if (newX < 40 && newY > paddleY - 10 && newY < paddleY + 120) // player 1 rebond
       {
         const hitLocation = newY - (paddleY + 50);
@@ -271,12 +319,14 @@ const Room: React.FC<RoomProps> = () => {
       }
       else if (newX + ballSpeed.dx > canvas.width-10) //but player 1
       {
-        setPlayerScore(playerScore + 1);
+        if (pSlot == 1)
+          setPlayerScore(playerScore + 1);
         resetGame(1);
       }
       else if (newX + ballSpeed.dx < 10) //but player 2
       {
-        setPlayer2Score(player2Score + 1);
+        if (pSlot == 1)
+          setPlayer2Score(player2Score + 1);
         resetGame(2);
       }
       else if (newX + ballSpeed.dx > canvas.width-10 || newX + ballSpeed.dx < 10) //collision mur
@@ -288,12 +338,13 @@ const Room: React.FC<RoomProps> = () => {
       // setPaddle2Y(ballPosition.y - 50);
   
       if (playerScore >= 5 || player2Score >= 5) {
-        if (player2Score >= 5)
-          gameLose().then((res) => {
-            // console.log(res);
-          });
+        if (pSlot == 1)
+          socket.emit(`room-data`, {id: uniqueIdentifier,status:'room-users', data: {p1S: playerScore, p2S: player2Score, ranked: ranked}});
         setGameStatus("finished");
         clearInterval(interval);
+        setTimeout(() => {
+          push('/dashboard/gameStart');
+        },3000);
         }
       }
     }, 10);
@@ -358,33 +409,21 @@ const Room: React.FC<RoomProps> = () => {
 //     }, 2000);
 // },[])
 
+  function rankedChangeType (bool: boolean) {
+      setRanked(bool);
+      socket.emit(`room-data`, {id: uniqueIdentifier, status: 'ranked', data: bool});
+  };
+
   return (
     <div className={styles.container} ref={refDiv}>
-      <h1>Game</h1>
       <div className={styles.contentGame}>
-        {gameStatus === "finished" ? (
-      <>
-        <h2>Bravo à {playerScore == 3 ? (<h4>Player 1</h4>) : (<h4>Player 2</h4>)}</h2>
-        <button
-            className={styles.buttonGame}
-            onClick={resetWholeGame}
-            // disabled={gameStatus === "running"}
-        >
-        Rejouer ?
-        </button>
-      </>
-        ) : (
-          <div className={styles.containerCanvas}>
+        {gameStatus === "finished" ?
+            <div className={styles.ggTxt}>Congratulation {playerScore == 3 ? (<div>Player 1</div>) : (<div>Player 2</div>)}</div>
+         :
+            (<div className={styles.containerCanvas}>
 
             {gameStatus !== "running" && (
                 <>
-                  <button
-                    className={styles.buttonGame}
-                    onClick={startGame}
-                    disabled={gameStatus === "running"}
-                  >
-                  Start Game
-                  </button>
                   <button
                       className={styles.buttonGame}
                       onClick={ready}
@@ -392,6 +431,7 @@ const Room: React.FC<RoomProps> = () => {
                   >
                     Ready
                   </button>
+                  {mmr || mmu ? <></> : <div className={styles.rankedDiv}>Ranked : {ranked == true? <div className={styles.rankedBtn} onClick={() => rankedChangeType(false)}>Turn off</div> : <div className={styles.rankedBtn} onClick={() => rankedChangeType(true)}>Trun on</div>}</div>}
                 </>
             )}
             {gameStatus === "running" && (

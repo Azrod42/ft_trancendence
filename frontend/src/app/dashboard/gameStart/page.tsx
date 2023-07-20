@@ -69,12 +69,13 @@ const GameStart: React.FC<gameStartProps> = ({}) => {
   const handleFightClick = (id: string) => {
     console.log(`Fight with user: ${id}`);
     setSlot({id: 1}).then((res) => {});
+    setGameNumber(1).then((res) => {});
     getWebSocketIdByUserId(id).then((res) => {
     const uid = uuid();
-    socket.emit('duelRequest', {socketId: res?.data, idRoom: uid, currentUserId: currentUserId, currentUserName: currentUserName});
+    socket.emit('duelRequest', {socketId: res?.data, idRoom: uid, p2ID: id, p1ID: userData?.id});
       setGameNumber(1).then((res) => {
 		});
-    push(`/dashboard/game/${uid}`);
+    push(`/dashboard/game/${uid}1`);
     })
 };
 
@@ -82,6 +83,11 @@ const GameStart: React.FC<gameStartProps> = ({}) => {
 
   return (
     <div className={styles.container}>
+      <h2 className={styles.title}>Machmaking</h2>
+      <div className={styles.mmDiv}>
+        <div className={styles.mmrBtn} onClick={() => push('/dashboard/game/matchmaking-ranked')}>Ranked</div>
+        <div className={styles.mmrBtn} onClick={() => push('/dashboard/game/matchmaking-unranked')}>Unranked</div>
+      </div>
       <h2 className={styles.title}>Liste des utilisateurs connectés</h2>
       <div className={styles.users}>
         {isLoading ? (

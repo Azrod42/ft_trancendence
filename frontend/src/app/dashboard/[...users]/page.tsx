@@ -17,7 +17,7 @@ import {
   postProfilePicture,
   removeBlock,
   removeChat,
-  removeFriend,
+  removeFriend, setSlot,
   UserAuthResponse,
 } from "@/app/auth/auth.api";
 import Image from "next/image";
@@ -222,21 +222,15 @@ const User: React.FC<UserProps> = ({}) => {
 
   const handleFightClick = (id: string) => {
     console.log(`Fight with user: ${id}`);
-
+    setSlot({id: 1}).then((res) => {});
+    setGameNumber(1).then((res) => {});
     getWebSocketIdByUserId(id).then((res) => {
-      // console.log(`This is res.data = ${res?.data}`);
-      // console.log(`This is currentUserId = ${currentUserId}`);
       const uid = uuid();
-      socket.emit("duelRequest", {
-        socketId: res?.data,
-        idRoom: uid,
-        currentUserId: currentUserId,
-        currentUserName: currentUserName,
+      socket.emit('duelRequest', {socketId: res?.data, idRoom: uid, currentUserId: currentUserId, currentUserName: currentUserName});
+      setGameNumber(1).then((res) => {
       });
-      // socket.emit('acceptDuel', {socketId: res?.data, idRoom: uid, currentUserId: currentUserId, currentUserName: currentUserName});
-      setGameNumber(1).then((res) => {});
-      push(`/dashboard/game/${uid}`);
-    });
+      push(`/dashboard/game/${uid}1`);
+    })
   };
 
   return (

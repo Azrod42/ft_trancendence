@@ -15,6 +15,7 @@
 	padding: 10px 20px;
 	font-size: 1.2rem;
     cursor: pointer;
+    margin-top: 100px;
   }
 
   .buttonGameMode {
@@ -29,6 +30,11 @@
   .buttonMode {
     display: flex;
     gap: 30px;
+  }
+
+  .ggTxt {
+      font-size: 1.5rem;
+      margin-top: 50px;
   }
 
   .contentGame {
@@ -88,4 +94,23 @@
     transform: scale(1);
     /* margin: 0 auto; */
   }
+
+.rankedDiv {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.rankedBtn {
+    background-color: #2e1686ee;
+    width: 100px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 15px;
+    cursor: pointer;
+}
   
