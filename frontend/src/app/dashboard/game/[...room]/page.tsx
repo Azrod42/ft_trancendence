@@ -87,6 +87,9 @@ const Room: React.FC<RoomProps> = () => {
   })
 
   useEffect(() => {
+    socket.on(`pingG`, (data) => {
+      console.log(data);
+    })
     socket.on(`global`, (data) => {
       if (mmr == true)
         setRanked(true);
@@ -97,7 +100,6 @@ const Room: React.FC<RoomProps> = () => {
         if (data?.status == 'ready')
           console.log('A player is ready', pSlot)
         if (data?.status == 'game') {
-          console.log(data?.game);
           setGameStatus("running");
         }
         if (data?.data?.status == 'ballPosition') {
@@ -121,8 +123,16 @@ const Room: React.FC<RoomProps> = () => {
         if (data?.status == 'game-users') {
           newPos(data?.status, data);
         }
+        if (data?.status == 'pingG') {
+          console.log('get pinged');
+          newPos(data?.status, true);
+        }
+        if (data?.status == 'game-cancel') {
+          newPos(data?.status, true);
+        }
         return () => {
           socket.off("global");
+          socket.off("pingG");
         }
       }
     })
@@ -140,6 +150,13 @@ const Room: React.FC<RoomProps> = () => {
     }
     if (key == 'paddleY' && slot == 2) {
       setPaddleY(value)
+    }
+    if (key == 'pingG') {
+      console.log('Pinged');
+      socket.emit('pingGR', {idRoom: uniqueIdentifier});
+    }
+    if (key == 'game-cancel') {
+      setGameStatus('cancel');
     }
     if (key == 'paddle2Y' && slot == 1) {
       setPaddle2Y(value)
@@ -422,14 +439,27 @@ const Room: React.FC<RoomProps> = () => {
   };
 
   useEffect(() => {
-    if (gameStatus === 'running')
+    if (gameStatus === 'cancel') {
+      setTimeout(() => {
+        push('/dashboard/gameStart');
+      },2000);
+
+    }
+    if (gameStatus === 'running'){
+      if (pSlot == 1)
+        socket.emit('game-start', {idRoom: uniqueIdentifier});
       inGame().then((res) => {});
-    else
+    }
+    else {
       notInGame().then((res) => {});
+    }
   },[gameStatus])
+
+
 
   return (
     <div className={styles.container} ref={refDiv}>
+      {gameStatus === "cancel" ? <div className={styles.contentGame}> Game Cancel</div>:
       <div className={styles.contentGame}>
         {gameStatus === "finished" ?
             <div className={styles.ggTxt}>Congratulation {playerScore == 3 ? (<div>Player 1</div>) : (<div>Player 2</div>)}</div>
@@ -462,7 +492,7 @@ const Room: React.FC<RoomProps> = () => {
             <div style={{ marginBottom: '200px' }}></div>
           </div>
         )}
-      </div>
+      </div>}
       
     </div>
   );

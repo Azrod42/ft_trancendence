@@ -19,17 +19,16 @@ export class MyGateway implements OnModuleInit {
     waitingPlayer = '';
     waitingPlayerU = '';
     games: any[] = [];
+    onGoingGame: any[] = [];
 
     onModuleInit(): any {
         this.server.on('connection', (socket) => {
-            // console.log(`a user connected as = ${socket.id}`);
             this.sockets[socket.id] = socket;
             socket.on('storeClientInfo', async function (data) {
                 this.server.sockets.to(data.socketId).emit('newSocket', data);
             });
 
             socket.on('disconnect', () => {
-                // console.log(`User disconnected: ${socket.id}`);
                 delete this.sockets[socket.id];
             });
         });
@@ -48,16 +47,26 @@ export class MyGateway implements OnModuleInit {
         setInterval(() => {
             this.waitingPlayer = '';
         }, 10000)
+        setInterval(() => {
+            for (let i = 0; this.onGoingGame[i]; i++) {
+                this.onGoingGame[i].ping = 0;
+                this.server.emit('global', {roomID: this.onGoingGame[i]?.id, status: 'pingG'});
+            }
+        }, 2000);
+        setInterval(() => {
+            for (let i = 0; this.onGoingGame[i]; i++) {
+            if (this.onGoingGame[i].ping < 2)
+                this.server.emit('global', {roomID: this.onGoingGame[i]?.id, status: 'game-cancel'});
+            }
+        }, 2500);
     }
 
     @SubscribeMessage('room')
     onCreateRoom(@MessageBody() body: string) {
-        // console.log("Channel created on", body);
         this.server.socketsJoin(body);
     }
     @SubscribeMessage('mmR')
     onMMR(@MessageBody() body: {id: string, status: string,  data: any}) {
-        // console.log(body.id, this.waitingPlayer)
         if (this.waitingPlayer != '' && this.waitingPlayer != body.id) {
             const player2 = this.waitingPlayer;
             const room = uuidv4();
@@ -71,7 +80,6 @@ export class MyGateway implements OnModuleInit {
 
     @SubscribeMessage('mmU')
     onMMU(@MessageBody() body: {id: string, status: string,  data: any}) {
-        // console.log(body.id, this.waitingPlayerU)
         if (this.waitingPlayerU != '' && this.waitingPlayerU != body.id) {
             const player2 = this.waitingPlayerU;
             const room = uuidv4();
@@ -88,7 +96,6 @@ export class MyGateway implements OnModuleInit {
             this.server.emit('global', {roomID: body.id, status: 'ready'});
             for (let i = 0; this.ready[i]; i++) {
                 if (this.ready[i].id == body.id) {
-                    // console.log(this.ready);
                     if (this.ready[i].idReady != body.data.ready) {
                         this.server.emit('global', {roomID: body.id, status: 'game', game: true});
                         return;
@@ -114,13 +121,11 @@ export class MyGateway implements OnModuleInit {
                 }
             }
         } else {
-            // console.log(body)
             this.server.emit('global', {roomID: body.id, data: body.data});
         }
     }
     @SubscribeMessage('gameRoom')
     onCreateGameRoom(@MessageBody() body: string) {
-        // console.log("Channel created on", body);
         this.server.socketsJoin(body);
         this.server.in(body).emit(body, {message: 'A nerd join gameRoom'});
     }
@@ -166,4 +171,17 @@ export class MyGateway implements OnModuleInit {
     onMove(@MessageBody() data: { idRoom: string, user:string, y: string}) {
         this.server.in(data.idRoom).emit(data.idRoom, data);
     }
+    @SubscribeMessage('game-start')
+    onGameStart(@MessageBody() data: { idRoom: string}) {
+        this.onGoingGame.push({id :data.idRoom, ping: 2});
+    }
+
+    @SubscribeMessage('pingGR')
+    onPingGameRes(@MessageBody() data: { idRoom: string}) {
+        for (let i = 0; this.onGoingGame[i]; i++) {
+            if (this.onGoingGame[i].id == data.idRoom)
+                this.onGoingGame[i].ping += 1;
+        }
+    }
+
 }
