@@ -60,6 +60,7 @@ export const SearchUser: React.FC<SearchUserProps> = ({ user, onClick }) => {
       });
     }
   }, [userData]);
+
   return (
     <div className={styles.user} key={user.id} onClick={() => onClick(user.id)}>
       <Image
