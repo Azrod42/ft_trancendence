@@ -68,7 +68,7 @@ export class UserService {
 	}
 
 	async GetAllUserFromDB (){
-		const user = await this.userRepo.query(`SELECT displayname, id, elo FROM public."user"`)
+		const user = await this.userRepo.query(`SELECT displayname, id, elo, xp FROM public."user"`)
 		if (user)
 			return user;
 		throw new HttpException("User with this username does no exist", HttpStatus.NOT_FOUND,);

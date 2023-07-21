@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import styles from "./leaderbard.module.css";
 import { useRouter } from "next/navigation";
 import { useQuery } from "react-query";
-import { getAllUsers } from "@/app/auth/auth.api";
+import {getAllUsers, notInGame} from "@/app/auth/auth.api";
 
 interface LeaderboardProps {}
 
@@ -17,6 +17,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({}) => {
     "getUserInfo",
     () =>
       getAllUsers().then((res) => {
+        console.log(res)
         setuserData(res?.data);
         // console.log(JSON.stringify(res?.data));
       }),
@@ -83,6 +84,9 @@ const Leaderboard: React.FC<LeaderboardProps> = ({}) => {
       }
     }, 1000);
   }, [userData]);
+  useEffect(() => {
+    notInGame().then((res) => {});
+  },[])
   //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
 
   return (

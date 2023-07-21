@@ -26,7 +26,9 @@ export type DataEndGameDB = {
 const Dashboard: React.FC<DashboardProps> = ({}) => {
   if (!localStorage.getItem("reload")) {
     localStorage.setItem("reload", "1");
-    window.location.reload();
+    setTimeout(() => {
+      window.location.reload();
+    },500);
   }
   let [userData, setuserData] = useState<any>();
   const [loading, setLoading] = useState<boolean>(true);
