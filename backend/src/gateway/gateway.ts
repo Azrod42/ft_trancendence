@@ -39,12 +39,12 @@ export class MyGateway implements OnModuleInit {
             this.server.emit('ping', {
                 data: 'ping'
             })
-            }, 1000)
+            }, 800)
         setInterval(() => {
             this.server.emit('connectedUser', {
                 data: this.connectedUser,
             })
-        }, 1400)
+        }, 1200)
         setInterval(() => {
             this.waitingPlayer = '';
         }, 10000)
@@ -126,13 +126,14 @@ export class MyGateway implements OnModuleInit {
     }
     @SubscribeMessage('pong')
     onPongHandle(@MessageBody() body: any) {
+        const data = {id: body.id, displayname: body.displayname, avatar: body.avatar, inGame: body.inGame}
         const actual = this.connectedUser;
         for (let i  = 0; actual[i]; i++) {
-            if (actual[i].id == body?.user.id) {
+            if (actual[i].id == data?.id) {
                 return;
             }
         }
-        this.connectedUser.push(body?.user);
+        this.connectedUser.push(data);
     }
 
     @SubscribeMessage('newMessage')
@@ -151,9 +152,9 @@ export class MyGateway implements OnModuleInit {
     })
     }
     @SubscribeMessage('duelRequest')
-    onDuelRequest(@MessageBody() data: { socketId: string, idRoom: string, p2ID: string, p1ID: string}) {
+    onDuelRequest(@MessageBody() data: { socketId: string, idRoom: string, p2ID: string, p1ID: string, currentUserName: string}) {
         this.games.push({idRoom : data.idRoom, p1ID: data.p1ID, p2ID: data.p2ID});
-        this.server.sockets.to(data.socketId).emit('duelRequest', data);
+        this.server.emit('duelRequestR', data);
     }
 
     @SubscribeMessage('acceptDuel')

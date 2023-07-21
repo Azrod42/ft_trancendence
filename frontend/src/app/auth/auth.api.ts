@@ -44,6 +44,7 @@ export interface UserAuthResponse {
 	email: string;
 	displayname: string;
 	is2FOn: boolean;
+	inGame: boolean;
 }
 
 // export interface UserAuthResponseGame {
@@ -59,6 +60,7 @@ export interface PublicUserResponse {
 	id:string;
 	avatar: string;
 	displayname: string;
+	inGame: boolean;
 }
 
 export const login = async(loginInput: FormValues) => {
@@ -418,6 +420,24 @@ export const setSlot = async (id: any) => {
 export const getSlot = async () => {
 	try {
 		const data = await Api.get<any>('/users/get-slot-nu')
+		return data;
+	} catch (e) {
+		return undefined;
+	}
+}
+
+export const inGame = async () => {
+	try {
+		const data = await Api.get<any>('/users/in-game')
+		return data;
+	} catch (e) {
+		return undefined;
+	}
+}
+
+export const notInGame = async () => {
+	try {
+		const data = await Api.get<any>('/users/not-in-game')
 		return data;
 	} catch (e) {
 		return undefined;

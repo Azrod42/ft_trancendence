@@ -126,6 +126,13 @@ const Channel: React.FC<ChannelProps> = ({}) => {
                                             border-radius: 10px;
                                             background-color: greenyellow;
                                             margin-top: 5px;
+                                        }                                        
+                                        .statusYellow {
+                                            width: 10px;
+                                            height: 10px;
+                                            border-radius: 10px;
+                                            background-color: violet;
+                                            margin-top: 5px;
                                         }
                                         .statusRed {
                                             width: 10px;
@@ -142,8 +149,15 @@ const Channel: React.FC<ChannelProps> = ({}) => {
             let find = 0;
             for (let j = 0; connectedUser[j]; j++) {
               if (connectedUser[j].id == userList[i].id) {
-                htmlUser += '<div class="statusGreen"></div>';
-                find = 1;
+                console.log('inGame: ', connectedUser[j].inGame);
+                if (connectedUser[j].inGame == false) {
+                  htmlUser += '<div class="statusGreen"></div>';
+                  find = 1;
+                } else {
+                  htmlUser += '<div class="statusYellow"></div>';
+                  find = 1;
+
+                }
               }
             }
             if (!find) {

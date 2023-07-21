@@ -82,6 +82,9 @@ class User {
 
     @Column()
     slot: number;
+
+    @Column()
+    inGame: boolean;
 }
 
 export default User;

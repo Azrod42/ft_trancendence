@@ -362,7 +362,6 @@ export class UserController {
 	@Get('get-web-socket-id-by-user-id/:id')
 	async getWebSocketIdByUserId(@Param('id') id: string, @Res() res) {
 		const user = await this.userService.findById(id);
-		console.log(`This is user.idWebSocket in useguard = ${user.idWebSocket}`)
 		return res.send(user.idWebSocket);
 	}
 
@@ -471,5 +470,19 @@ export class UserController {
 	@UseGuards(JwtAuthGuard)
 	async  getSlotNu (@Req() request: RequestWithUser, @Res() res): Promise<number> {
 		return res.send(await this.userService.getSlotID(request.user.id));
+	}
+
+	@HttpCode(200)
+	@Get('in-game')
+	@UseGuards(JwtAuthGuard)
+	async  setInGame (@Req() request: RequestWithUser, @Res() res): Promise<boolean> {
+		return res.send(await this.userService.inGame(request.user.id));
+	}
+
+	@HttpCode(200)
+	@Get('not-in-game')
+	@UseGuards(JwtAuthGuard)
+	async  setNotInGame (@Req() request: RequestWithUser, @Res() res): Promise<boolean> {
+		return res.send(await this.userService.notInGame(request.user.id));
 	}
 }

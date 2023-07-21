@@ -5,7 +5,7 @@ import styles from './gameStart.module.css';
 import { useRouter } from 'next/navigation';
 import LoadingPage from '@/app/(component)/loadingPage/loadingPage';
 import Image from 'next/image';
-import {getUserInfo, postProfilePicture, setSlot} from "@/app/auth/auth.api";
+import {getUserInfo, notInGame, postProfilePicture, setSlot} from "@/app/auth/auth.api";
 import {WebsocketContext} from "@/app/(common)/WebsocketContext";
 import { getWebSocketIdByUserId } from "@/app/auth/auth.api";
 import { setGameNumber } from "@/app/auth/auth.api";
@@ -67,18 +67,20 @@ const GameStart: React.FC<gameStartProps> = ({}) => {
   }, [userData, currentUserId, currentUserName]);
 
   const handleFightClick = (id: string) => {
-    console.log(`Fight with user: ${id}`);
     setSlot({id: 1}).then((res) => {});
     setGameNumber(1).then((res) => {});
     getWebSocketIdByUserId(id).then((res) => {
-    const uid = uuid();
-    socket.emit('duelRequest', {socketId: res?.data, idRoom: uid, p2ID: id, p1ID: userData?.id});
+      const uid = uuid();
+      socket.emit('duelRequest', {socketId: res?.data, idRoom: uid, p2ID: id, p1ID: userData?.id, currentUserName:currentUserName});
       setGameNumber(1).then((res) => {
-		});
-    push(`/dashboard/game/${uid}1`);
+      });
+      push(`/dashboard/game/${uid}1`);
     })
-};
+  };
 
+  useEffect(() => {
+    notInGame().then((res) => {});
+  },[])
 
 
   return (

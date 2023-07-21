@@ -6,17 +6,24 @@ import {useParams, useRouter} from "next/navigation";
 import { useRouter as use2Router } from 'next/router';
 
 import {WebsocketContext} from "@/app/(common)/WebsocketContext";
-import {getPlayerSlot, getSlot, getUserInfo, PublicUserResponse, UserAuthResponse} from "@/app/auth/auth.api";
+import {
+  getPlayerSlot,
+  getSlot,
+  getUserInfo,
+  inGame,
+  notInGame,
+  PublicUserResponse,
+  UserAuthResponse
+} from "@/app/auth/auth.api";
 import {useQuery} from "react-query";
 import {mockSession} from "next-auth/client/__tests__/helpers/mocks";
 import { gameLose } from "@/app/auth/auth.api";
 import {createContext} from 'react';
 import { Socket} from 'socket.io-client';
 import * as io from 'socket.io-client';
-import { socket as sock } from '@/app/socket'
 import {postGameData} from "@/app/dashboard/social/social.api";
 import {DataEndGameDB} from "@/app/dashboard/page";
-
+import { socket as sock } from '@/app/socket'
 
 const socket = sock.connect();
 
@@ -413,6 +420,13 @@ const Room: React.FC<RoomProps> = () => {
       setRanked(bool);
       socket.emit(`room-data`, {id: uniqueIdentifier, status: 'ranked', data: bool});
   };
+
+  useEffect(() => {
+    if (gameStatus === 'running')
+      inGame().then((res) => {});
+    else
+      notInGame().then((res) => {});
+  },[gameStatus])
 
   return (
     <div className={styles.container} ref={refDiv}>

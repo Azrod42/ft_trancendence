@@ -6,14 +6,16 @@ import {
   useRef,
   useState,
 } from "react";
-import { WebsocketContext } from "@/app/(common)/WebsocketContext";
 import styles from "./websocket.module.css";
 import { useRouter } from "next/navigation";
-import { getPublicUserInfo, PublicUserResponse } from "@/app/auth/auth.api";
-import { AxiosResponse } from "axios";
+import {getUserInfo} from "@/app/auth/auth.api";
+import { socket as sock } from '@/app/socket'
+
+
+const socket = sock.connect();
+
 
 export const WebSocket = (user: any) => {
-    const [socket, setSocket] = useState(useContext(WebsocketContext))
     const [needRefresh, setNeedRefresh] = useState<boolean>(true);
     const refDiv: MutableRefObject<any> = useRef();
     const router = useRouter();
@@ -23,7 +25,9 @@ export const WebSocket = (user: any) => {
         //     needRefresh ? router.refresh() : () => {};
         // },10000);
         socket.on(`ping`, (data) => {
-            socket.emit('pong', user);
+            getUserInfo().then((res) => {
+                socket.emit('pong', res);
+            })
         });
         socket.on('connectedUser', (data) => {
             refDiv.current.innerText = 'Connected user: ' + data?.data.length;

@@ -83,14 +83,14 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
 	//GET PROFILE IMAGE
 	const [profilePicture, setProfilePicture] = useState<string>('');
 	const [ppGet, setPpGet] = useState<boolean>(false);
-	const [duelRequest, setDuelRequest] = useState<{ socketId: string, idRoom: string, currentUserId :string, currentUserName: string} | null>(null);
+	const [duelRequest, setDuelRequest] = useState<{ socketId: string, idRoom: string, p2ID: string, p1ID: string, currentUserName: string} | null>(null);
 	useEffect(() => {
 	if (!ppGet) {
 		getProfilePicture().then(
 			res => {
 				setProfilePicture('data:image/png;base64, ' + res?.data);
 			}
-		), {refetchInterval: 1000 * 1};
+		), {refetchInterval: 60000};
 		setPpGet(true);
 	}},[])
 	useEffect(() => {
@@ -102,17 +102,19 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
 
 	//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
 	//GET USER DATA FROM BACKEND AND STORE IN useState
-	let [userData, setuserData] = useState<PublicUserResponse>({id: 'id', avatar: 'avatar', displayname: 'displayname'});
+	let [userData, setuserData] = useState<PublicUserResponse>({id: 'id', avatar: 'avatar', displayname: 'displayname', inGame: false});
 	let [isUserData, setIsUserData] = useState<boolean>(false);
+	let [id, setId] = useState<string>('');
 	const { push } = useRouter();
 	const { isLoading, error, data, refetch } = useQuery('getUserInfo', () =>
 		getUserInfo().then(res => {
 			if (res == undefined)
 				push('/');
-			const userDta: PublicUserResponse = {id: res?.id!, displayname: res?.displayname!, avatar: 'undefine'}
+			const userDta: PublicUserResponse = {id: res?.id!, displayname: res?.displayname!, avatar: 'undefine', inGame: res?.inGame!}
 			setuserData(userDta);
+			setId(userDta.id);
 			setIsUserData(true)
-		}), {refetchInterval: 1000 * 60 * 2, refetchOnWindowFocus: false}
+		}), {refetchInterval: 5000, refetchOnWindowFocus: false}
 	);
 	useEffect(() => {
 		if (userData == undefined) {
@@ -145,16 +147,19 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
 	},[socket])
 
 	useEffect(() => {
-		const handleDuelRequest = (data: { socketId: string, idRoom: string, currentUserId: string, currentUserName:string}) => {
-    		setDuelRequest(data);
-		};
-	
-		socket.on('duelRequest', (data) => handleDuelRequest(data));	
+		socket.on('duelRequestR', (data) => handleDuelRequest(data));
 		return () => {
-			socket.off('duelRequest', handleDuelRequest);
+			socket.off('duelRequestR', handleDuelRequest);
 		};
 	}, [socket]);
 
+
+	const handleDuelRequest = (data: { socketId: string, idRoom: string, p2ID: string, p1ID: string, currentUserName: string}) => {
+		getUserInfo().then(res => {
+			if (data.p2ID == res?.id)
+				setDuelRequest(data);
+		})
+	};
 	useEffect(() => {
 		// console.log(duelRequest);
 	}, [duelRequest])
