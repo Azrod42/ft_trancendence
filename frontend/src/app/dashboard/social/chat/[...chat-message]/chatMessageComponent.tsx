@@ -3,7 +3,7 @@ import React, { useEffect, useState, useContext, useRef } from "react";
 import styles from "./chatMessage.module.css";
 import Image from "next/image";
 import { useParams, usePathname, useRouter } from "next/navigation";
-import {getPublicUserInfo, getUserInfo, setSlot} from "@/app/auth/auth.api";
+import { getPublicUserInfo, getUserInfo, setSlot } from "@/app/auth/auth.api";
 import {
   addFriend,
   removeFriend,
@@ -235,15 +235,23 @@ interface ProfileProps {}
 export const Profile: React.FC<ProfileProps> = () => {
   const userId: string = usePathname().split("/").pop()!;
 
+  const [userData, setUserData] = useState<any>();
+  const [userPublicData, setUserPublicData] = useState<any>();
+  const [xp, setXp] = useState<number>(0);
+
   const [error, setError] = useState<boolean>(false);
   const [headerError, setHeaderError] = useState<string>("");
   const [errorMsg, setErrorMsg] = useState<string>("");
+  const [isLoading, setIsLoading] = useState(true);
 
   const publicQuery = useQuery(
     "getUserInfo",
     () =>
       getPublicUserInfo(userId).then((res) => {
-        if (res && res.data) setUserData(res.data);
+        if (res && res.data) {
+          setUserPublicData(res.data);
+          setIsLoading(false);
+        }
       }),
     { refetchInterval: 4000, refetchOnWindowFocus: false }
   );
@@ -292,6 +300,7 @@ export const Profile: React.FC<ProfileProps> = () => {
         }, 5000);
       } else {
         console.log(res);
+        push(`/dashboard/social/chat-home`);
       }
     });
   }
@@ -325,18 +334,9 @@ export const Profile: React.FC<ProfileProps> = () => {
   }, []);
 
   const { push, refresh } = useRouter();
-  const [userData, setUserData] = useState<any>();
   const [currentUserId, setCurrentUserId] = useState<string>("");
   const [currentUserName, setCurrentUserName] = useState<string>("");
   const [socket] = useState(useContext(WebsocketContext));
-
-  useEffect(() => {
-    getUserInfo().then((data) => {
-      if (data) {
-        setUserData(data);
-      }
-    });
-  }, []);
 
   const handleFightClick = (id: string) => {
     setSlot({id: 1}).then((res) => {});
@@ -346,45 +346,53 @@ export const Profile: React.FC<ProfileProps> = () => {
       socket.emit('duelRequest', {socketId: res?.data, idRoom: uid, p2ID: id, p1ID: userData?.id, currentUserName:currentUserName});
       setGameNumber(1).then((res) => {
       });
+      setGameNumber(1).then((res) => {});
       push(`/dashboard/game/${uid}1`);
-    })
+    });
   };
 
   return (
     <>
-      <div className={styles.profile}>
-        <div>
-          <h2 className={styles.heading}>Profile</h2>
-          <p className={styles.name}>{userData?.displayname}</p>
-          <p className={styles.exp}>Exp: {userData?.elo}</p>
-          <div className={styles.chatWith} onClick={onClickProfile}>
-            <span>See all profile</span>
+      {isLoading ? (
+        <LoadingPage />
+      ) : (
+        <div className={styles.profile}>
+          <div>
+            <h2 className={styles.heading}>Profile</h2>
+            <p className={styles.name}>{userPublicData?.displayname}</p>
+            <p className={styles.exp}>Exp: {userPublicData?.xp}</p>
+            <div className={styles.chatWith} onClick={onClickProfile}>
+              <span>See all profile</span>
+            </div>
+            <div
+              className={styles.chatWith}
+              onClick={() => handleFightClick(userId)}
+            >
+              <span>PLAY</span>
+            </div>
           </div>
-          <div
-            className={styles.chatWith}
-            onClick={() => handleFightClick(userId)}
-          >
-            <span>PLAY</span>
+          <div className={styles.buttonContainer}>
+            {error && (
+              <ErrorNotification headerText={headerError} error={errorMsg} />
+            )}
+            <div className={styles.chatWith} onClick={onClickAddFriend}>
+              <span>Add friend</span>
+            </div>
+            <div
+              className={styles.removeChatWith}
+              onClick={onClickRemoveFriend}
+            >
+              <span>Remove-friend</span>
+            </div>
+            <div className={styles.chatWith} onClick={onClickAddBlock}>
+              <span>Block user</span>
+            </div>
+            <div className={styles.removeChatWith} onClick={onClickRemoveBlock}>
+              <span>Remove-block</span>
+            </div>
           </div>
         </div>
-        <div className={styles.buttonContainer}>
-          {error && (
-            <ErrorNotification headerText={headerError} error={errorMsg} />
-          )}
-          <div className={styles.chatWith} onClick={onClickAddFriend}>
-            <span>Add friend</span>
-          </div>
-          <div className={styles.removeChatWith} onClick={onClickRemoveFriend}>
-            <span>Remove-friend</span>
-          </div>
-          <div className={styles.chatWith} onClick={onClickAddBlock}>
-            <span>Block user</span>
-          </div>
-          <div className={styles.removeChatWith} onClick={onClickRemoveBlock}>
-            <span>Remove-block</span>
-          </div>
-        </div>
-      </div>
+      )}
     </>
   );
 };

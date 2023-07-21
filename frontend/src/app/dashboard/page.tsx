@@ -10,7 +10,8 @@ import stylesGrid from "@/app/dashboard/profile/grid.module.css";
 import { useQuery } from "react-query";
 import {getUserInfo, notInGame} from "@/app/auth/auth.api";
 import { useRouter } from "next/navigation";
-import {location} from "@sideway/pinpoint";
+import { location } from "@sideway/pinpoint";
+import LoadingComponent from "@/app/(component)/loadingPage/loadingPage";
 
 interface DashboardProps {}
 
@@ -23,8 +24,8 @@ export type DataEndGameDB = {
   ranked: boolean;
 };
 const Dashboard: React.FC<DashboardProps> = ({}) => {
-  if (!localStorage.getItem('reload')) {
-    localStorage.setItem('reload', '1');
+  if (!localStorage.getItem("reload")) {
+    localStorage.setItem("reload", "1");
     window.location.reload();
   }
   let [userData, setuserData] = useState<any>();
@@ -92,6 +93,19 @@ const Dashboard: React.FC<DashboardProps> = ({}) => {
     });
   }
 
+  const [isLoadingRank, setIsLoadingRank] = useState(true);
+
+  useEffect(() => {
+    setIsLoadingRank(true);
+
+    const loadImage = () => {
+      setTimeout(() => {
+        setIsLoadingRank(false);
+      }, 2000);
+    };
+
+    loadImage();
+  }, [elo]);
   useEffect(() => {
     notInGame().then((res) => {});
   },[])
@@ -139,77 +153,81 @@ const Dashboard: React.FC<DashboardProps> = ({}) => {
         </p>
       </div>
       <div className={stylesGrid.section_b}>
-        <div className={styles.section_b_container}>
-          {elo >= 400 && elo <= 600 && (
-            <div className={styles.rankIcon}>
-              <Image
-                src={"/media/rank/Bronze_3_Rank.png"}
-                width={128}
-                height={128}
-                alt="Bronze Rank"
-              />
-            </div>
-          )}
-          {elo >= 601 && elo <= 800 && (
-            <div className={styles.rankIcon}>
-              <Image
-                src={"/media/rank/Silver_3_Rank.png"}
-                width={128}
-                height={128}
-                alt="Silver Rank"
-              />
-            </div>
-          )}
-          {elo >= 801 && elo <= 1000 && (
-            <div className={styles.rankIcon}>
-              <Image
-                src={"/media/rank/Gold_3_Rank.png"}
-                width={128}
-                height={128}
-                alt="Gold Rank"
-              />
-            </div>
-          )}
-          {elo >= 1001 && elo <= 1200 && (
-            <div className={styles.rankIcon}>
-              <Image
-                src={"/media/rank/Diamond_3_Rank.png"}
-                width={128}
-                height={128}
-                alt="Diamond Rank"
-              />
-            </div>
-          )}
-          {elo >= 1201 && (
-            <div className={styles.rankIcon}>
-              <Image
-                src={"/media/rank/Silver_3_Rank.png"}
-                width={128}
-                height={128}
-                alt="Platinum Rank"
-              />
-            </div>
-          )}
-          <div className={styles.rankNameContainer}>
-            {elo >= 400 && elo <= 600 && (
-              <p className={styles.rankName}>Bronze</p>
+        {isLoadingRank ? (
+          <LoadingComponent />
+        ) : (
+          <div className={styles.section_b_container}>
+            {elo <= 600 && (
+              <div className={styles.rankIcon}>
+                <Image
+                  src={"/media/rank/Bronze_3_Rank.png"}
+                  width={128}
+                  height={128}
+                  alt="Bronze Rank"
+                />
+              </div>
             )}
             {elo >= 601 && elo <= 800 && (
-              <p className={styles.rankName}>Silver</p>
+              <div className={styles.rankIcon}>
+                <Image
+                  src={"/media/rank/Silver_3_Rank.png"}
+                  width={128}
+                  height={128}
+                  alt="Silver Rank"
+                />
+              </div>
             )}
             {elo >= 801 && elo <= 1000 && (
-              <p className={styles.rankName}>Gold</p>
+              <div className={styles.rankIcon}>
+                <Image
+                  src={"/media/rank/Gold_3_Rank.png"}
+                  width={128}
+                  height={128}
+                  alt="Gold Rank"
+                />
+              </div>
             )}
             {elo >= 1001 && elo <= 1200 && (
-              <p className={styles.rankName}>Diamond</p>
+              <div className={styles.rankIcon}>
+                <Image
+                  src={"/media/rank/Diamond_3_Rank.png"}
+                  width={128}
+                  height={128}
+                  alt="Diamond Rank"
+                />
+              </div>
             )}
-            {elo >= 1201 && <p className={styles.rankName}>Platinum</p>}
+            {elo >= 1201 && (
+              <div className={styles.rankIcon}>
+                <Image
+                  src={"/media/rank/Platinum_3_Rank.png"}
+                  width={128}
+                  height={128}
+                  alt="Platinum Rank"
+                />
+              </div>
+            )}
+            <div className={styles.rankNameContainer}>
+              {elo <= 600 && <p className={styles.rankName}>Bronze</p>}
+              {elo >= 601 && elo <= 800 && (
+                <p className={styles.rankName}>Silver</p>
+              )}
+              {elo >= 801 && elo <= 1000 && (
+                <p className={styles.rankName}>Gold</p>
+              )}
+              {elo >= 1001 && elo <= 1200 && (
+                <p className={styles.rankName}>Diamond</p>
+              )}
+              {elo >= 1201 && <p className={styles.rankName}>Platinum</p>}
+            </div>
           </div>
-        </div>
+        )}
       </div>
       <div className={styles.section_c_container}>
         <div className={styles.levelContainer}>
-          <p className={styles.levelText}>Level {Math.floor(Math.sqrt(xp / 100) + 1)}</p>
+          <p className={styles.levelText}>
+            Level {Math.floor(Math.sqrt(xp / 100) + 1)}
+          </p>
           <p className={styles.xpText}>{xp} XP</p>
         </div>
       </div>

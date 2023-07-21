@@ -184,7 +184,6 @@
   display: none;
 }
 
-
 .section_d_gamesitems {
   /*border: 1px solid green;*/
   width: 90%;
@@ -237,7 +236,7 @@
   justify-content: center;
   width: 128px;
   height: 128px;
-  margin-top: 50px;
+  margin-top: 20px;
 }
 
 .rankNameContainer {
