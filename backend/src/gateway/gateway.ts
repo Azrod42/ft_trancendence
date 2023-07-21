@@ -3,6 +3,7 @@ import {OnModuleInit} from "@nestjs/common";
 import  { Server, Socket } from 'socket.io'
 import { UserService } from '../user/user.service';
 import {v4 as uuidv4} from 'uuid';
+import * as process from "process";
 
 
 
@@ -95,7 +96,7 @@ export class MyGateway implements OnModuleInit {
         if (body?.status == 'ready'){
             this.server.emit('global', {roomID: body.id, status: 'ready'});
             for (let i = 0; this.ready[i]; i++) {
-                if (this.ready[i].id == body.id) {
+                if (this.ready[i]?.id == body.id) {
                     if (this.ready[i].idReady != body.data.ready) {
                         this.server.emit('global', {roomID: body.id, status: 'game', game: true});
                         return;
@@ -116,7 +117,7 @@ export class MyGateway implements OnModuleInit {
             this.server.emit('global', {roomID: body.id, status: 'ranked', ranked: body.data});
         } else if (body?.status == 'room-users'){
             for(let i = 0; this.games[i]; i++) {
-                if (this.games[i].idRoom == body.id) {
+                if (this.games[i]?.idRoom == body.id) {
                     this.server.emit('global', {roomID: body.id, status: 'game-users', p1: this.games[i].p1ID, p2: this.games[i].p2ID, p1S: body.data.p1S, p2S: body.data.p2S, ranked: body.data.ranked});
                 }
             }
@@ -131,10 +132,12 @@ export class MyGateway implements OnModuleInit {
     }
     @SubscribeMessage('pong')
     onPongHandle(@MessageBody() body: any) {
+        if (!body.id)
+            return;
         const data = {id: body.id, displayname: body.displayname, avatar: body.avatar, inGame: body.inGame}
         const actual = this.connectedUser;
         for (let i  = 0; actual[i]; i++) {
-            if (actual[i].id == data?.id) {
+            if (actual[i]?.id == data?.id) {
                 return;
             }
         }
@@ -179,7 +182,7 @@ export class MyGateway implements OnModuleInit {
     @SubscribeMessage('pingGR')
     onPingGameRes(@MessageBody() data: { idRoom: string}) {
         for (let i = 0; this.onGoingGame[i]; i++) {
-            if (this.onGoingGame[i].id == data.idRoom)
+            if (this.onGoingGame[i]?.id == data.idRoom)
                 this.onGoingGame[i].ping += 1;
         }
     }

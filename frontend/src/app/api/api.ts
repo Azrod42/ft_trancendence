@@ -10,7 +10,7 @@ class Api {
 
 	static init() {
 		this.axiosInstance = axios.create({
-			baseURL: 'http://localhost:4000',
+			baseURL: process.env.SITE_URL + ':4000',
 			withCredentials: true,
 		})
 	}

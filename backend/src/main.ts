@@ -13,7 +13,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({
 	exceptionFactory: (errors) => new BadRequestException(errors),
   }));
-  app.enableCors({credentials:true, origin: 'http://localhost:3000',})
+  app.enableCors({credentials:true, origin: process.env.SITE_URL + ':3000',})
   // app.useWebSocketAdapter(new WsAdapter(app));
   app.use(bodyParser.json({limit: '50mb'}));
   app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));

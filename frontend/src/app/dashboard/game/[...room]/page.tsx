@@ -87,9 +87,6 @@ const Room: React.FC<RoomProps> = () => {
   })
 
   useEffect(() => {
-    socket.on(`pingG`, (data) => {
-      console.log(data);
-    })
     socket.on(`global`, (data) => {
       if (mmr == true)
         setRanked(true);
