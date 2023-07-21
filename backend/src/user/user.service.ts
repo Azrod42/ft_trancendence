@@ -15,7 +15,7 @@ export class UserService {
 	constructor(@InjectRepository(User) private userRepo: Repository<User>) {}
 
 	async findById (id: string){
-		const user = await this.userRepo.findOneBy({id});
+		const user: User = await this.userRepo.findOneBy({id});
 		if (user) {
 			user.password = undefined;
 			return user;
@@ -414,7 +414,23 @@ export class UserService {
 		return {slot: 0};
 	}
 
-	async hello() {
-		return 'hello';
+	async inGame(userID: string) {
+		const user = await this.findById(userID);
+		if (user) {
+			user.inGame = true
+			await this.userRepo.save(user);
+			return true;
+		}
+		return false;
+	}
+
+	async notInGame(userID: string) {
+		const user = await this.findById(userID);
+		if (user) {
+			user.inGame = false
+			await this.userRepo.save(user);
+			return true;
+		}
+		return false;
 	}
 }

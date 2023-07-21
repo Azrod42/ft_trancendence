@@ -101,7 +101,8 @@ export class AuthController {
 				xp: 0,
 				totalGame: 0,
 				socketID: '',
-				slot: 0
+				slot: 0,
+				inGame: false,
 			}
 			await this.authService.register(newUser);
 			const user = await this.userService.findByUsername(userInformation['login']);

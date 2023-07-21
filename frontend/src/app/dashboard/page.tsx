@@ -8,7 +8,7 @@ import { postUserStats } from "@/app/dashboard/social/social.api";
 import Image from "next/image";
 import stylesGrid from "@/app/dashboard/profile/grid.module.css";
 import { useQuery } from "react-query";
-import { getUserInfo } from "@/app/auth/auth.api";
+import {getUserInfo, notInGame} from "@/app/auth/auth.api";
 import { useRouter } from "next/navigation";
 import {location} from "@sideway/pinpoint";
 
@@ -91,6 +91,10 @@ const Dashboard: React.FC<DashboardProps> = ({}) => {
       console.log(res);
     });
   }
+
+  useEffect(() => {
+    notInGame().then((res) => {});
+  },[])
 
   return (
     <div className={styles.container}>

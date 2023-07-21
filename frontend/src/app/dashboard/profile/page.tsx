@@ -7,7 +7,7 @@ import {
   changeDisplayName,
   disable2fa,
   getProfilePicture,
-  getUserInfo,
+  getUserInfo, notInGame,
   uploadProfilePicture,
   UserAuthResponse,
 } from "@/app/auth/auth.api";
@@ -185,7 +185,33 @@ const Profile: React.FC<ProfileProps> = ({}) => {
     }
   }, [userData]);
 
+  useEffect(() => {
+    notInGame().then((res) => {});
+  },[])
 
+  const [localConnectedUser, setLocalConnectedUser] = useState<any>([])
+  const [ig, setIg] = useState<string>('In menu')
+
+  useEffect(() => {
+    const iner = setInterval(() => {
+      if (localStorage.getItem("connectedUser")) {
+        setLocalConnectedUser(JSON.parse(localStorage.getItem("connectedUser")!));
+      }
+    }, 3000);
+    return () => clearInterval(iner);
+  },[]);
+
+  useEffect(() => {
+    for (let i = 0; localConnectedUser[i]; i++) {
+      if (localConnectedUser[i]?.id == userData?.id){
+        if (localConnectedUser[i].inGame) {
+          setIg('In game');
+        } else {
+          setIg('In menu')
+        }
+      }
+    }
+  }, [localConnectedUser])
 
   return (
     <div className={stylesGrid.container}>
@@ -210,6 +236,7 @@ const Profile: React.FC<ProfileProps> = ({}) => {
                   <p className={styles.userHeader_displayname}>
                     {userData?.displayname}
                   </p>
+                  <p className={styles.igStatus}>Status : {ig}</p>
                 </div>
                 <hr className={styles.hr} />
               </div>

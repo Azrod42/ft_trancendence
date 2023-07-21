@@ -62,6 +62,8 @@ class CreateUserDto {
 
 	slot: number;
 
+	inGame: boolean;
+
 }
 
 export default CreateUserDto;

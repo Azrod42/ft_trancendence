@@ -339,12 +339,11 @@ export const Profile: React.FC<ProfileProps> = () => {
   }, []);
 
   const handleFightClick = (id: string) => {
-    console.log(`Fight with user: ${id}`);
     setSlot({id: 1}).then((res) => {});
     setGameNumber(1).then((res) => {});
     getWebSocketIdByUserId(id).then((res) => {
       const uid = uuid();
-      socket.emit('duelRequest', {socketId: res?.data, idRoom: uid, currentUserId: currentUserId, currentUserName: currentUserName});
+      socket.emit('duelRequest', {socketId: res?.data, idRoom: uid, p2ID: id, p1ID: userData?.id, currentUserName:currentUserName});
       setGameNumber(1).then((res) => {
       });
       push(`/dashboard/game/${uid}1`);

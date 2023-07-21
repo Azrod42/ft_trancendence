@@ -13,7 +13,7 @@ import {
   getChatList,
   getFriendList,
   getPublicUserInfo,
-  getUserInfo,
+  getUserInfo, notInGame,
   postProfilePicture,
   removeBlock,
   removeChat,
@@ -221,17 +221,44 @@ const User: React.FC<UserProps> = ({}) => {
   const [socket] = useState(useContext(WebsocketContext));
 
   const handleFightClick = (id: string) => {
-    console.log(`Fight with user: ${id}`);
     setSlot({id: 1}).then((res) => {});
     setGameNumber(1).then((res) => {});
     getWebSocketIdByUserId(id).then((res) => {
       const uid = uuid();
-      socket.emit('duelRequest', {socketId: res?.data, idRoom: uid, currentUserId: currentUserId, currentUserName: currentUserName});
+      socket.emit('duelRequest', {socketId: res?.data, idRoom: uid, p2ID: id, p1ID: userData?.id, currentUserName:currentUserName});
       setGameNumber(1).then((res) => {
       });
       push(`/dashboard/game/${uid}1`);
     })
   };
+
+  useEffect(() => {
+    notInGame().then((res) => {});
+  },[])
+
+  const [localConnectedUser, setLocalConnectedUser] = useState<any>([])
+  const [ig, setIg] = useState<string>('In menu')
+
+  useEffect(() => {
+    const iner = setInterval(() => {
+      if (localStorage.getItem("connectedUser")) {
+        setLocalConnectedUser(JSON.parse(localStorage.getItem("connectedUser")!));
+      }
+    }, 3000);
+    return () => clearInterval(iner);
+  },[]);
+
+  useEffect(() => {
+    for (let i = 0; localConnectedUser[i]; i++) {
+      if (localConnectedUser[i]?.id == userData?.id){
+        if (localConnectedUser[i].inGame) {
+          setIg('In game');
+        } else {
+          setIg('In menu')
+        }
+      }
+    }
+  }, [localConnectedUser])
 
   return (
     <div className={stylesGrid.container}>
@@ -251,6 +278,7 @@ const User: React.FC<UserProps> = ({}) => {
             <p className={styles.userHeader_displayname}>
               {userData?.displayname}
             </p>
+            <p className={styles.igStatus}>Status : {ig}</p>
           </div>
           <hr className={styles.hr} />
           <div className={styles2.containerChatWith}>
