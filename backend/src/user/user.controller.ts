@@ -362,7 +362,6 @@ export class UserController {
 	@Get('get-web-socket-id-by-user-id/:id')
 	async getWebSocketIdByUserId(@Param('id') id: string, @Res() res) {
 		const user = await this.userService.findById(id);
-		console.log(`This is user.idWebSocket in useguard = ${user.idWebSocket}`)
 		return res.send(user.idWebSocket);
 	}
 

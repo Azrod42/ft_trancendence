@@ -345,7 +345,6 @@ export class UserService {
 		userL.winStreak = 0;
 		userW.winLoseRate = ((userW.gameWin * 100) / (userW.gameWin + userW.gameLose)).toString();
 		userL.winLoseRate = ((userL.gameWin * 100) / (userL.gameWin + userL.gameLose)).toString();
-		console.log((25 / (userW.elo / userL.elo)));
 		if (gameInfo.ranked) {
 			userW.elo = Math.round(userW.elo + (25 / (userW.elo / userL.elo)));
 			userL.elo = Math.round(userL.elo - (25 / (userW.elo / userL.elo)));
