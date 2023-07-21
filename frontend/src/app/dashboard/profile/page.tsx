@@ -1,5 +1,5 @@
 "use client";
-import React, {ChangeEvent, useEffect, useRef, useState} from "react";
+import React, { ChangeEvent, useEffect, useRef, useState } from "react";
 import styles from "./profile.module.css";
 import stylesGrid from "./grid.module.css";
 import Image from "next/image";
@@ -18,7 +18,7 @@ import { useMutation, useQuery } from "react-query";
 import Api from "@/app/api/api";
 import { useRouter } from "next/navigation";
 import LoadingComponent from "@/app/(component)/loadingPage/loadingPage";
-import {postGameHist, postUserStats} from "@/app/dashboard/social/social.api";
+import { postGameHist, postUserStats } from "@/app/dashboard/social/social.api";
 
 export type FormDisplayName = {
   displayname: string;
@@ -143,10 +143,10 @@ const Profile: React.FC<ProfileProps> = ({}) => {
   const [pointGetTakeRate, setPointGetTakeRate] = useState("");
   const [winStreak, setWinStreak] = useState(0);
   const [totalGame, setTotalGame] = useState(0);
-  const refHist:  React.MutableRefObject<any> = useRef();
+  const refHist: React.MutableRefObject<any> = useRef();
   useEffect(() => {
     if (userData?.id) {
-      postUserStats({id: userData?.id!}).then((res: any) => {
+      postUserStats({ id: userData?.id! }).then((res: any) => {
         setElo(parseInt(res?.data?.elo));
         setXp(res?.data?.xp);
         setGameWin(res?.data?.gameWin);
@@ -158,10 +158,9 @@ const Profile: React.FC<ProfileProps> = ({}) => {
         setWinStreak(res?.data?.winStreak);
         setTotalGame(res?.data?.totalGame);
       });
-      postGameHist({id: userData?.id!}).then((res: any) => {
+      postGameHist({ id: userData?.id! }).then((res: any) => {
         let tab = [];
-        if (res.data)
-          tab = JSON.parse(JSON.stringify(res.data));
+        if (res.data) tab = JSON.parse(JSON.stringify(res.data));
         let html = `<style>
                                 .gameHist {
                                   width: 90%;
@@ -176,16 +175,28 @@ const Profile: React.FC<ProfileProps> = ({}) => {
                                   min-height: 50px;
                                 }
                             </style>`;
-        for (let i = 0; tab[i]; i++ ){
+        for (let i = 0; tab[i]; i++) {
           const ranked: string = tab[i].ranked ? "Ranked" : "Unranked";
-          html += `<div class="gameHist">${tab[i].dnW} ${tab[i].scoreW} - ${tab[i].scoreL} ${tab[i].dnL} &nbsp&nbsp&nbsp|&nbsp&nbsp&nbsp ${ranked}</div>`
+          html += `<div class="gameHist">${tab[i].dnW} ${tab[i].scoreW} - ${tab[i].scoreL} ${tab[i].dnL} &nbsp&nbsp&nbsp|&nbsp&nbsp&nbsp ${ranked}</div>`;
         }
         refHist.current.innerHTML = html;
       });
     }
   }, [userData]);
 
+  const [isLoading, setIsLoading] = useState(true);
 
+  useEffect(() => {
+    setIsLoading(true);
+
+    const loadImage = () => {
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 2000);
+    };
+
+    loadImage();
+  }, [elo]);
 
   return (
     <div className={stylesGrid.container}>
@@ -328,78 +339,80 @@ const Profile: React.FC<ProfileProps> = ({}) => {
         </div>
       </div>
       <div className={stylesGrid.section_b}>
-        <div className={styles.section_b_container}>
-          <p
-            className={`${styles.section_d_gamesitems} ${styles.section_b_header}`}
-          >
-            RANK
-          </p>
-          {elo >= 400 && elo <= 600 && (
-            <div className={styles.rankIcon}>
-              <Image
-                src={"/media/rank/Bronze_3_Rank.png"}
-                width={128}
-                height={128}
-                alt="Bronze Rank"
-              />
-            </div>
-          )}
-          {elo >= 601 && elo <= 800 && (
-            <div className={styles.rankIcon}>
-              <Image
-                src={"/media/rank/Silver_3_Rank.png"}
-                width={128}
-                height={128}
-                alt="Silver Rank"
-              />
-            </div>
-          )}
-          {elo >= 801 && elo <= 1000 && (
-            <div className={styles.rankIcon}>
-              <Image
-                src={"/media/rank/Gold_3_Rank.png"}
-                width={128}
-                height={128}
-                alt="Gold Rank"
-              />
-            </div>
-          )}
-          {elo >= 1001 && elo <= 1200 && (
-            <div className={styles.rankIcon}>
-              <Image
-                src={"/media/rank/Diamond_3_Rank.png"}
-                width={128}
-                height={128}
-                alt="Diamond Rank"
-              />
-            </div>
-          )}
-          {elo >= 1201 && (
-            <div className={styles.rankIcon}>
-              <Image
-                src={"/media/rank/Silver_3_Rank.png"}
-                width={128}
-                height={128}
-                alt="Platinum Rank"
-              />
-            </div>
-          )}
-          <div className={styles.rankNameContainer}>
-            {elo >= 400 && elo <= 600 && (
-              <p className={styles.rankName}>Bronze</p>
+        {isLoading ? (
+          <LoadingComponent />
+        ) : (
+          <div className={styles.section_b_container}>
+            <p
+              className={`${styles.section_d_gamesitems} ${styles.section_b_header}`}
+            >
+              RANK
+            </p>
+            {elo <= 600 && (
+              <div className={styles.rankIcon}>
+                <Image
+                  src={"/media/rank/Bronze_3_Rank.png"}
+                  width={128}
+                  height={128}
+                  alt="Bronze Rank"
+                />
+              </div>
             )}
             {elo >= 601 && elo <= 800 && (
-              <p className={styles.rankName}>Silver</p>
+              <div className={styles.rankIcon}>
+                <Image
+                  src={"/media/rank/Silver_3_Rank.png"}
+                  width={128}
+                  height={128}
+                  alt="Silver Rank"
+                />
+              </div>
             )}
             {elo >= 801 && elo <= 1000 && (
-              <p className={styles.rankName}>Gold</p>
+              <div className={styles.rankIcon}>
+                <Image
+                  src={"/media/rank/Gold_3_Rank.png"}
+                  width={128}
+                  height={128}
+                  alt="Gold Rank"
+                />
+              </div>
             )}
             {elo >= 1001 && elo <= 1200 && (
-              <p className={styles.rankName}>Diamond</p>
+              <div className={styles.rankIcon}>
+                <Image
+                  src={"/media/rank/Diamond_3_Rank.png"}
+                  width={128}
+                  height={128}
+                  alt="Diamond Rank"
+                />
+              </div>
             )}
-            {elo >= 1201 && <p className={styles.rankName}>Platinum</p>}
+            {elo >= 1201 && (
+              <div className={styles.rankIcon}>
+                <Image
+                  src={"/media/rank/Platinum_3_Rank.png"}
+                  width={128}
+                  height={128}
+                  alt="Platinum Rank"
+                />
+              </div>
+            )}
+            <div className={styles.rankNameContainer}>
+              {elo <= 600 && <p className={styles.rankName}>Bronze</p>}
+              {elo >= 601 && elo <= 800 && (
+                <p className={styles.rankName}>Silver</p>
+              )}
+              {elo >= 801 && elo <= 1000 && (
+                <p className={styles.rankName}>Gold</p>
+              )}
+              {elo >= 1001 && elo <= 1200 && (
+                <p className={styles.rankName}>Diamond</p>
+              )}
+              {elo >= 1201 && <p className={styles.rankName}>Platinum</p>}
+            </div>
           </div>
-        </div>
+        )}
       </div>
       <div className={styles.section_c_container}>
         <p
@@ -419,7 +432,7 @@ const Profile: React.FC<ProfileProps> = ({}) => {
           <h1 className={styles.section_d_h1}>Last games</h1>
           <hr className={styles.hr} />
           <div className={styles.section_d_games} ref={refHist}>
-              <LoadingComponent />
+            <LoadingComponent />
           </div>
         </div>
       </div>

@@ -17,7 +17,8 @@ import {
   postProfilePicture,
   removeBlock,
   removeChat,
-  removeFriend, setSlot,
+  removeFriend,
+  setSlot,
   UserAuthResponse,
 } from "@/app/auth/auth.api";
 import Image from "next/image";
@@ -222,16 +223,34 @@ const User: React.FC<UserProps> = ({}) => {
 
   const handleFightClick = (id: string) => {
     console.log(`Fight with user: ${id}`);
-    setSlot({id: 1}).then((res) => {});
+    setSlot({ id: 1 }).then((res) => {});
     setGameNumber(1).then((res) => {});
     getWebSocketIdByUserId(id).then((res) => {
       const uid = uuid();
-      socket.emit('duelRequest', {socketId: res?.data, idRoom: uid, currentUserId: currentUserId, currentUserName: currentUserName});
-      setGameNumber(1).then((res) => {
+      socket.emit("duelRequest", {
+        socketId: res?.data,
+        idRoom: uid,
+        currentUserId: currentUserId,
+        currentUserName: currentUserName,
       });
+      setGameNumber(1).then((res) => {});
       push(`/dashboard/game/${uid}1`);
-    })
+    });
   };
+
+  const [isLoadingRank, setIsLoadingRank] = useState(true);
+
+  useEffect(() => {
+    setIsLoadingRank(true);
+
+    const loadImage = () => {
+      setTimeout(() => {
+        setIsLoadingRank(false);
+      }, 2000);
+    };
+
+    loadImage();
+  }, [elo]);
 
   return (
     <div className={stylesGrid.container}>
@@ -269,16 +288,10 @@ const User: React.FC<UserProps> = ({}) => {
               </div>
             </div>
             <div className={styles2.buttonContainer}>
-              <div
-                className={styles2.chatWith}
-                onClick={onClickRemoveFriend}
-              >
+              <div className={styles2.chatWith} onClick={onClickRemoveFriend}>
                 Remove-friend
               </div>
-              <div
-                className={styles2.chatWith}
-                onClick={onClickRemoveBlock}
-              >
+              <div className={styles2.chatWith} onClick={onClickRemoveBlock}>
                 Remove-block
               </div>
             </div>
@@ -327,78 +340,80 @@ const User: React.FC<UserProps> = ({}) => {
         </div>
       </div>
       <div className={stylesGrid.section_b}>
-        <div className={styles3.section_b_container}>
-          <p
-            className={`${styles3.section_d_gamesitems} ${styles3.section_b_header}`}
-          >
-            RANK
-          </p>
-          {elo >= 400 && elo <= 600 && (
-            <div className={styles3.rankIcon}>
-              <Image
-                src={"/media/rank/Bronze_3_Rank.png"}
-                width={128}
-                height={128}
-                alt="Bronze Rank"
-              />
-            </div>
-          )}
-          {elo >= 601 && elo <= 800 && (
-            <div className={styles3.rankIcon}>
-              <Image
-                src={"/media/rank/Silver_3_Rank.png"}
-                width={128}
-                height={128}
-                alt="Silver Rank"
-              />
-            </div>
-          )}
-          {elo >= 801 && elo <= 1000 && (
-            <div className={styles3.rankIcon}>
-              <Image
-                src={"/media/rank/Gold_3_Rank.png"}
-                width={128}
-                height={128}
-                alt="Gold Rank"
-              />
-            </div>
-          )}
-          {elo >= 1001 && elo <= 1200 && (
-            <div className={styles3.rankIcon}>
-              <Image
-                src={"/media/rank/Diamond_3_Rank.png"}
-                width={128}
-                height={128}
-                alt="Diamond Rank"
-              />
-            </div>
-          )}
-          {elo >= 1201 && (
-            <div className={styles3.rankIcon}>
-              <Image
-                src={"/media/rank/Silver_3_Rank.png"}
-                width={128}
-                height={128}
-                alt="Platinum Rank"
-              />
-            </div>
-          )}
-          <div className={styles3.rankNameContainer}>
-            {elo >= 400 && elo <= 600 && (
-              <p className={styles3.rankName}>Bronze</p>
+        {isLoadingRank ? (
+          <LoadingComponent />
+        ) : (
+          <div className={styles3.section_b_container}>
+            <p
+              className={`${styles3.section_d_gamesitems} ${styles3.section_b_header}`}
+            >
+              RANK
+            </p>
+            {elo <= 600 && (
+              <div className={styles3.rankIcon}>
+                <Image
+                  src={"/media/rank/Bronze_3_Rank.png"}
+                  width={128}
+                  height={128}
+                  alt="Bronze Rank"
+                />
+              </div>
             )}
             {elo >= 601 && elo <= 800 && (
-              <p className={styles3.rankName}>Silver</p>
+              <div className={styles3.rankIcon}>
+                <Image
+                  src={"/media/rank/Silver_3_Rank.png"}
+                  width={128}
+                  height={128}
+                  alt="Silver Rank"
+                />
+              </div>
             )}
             {elo >= 801 && elo <= 1000 && (
-              <p className={styles3.rankName}>Gold</p>
+              <div className={styles3.rankIcon}>
+                <Image
+                  src={"/media/rank/Gold_3_Rank.png"}
+                  width={128}
+                  height={128}
+                  alt="Gold Rank"
+                />
+              </div>
             )}
             {elo >= 1001 && elo <= 1200 && (
-              <p className={styles3.rankName}>Diamond</p>
+              <div className={styles3.rankIcon}>
+                <Image
+                  src={"/media/rank/Diamond_3_Rank.png"}
+                  width={128}
+                  height={128}
+                  alt="Diamond Rank"
+                />
+              </div>
             )}
-            {elo >= 1201 && <p className={styles3.rankName}>Platinum</p>}
+            {elo >= 1201 && (
+              <div className={styles3.rankIcon}>
+                <Image
+                  src={"/media/rank/Platinum_3_Rank.png"}
+                  width={128}
+                  height={128}
+                  alt="Platinum Rank"
+                />
+              </div>
+            )}
+            <div className={styles3.rankNameContainer}>
+              {elo <= 600 && <p className={styles3.rankName}>Bronze</p>}
+              {elo >= 601 && elo <= 800 && (
+                <p className={styles3.rankName}>Silver</p>
+              )}
+              {elo >= 801 && elo <= 1000 && (
+                <p className={styles3.rankName}>Gold</p>
+              )}
+              {elo >= 1001 && elo <= 1200 && (
+                <p className={styles3.rankName}>Diamond</p>
+              )}
+              {elo >= 1201 && <p className={styles3.rankName}>Platinum</p>}
+            </div>
           </div>
-        </div>
+        )}
       </div>
       <div className={styles3.section_c_container}>
         <p

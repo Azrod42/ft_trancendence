@@ -1,66 +1,77 @@
 .container {
-	text-align: center;
-	color: white;
-	display: flex;
-	flex-direction: column;
-	gap: 0;
-	align-items: center;
-	margin: 0;
-	margin-top: 30px;
-	justify-content: center;
+  text-align: center;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  align-items: center;
+  margin: 0;
+  margin-top: 30px;
+  justify-content: center;
 }
 
 .header {
-	display: flex;
-	flex-direction: row;
-	margin: 0;
-	background-color: #060B26cc;
+  display: flex;
+  flex-direction: row;
+  margin: 0;
+  background-color: #060b26cc;
 }
 
 .tablestyle {
-	border: 1px solid;
-	border-collapse: collapse;
-	background-color: #303030;
-	box-shadow: 0 0 5px whitesmoke;
+  border: 1px solid;
+  border-collapse: collapse;
+  background-color: #303030;
+  box-shadow: 0 0 5px whitesmoke;
 }
 
 .tr {
-	width: 500px;
-	border: 1px solid;
-	border-collapse: collapse;
-	height: 30px;
-	font-weight: 600;
-
+  width: 500px;
+  border: 1px solid;
+  border-collapse: collapse;
+  height: 30px;
+  font-weight: 600;
 }
 
 .textTitle {
-	width: 300px;
-	border: 1px solid;
-	border-collapse: collapse;
-	color: rgb(255, 196, 4);
+  width: 300px;
+  border: 1px solid;
+  border-collapse: collapse;
+  color: rgb(255, 196, 4);
 }
 
 .elo {
-	width: 60px;
-	border: 1px solid;
-	border-collapse: collapse;
-	margin: 0;
-	height: 50px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	font-size: 1.3rem;
+  width: 60px;
+  border: 1px solid;
+  border-collapse: collapse;
+  margin: 0;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
 }
 
 .username {
-	width: 300px;
-	border: 1px solid;
-	border-collapse: collapse;
-	margin: 0;
-	height: 50px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	font-size: 1.3rem;
-	font-weight: 500;
+  width: 300px;
+  border: 1px solid;
+  border-collapse: collapse;
+  margin: 0;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  font-weight: 500;
+}
+
+.rank {
+  width: 60px;
+  border: 1px solid;
+  border-collapse: collapse;
+  margin: 0;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
 }

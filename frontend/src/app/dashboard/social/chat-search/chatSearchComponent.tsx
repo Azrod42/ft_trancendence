@@ -71,7 +71,7 @@ export const SearchUser: React.FC<SearchUserProps> = ({ user, onClick }) => {
       />
       <div className={styles.userDetails}>
         <span className={styles.userName}>{user.displayname}</span>
-        <span className={styles.userExp}>{user.elo} XP</span>
+        <span className={styles.userExp}>{xp} XP</span>
         <span className={styles.userLevel}>
           Level {Math.floor(Math.sqrt(xp / 100) + 1)}
         </span>

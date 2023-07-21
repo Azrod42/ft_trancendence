@@ -3,7 +3,7 @@ import React, { useEffect, useState, useContext, useRef } from "react";
 import styles from "./chatMessage.module.css";
 import Image from "next/image";
 import { useParams, usePathname, useRouter } from "next/navigation";
-import {getPublicUserInfo, getUserInfo, setSlot} from "@/app/auth/auth.api";
+import { getPublicUserInfo, getUserInfo, setSlot } from "@/app/auth/auth.api";
 import {
   addFriend,
   removeFriend,
@@ -292,6 +292,7 @@ export const Profile: React.FC<ProfileProps> = () => {
         }, 5000);
       } else {
         console.log(res);
+        push(`/dashboard/social/chat-home`);
       }
     });
   }
@@ -340,15 +341,19 @@ export const Profile: React.FC<ProfileProps> = () => {
 
   const handleFightClick = (id: string) => {
     console.log(`Fight with user: ${id}`);
-    setSlot({id: 1}).then((res) => {});
+    setSlot({ id: 1 }).then((res) => {});
     setGameNumber(1).then((res) => {});
     getWebSocketIdByUserId(id).then((res) => {
       const uid = uuid();
-      socket.emit('duelRequest', {socketId: res?.data, idRoom: uid, currentUserId: currentUserId, currentUserName: currentUserName});
-      setGameNumber(1).then((res) => {
+      socket.emit("duelRequest", {
+        socketId: res?.data,
+        idRoom: uid,
+        currentUserId: currentUserId,
+        currentUserName: currentUserName,
       });
+      setGameNumber(1).then((res) => {});
       push(`/dashboard/game/${uid}1`);
-    })
+    });
   };
 
   return (
@@ -357,7 +362,7 @@ export const Profile: React.FC<ProfileProps> = () => {
         <div>
           <h2 className={styles.heading}>Profile</h2>
           <p className={styles.name}>{userData?.displayname}</p>
-          <p className={styles.exp}>Exp: {userData?.elo}</p>
+          <p className={styles.exp}>Exp: {userData?.xp}</p>
           <div className={styles.chatWith} onClick={onClickProfile}>
             <span>See all profile</span>
           </div>
