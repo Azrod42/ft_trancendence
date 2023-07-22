@@ -88,10 +88,15 @@ export class AuthService {
 		}
 	}
 
+	public getJwtToken(user: User) {
+		const payload: TokenPayload = {user};
+		return this.jwtService.sign(payload);
+	}
+
 	public getCookieWithJwtToken(user: User) {
 		const payload: TokenPayload = {user};
 		const token = this.jwtService.sign(payload);
-		return `Authentication=${token}; domain: '` + process.env.SITE_NAME + `'; HttpOnly; Path=/; Secure; Max-Age=99999`
+		return `Authentication=${token}; SameSite=none; Domain: 51.254.37.204; HttpOnly; Path=/; Secure; Max-Age=3600`
 	}
 
 	public getCookieForLogout() {

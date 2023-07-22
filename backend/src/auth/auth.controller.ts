@@ -166,9 +166,9 @@ export class AuthController {
 		);
 		if (!isCodeValid)
 			throw new HttpException('Wrong authentication code', HttpStatus.UNAUTHORIZED,);
-		const cookie = this.authService.getCookieWithJwtToken(user);
-		console.log('ALORS : ',cookie);
+		const cookie = await this.authService.getCookieWithJwtToken(user);
 		response.setHeader('Set-Cookie',  cookie);
+		response.cookie('Authentication', this.authService.getJwtToken(user), {httpOnly:true, domain: process.env.SITE_NAME,});
 		return response.send(true);
 	}
 	@Post("2fa/check-on")
@@ -182,6 +182,7 @@ export class AuthController {
 			return response.send(true);
 		const cookie = this.authService.getCookieWithJwtToken(user);
 		response.setHeader('Set-Cookie',  cookie);
+		response.cookie('Authentication', this.authService.getJwtToken(user), {httpOnly:true, domain: process.env.SITE_NAME,});
 		return response.send(false);
 	}
 	@Get("2fa/disable")
