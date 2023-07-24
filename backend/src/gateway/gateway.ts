@@ -7,7 +7,7 @@ import * as process from "process";
 
 
 
-@WebSocketGateway(4042, { cors: { origin: ['http://localhost:3000']}})
+@WebSocketGateway(4042, { cors: { origin: ['http://51.254.37.204/:3000']}})
 export class MyGateway implements OnModuleInit {
     @WebSocketServer()
     server: Server;
@@ -132,7 +132,7 @@ export class MyGateway implements OnModuleInit {
     }
     @SubscribeMessage('pong')
     onPongHandle(@MessageBody() body: any) {
-        if (!body.id)
+        if (!body?.id)
             return;
         const data = {id: body.id, displayname: body.displayname, avatar: body.avatar, inGame: body.inGame}
         const actual = this.connectedUser;
