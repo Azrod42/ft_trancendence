@@ -49,7 +49,6 @@ export const SearchUser: React.FC<SearchUserProps> = ({ user, onClick }) => {
     }
   });
   useEffect(() => {
-    //for setup action on userData refresh ?
     setLoading(false);
   }, [userData]);
 
@@ -72,9 +71,9 @@ export const SearchUser: React.FC<SearchUserProps> = ({ user, onClick }) => {
       />
       <div className={styles.userDetails}>
         <span className={styles.userName}>{user.displayname}</span>
-        <span className={styles.userExp}>{xp} XP</span>
+        <span className={styles.userExp}>{user.xp} XP</span>
         <span className={styles.userLevel}>
-          Level {Math.floor(Math.sqrt(xp / 100) + 1)}
+          Level {Math.floor(Math.sqrt(user.xp / 100) + 1)}
         </span>
       </div>
     </div>

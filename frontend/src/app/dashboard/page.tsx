@@ -8,7 +8,7 @@ import { postUserStats } from "@/app/dashboard/social/social.api";
 import Image from "next/image";
 import stylesGrid from "@/app/dashboard/profile/grid.module.css";
 import { useQuery } from "react-query";
-import {getUserInfo, notInGame} from "@/app/auth/auth.api";
+import { getUserInfo, notInGame } from "@/app/auth/auth.api";
 import { useRouter } from "next/navigation";
 import { location } from "@sideway/pinpoint";
 import LoadingComponent from "@/app/(component)/loadingPage/loadingPage";
@@ -25,13 +25,13 @@ export type DataEndGameDB = {
 };
 const Dashboard: React.FC<DashboardProps> = ({}) => {
   useEffect(() => {
-  if (!localStorage.getItem("reload")) {
-    localStorage.setItem("reload", "1");
-    setTimeout(() => {
-      window.location.reload();
-    },500);
-  }
-  }, [])
+    if (!localStorage.getItem("reload")) {
+      localStorage.setItem("reload", "1");
+      setTimeout(() => {
+        window.location.reload();
+      }, 500);
+    }
+  }, []);
   let [userData, setuserData] = useState<any>();
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -93,7 +93,7 @@ const Dashboard: React.FC<DashboardProps> = ({}) => {
       ranked: true,
     };
     postGameData(data).then((res) => {
-      console.log(res);
+      //console.log(res);
     });
   }
 
@@ -112,7 +112,7 @@ const Dashboard: React.FC<DashboardProps> = ({}) => {
   }, [elo]);
   useEffect(() => {
     notInGame().then((res) => {});
-  },[])
+  }, []);
 
   return (
     <div className={styles.container}>

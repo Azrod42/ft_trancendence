@@ -267,7 +267,7 @@ export const Profile: React.FC<ProfileProps> = () => {
           setError(false);
         }, 5000);
       } else {
-        console.log(res);
+        //console.log(res);
       }
     });
   }
@@ -283,7 +283,7 @@ export const Profile: React.FC<ProfileProps> = () => {
           setError(false);
         }, 5000);
       } else {
-        console.log(res);
+        //console.log(res);
       }
     });
   }
@@ -299,7 +299,7 @@ export const Profile: React.FC<ProfileProps> = () => {
           setError(false);
         }, 5000);
       } else {
-        console.log(res);
+        //console.log(res);
         push(`/dashboard/social/chat-home`);
       }
     });
@@ -316,7 +316,7 @@ export const Profile: React.FC<ProfileProps> = () => {
           setError(false);
         }, 5000);
       } else {
-        console.log(res);
+        //console.log(res);
       }
     });
   }
@@ -339,13 +339,18 @@ export const Profile: React.FC<ProfileProps> = () => {
   const [socket] = useState(useContext(WebsocketContext));
 
   const handleFightClick = (id: string) => {
-    setSlot({id: 1}).then((res) => {});
+    setSlot({ id: 1 }).then((res) => {});
     setGameNumber(1).then((res) => {});
     getWebSocketIdByUserId(id).then((res) => {
       const uid = uuid();
-      socket.emit('duelRequest', {socketId: res?.data, idRoom: uid, p2ID: id, p1ID: userData?.id, currentUserName:currentUserName});
-      setGameNumber(1).then((res) => {
+      socket.emit("duelRequest", {
+        socketId: res?.data,
+        idRoom: uid,
+        p2ID: id,
+        p1ID: userData?.id,
+        currentUserName: currentUserName,
       });
+      setGameNumber(1).then((res) => {});
       setGameNumber(1).then((res) => {});
       push(`/dashboard/game/${uid}1`);
     });

@@ -7,7 +7,8 @@ import {
   changeDisplayName,
   disable2fa,
   getProfilePicture,
-  getUserInfo, notInGame,
+  getUserInfo,
+  notInGame,
   uploadProfilePicture,
   UserAuthResponse,
 } from "@/app/auth/auth.api";
@@ -192,38 +193,69 @@ const Profile: React.FC<ProfileProps> = ({}) => {
     const loadImage = () => {
       setTimeout(() => {
         setIsLoading(false);
-      }, 2000);
+      }, 800);
     };
 
     loadImage();
   }, [elo]);
+
+  const [isXpLoading, setIsXpLoading] = useState(true);
+
+  useEffect(() => {
+    setIsXpLoading(true);
+
+    const loadImage = () => {
+      setTimeout(() => {
+        setIsXpLoading(false);
+      }, 800);
+    };
+
+    loadImage();
+  }, [xp]);
+
+  const [isStatLoading, setIsStatLoading] = useState(true);
+
+  useEffect(() => {
+    setIsStatLoading(true);
+
+    const loadImage = () => {
+      setTimeout(() => {
+        setIsStatLoading(false);
+      }, 800);
+    };
+
+    loadImage();
+  }, [userData]);
+
   useEffect(() => {
     notInGame().then((res) => {});
-  },[])
+  }, []);
 
-  const [localConnectedUser, setLocalConnectedUser] = useState<any>([])
-  const [ig, setIg] = useState<string>('In menu')
+  const [localConnectedUser, setLocalConnectedUser] = useState<any>([]);
+  const [ig, setIg] = useState<string>("In menu");
 
   useEffect(() => {
     const iner = setInterval(() => {
       if (localStorage.getItem("connectedUser")) {
-        setLocalConnectedUser(JSON.parse(localStorage.getItem("connectedUser")!));
+        setLocalConnectedUser(
+          JSON.parse(localStorage.getItem("connectedUser")!)
+        );
       }
     }, 3000);
     return () => clearInterval(iner);
-  },[]);
+  }, []);
 
   useEffect(() => {
     for (let i = 0; localConnectedUser[i]; i++) {
-      if (localConnectedUser[i]?.id == userData?.id){
+      if (localConnectedUser[i]?.id == userData?.id) {
         if (localConnectedUser[i].inGame) {
-          setIg('In game');
+          setIg("In game");
         } else {
-          setIg('In menu')
+          setIg("In menu");
         }
       }
     }
-  }, [localConnectedUser])
+  }, [localConnectedUser]);
 
   return (
     <div className={stylesGrid.container}>
@@ -332,38 +364,50 @@ const Profile: React.FC<ProfileProps> = ({}) => {
         <div className={styles.section_a_containerBottom}>
           <h1 className={styles.h1_section_a}>STATS</h1>
           <hr className={styles.hr} />
-          <p className={styles.p_section_a}>
-            Game Win:{" "}
-            <span className={styles.p_section_a_value}>{gameWin}</span>
-          </p>
-          <p className={styles.p_section_a}>
-            Game Lose:{" "}
-            <span className={styles.p_section_a_value}>{gameLose}</span>
-          </p>
-          <p className={styles.p_section_a}>
-            Win/Lose Rate:{" "}
-            <span className={styles.p_section_a_value}>{winLoseRate}</span>
-          </p>
-          <p className={styles.p_section_a}>
-            Total Points Get:{" "}
-            <span className={styles.p_section_a_value}>{totalPointGet}</span>
-          </p>
-          <p className={styles.p_section_a}>
-            Total Points Take:{" "}
-            <span className={styles.p_section_a_value}>{totalPointTake}</span>
-          </p>
-          <p className={styles.p_section_a}>
-            Point Get/Take Rate:{" "}
-            <span className={styles.p_section_a_value}>{pointGetTakeRate}</span>
-          </p>
-          <p className={styles.p_section_a}>
-            Win Streak:{" "}
-            <span className={styles.p_section_a_value}>{winStreak}</span>
-          </p>
-          <p className={styles.p_section_a}>
-            Total Games:{" "}
-            <span className={styles.p_section_a_value}>{totalGame}</span>
-          </p>
+          {isStatLoading ? (
+            <LoadingComponent />
+          ) : (
+            <div>
+              <p className={styles.p_section_a}>
+                Game Win:{" "}
+                <span className={styles.p_section_a_value}>{gameWin}</span>
+              </p>
+              <p className={styles.p_section_a}>
+                Game Lose:{" "}
+                <span className={styles.p_section_a_value}>{gameLose}</span>
+              </p>
+              <p className={styles.p_section_a}>
+                Win/Lose Rate:{" "}
+                <span className={styles.p_section_a_value}>{winLoseRate}</span>
+              </p>
+              <p className={styles.p_section_a}>
+                Total Points Get:{" "}
+                <span className={styles.p_section_a_value}>
+                  {totalPointGet}
+                </span>
+              </p>
+              <p className={styles.p_section_a}>
+                Total Points Take:{" "}
+                <span className={styles.p_section_a_value}>
+                  {totalPointTake}
+                </span>
+              </p>
+              <p className={styles.p_section_a}>
+                Point Get/Take Rate:{" "}
+                <span className={styles.p_section_a_value}>
+                  {pointGetTakeRate}
+                </span>
+              </p>
+              <p className={styles.p_section_a}>
+                Win Streak:{" "}
+                <span className={styles.p_section_a_value}>{winStreak}</span>
+              </p>
+              <p className={styles.p_section_a}>
+                Total Games:{" "}
+                <span className={styles.p_section_a_value}>{totalGame}</span>
+              </p>
+            </div>
+          )}
         </div>
       </div>
       <div className={stylesGrid.section_b}>
@@ -448,12 +492,16 @@ const Profile: React.FC<ProfileProps> = ({}) => {
         >
           LEVEL
         </p>
-        <div className={styles.levelContainer}>
-          <p className={styles.levelText}>
-            Level {Math.floor(Math.sqrt(xp / 100) + 1)}
-          </p>
-          <p className={styles.xpText}>{xp} XP</p>
-        </div>
+        {isXpLoading ? (
+          <LoadingComponent />
+        ) : (
+          <div className={styles.levelContainer}>
+            <p className={styles.levelText}>
+              Level {Math.floor(Math.sqrt(xp / 100) + 1)}
+            </p>
+            <p className={styles.xpText}>{xp} XP</p>
+          </div>
+        )}
       </div>
       <div className={stylesGrid.section_d}>
         <div className={styles.section_d_container}>
