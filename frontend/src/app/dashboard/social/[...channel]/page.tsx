@@ -149,14 +149,13 @@ const Channel: React.FC<ChannelProps> = ({}) => {
             let find = 0;
             for (let j = 0; connectedUser[j]; j++) {
               if (connectedUser[j].id == userList[i].id) {
-                console.log('inGame: ', connectedUser[j].inGame);
+                //console.log('inGame: ', connectedUser[j].inGame);
                 if (connectedUser[j].inGame == false) {
                   htmlUser += '<div class="statusGreen"></div>';
                   find = 1;
                 } else {
                   htmlUser += '<div class="statusYellow"></div>';
                   find = 1;
-
                 }
               }
             }

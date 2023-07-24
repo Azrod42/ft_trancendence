@@ -13,7 +13,8 @@ import {
   getChatList,
   getFriendList,
   getPublicUserInfo,
-  getUserInfo, notInGame,
+  getUserInfo,
+  notInGame,
   postProfilePicture,
   removeBlock,
   removeChat,
@@ -117,7 +118,7 @@ const User: React.FC<UserProps> = ({}) => {
           setErrorClick(false);
         }, 5000);
       } else {
-        console.log(res);
+        //console.log(res);
       }
     });
   }
@@ -133,7 +134,7 @@ const User: React.FC<UserProps> = ({}) => {
           setErrorClick(false);
         }, 5000);
       } else {
-        console.log(res);
+        //console.log(res);
       }
     });
   }
@@ -149,7 +150,7 @@ const User: React.FC<UserProps> = ({}) => {
           setErrorClick(false);
         }, 5000);
       } else {
-        console.log(res);
+        //console.log(res);
       }
     });
   }
@@ -165,7 +166,7 @@ const User: React.FC<UserProps> = ({}) => {
           setErrorClick(false);
         }, 5000);
       } else {
-        console.log(res);
+        //console.log(res);
       }
     });
   }
@@ -227,14 +228,18 @@ const User: React.FC<UserProps> = ({}) => {
   const [socket] = useState(useContext(WebsocketContext));
 
   const handleFightClick = (id: string) => {
-
-    setSlot({id: 1}).then((res) => {});
+    setSlot({ id: 1 }).then((res) => {});
     setGameNumber(1).then((res) => {});
     getWebSocketIdByUserId(id).then((res) => {
       const uid = uuid();
-      socket.emit('duelRequest', {socketId: res?.data, idRoom: uid, p2ID: id, p1ID: userData?.id, currentUserName:currentUserName});
-      setGameNumber(1).then((res) => {
+      socket.emit("duelRequest", {
+        socketId: res?.data,
+        idRoom: uid,
+        p2ID: id,
+        p1ID: userData?.id,
+        currentUserName: currentUserName,
       });
+      setGameNumber(1).then((res) => {});
       setGameNumber(1).then((res) => {});
       push(`/dashboard/game/${uid}1`);
     });
@@ -248,38 +253,69 @@ const User: React.FC<UserProps> = ({}) => {
     const loadImage = () => {
       setTimeout(() => {
         setIsLoadingRank(false);
-      }, 2000);
+      }, 800);
     };
 
     loadImage();
   }, [elo]);
+
+  const [isXpLoading, setIsXpLoading] = useState(true);
+
+  useEffect(() => {
+    setIsXpLoading(true);
+
+    const loadImage = () => {
+      setTimeout(() => {
+        setIsXpLoading(false);
+      }, 800);
+    };
+
+    loadImage();
+  }, [xp]);
+
+  const [isStatLoading, setIsStatLoading] = useState(true);
+
+  useEffect(() => {
+    setIsStatLoading(true);
+
+    const loadImage = () => {
+      setTimeout(() => {
+        setIsStatLoading(false);
+      }, 800);
+    };
+
+    loadImage();
+  }, [userData]);
+
   useEffect(() => {
     notInGame().then((res) => {});
-  },[])
+  }, []);
 
-  const [localConnectedUser, setLocalConnectedUser] = useState<any>([])
-  const [ig, setIg] = useState<string>('In menu')
+  const [localConnectedUser, setLocalConnectedUser] = useState<any>([]);
+  const [ig, setIg] = useState<string>("In menu");
 
   useEffect(() => {
     const iner = setInterval(() => {
       if (localStorage.getItem("connectedUser")) {
-        setLocalConnectedUser(JSON.parse(localStorage.getItem("connectedUser")!));
+        setLocalConnectedUser(
+          JSON.parse(localStorage.getItem("connectedUser")!)
+        );
       }
     }, 3000);
     return () => clearInterval(iner);
-  },[]);
+  }, []);
 
   useEffect(() => {
     for (let i = 0; localConnectedUser[i]; i++) {
-      if (localConnectedUser[i]?.id == userData?.id){
+      if (localConnectedUser[i]?.id == userData?.id) {
         if (localConnectedUser[i].inGame) {
-          setIg('In game');
+          setIg("In game");
         } else {
-          setIg('In menu')
+          setIg("In menu");
         }
       }
     }
-  }, [localConnectedUser])
+  }, [localConnectedUser]);
 
   return (
     <div className={stylesGrid.container}>
@@ -333,40 +369,50 @@ const User: React.FC<UserProps> = ({}) => {
         <div className={styles3.section_a_containerBottom}>
           <h1 className={styles3.h1_section_a}>STATS</h1>
           <hr className={styles3.hr} />
-          <p className={styles3.p_section_a}>
-            Game Win:{" "}
-            <span className={styles3.p_section_a_value}>{gameWin}</span>
-          </p>
-          <p className={styles3.p_section_a}>
-            Game Lose:{" "}
-            <span className={styles3.p_section_a_value}>{gameLose}</span>
-          </p>
-          <p className={styles3.p_section_a}>
-            Win/Lose Rate:{" "}
-            <span className={styles3.p_section_a_value}>{winLoseRate}</span>
-          </p>
-          <p className={styles3.p_section_a}>
-            Total Points Get:{" "}
-            <span className={styles3.p_section_a_value}>{totalPointGet}</span>
-          </p>
-          <p className={styles3.p_section_a}>
-            Total Points Take:{" "}
-            <span className={styles3.p_section_a_value}>{totalPointTake}</span>
-          </p>
-          <p className={styles3.p_section_a}>
-            Point Get/Take Rate:{" "}
-            <span className={styles3.p_section_a_value}>
-              {pointGetTakeRate}
-            </span>
-          </p>
-          <p className={styles3.p_section_a}>
-            Win Streak:{" "}
-            <span className={styles3.p_section_a_value}>{winStreak}</span>
-          </p>
-          <p className={styles3.p_section_a}>
-            Total Games:{" "}
-            <span className={styles3.p_section_a_value}>{totalGame}</span>
-          </p>
+          {isStatLoading ? (
+            <LoadingComponent />
+          ) : (
+            <div>
+              <p className={styles3.p_section_a}>
+                Game Win:{" "}
+                <span className={styles3.p_section_a_value}>{gameWin}</span>
+              </p>
+              <p className={styles3.p_section_a}>
+                Game Lose:{" "}
+                <span className={styles3.p_section_a_value}>{gameLose}</span>
+              </p>
+              <p className={styles3.p_section_a}>
+                Win/Lose Rate:{" "}
+                <span className={styles3.p_section_a_value}>{winLoseRate}</span>
+              </p>
+              <p className={styles3.p_section_a}>
+                Total Points Get:{" "}
+                <span className={styles3.p_section_a_value}>
+                  {totalPointGet}
+                </span>
+              </p>
+              <p className={styles3.p_section_a}>
+                Total Points Take:{" "}
+                <span className={styles3.p_section_a_value}>
+                  {totalPointTake}
+                </span>
+              </p>
+              <p className={styles3.p_section_a}>
+                Point Get/Take Rate:{" "}
+                <span className={styles3.p_section_a_value}>
+                  {pointGetTakeRate}
+                </span>
+              </p>
+              <p className={styles3.p_section_a}>
+                Win Streak:{" "}
+                <span className={styles3.p_section_a_value}>{winStreak}</span>
+              </p>
+              <p className={styles3.p_section_a}>
+                Total Games:{" "}
+                <span className={styles3.p_section_a_value}>{totalGame}</span>
+              </p>
+            </div>
+          )}
         </div>
       </div>
       <div className={stylesGrid.section_b}>
@@ -451,12 +497,16 @@ const User: React.FC<UserProps> = ({}) => {
         >
           LEVEL
         </p>
-        <div className={styles3.levelContainer}>
-          <p className={styles3.levelText}>
-            Level {Math.floor(Math.sqrt(xp / 100) + 1)}
-          </p>
-          <p className={styles3.xpText}>{xp} XP</p>
-        </div>
+        {isXpLoading ? (
+          <LoadingComponent />
+        ) : (
+          <div className={styles3.levelContainer}>
+            <p className={styles3.levelText}>
+              Level {Math.floor(Math.sqrt(xp / 100) + 1)}
+            </p>
+            <p className={styles3.xpText}>{xp} XP</p>
+          </div>
+        )}
       </div>
       <div className={stylesGrid.section_d}>
         <div className={styles.section_d_container}>
