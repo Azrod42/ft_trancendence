@@ -70,6 +70,10 @@ const User: React.FC<UserProps> = ({}) => {
       refetch();
     }
   });
+  useEffect(() => {
+  if (userData?.id == urlParam)
+    push('/dashboard/profile')
+  },[userData]);
   //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
   //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
   //GET USERS DATA FROM BACKEND AND DISPLAY IT
@@ -213,7 +217,8 @@ const User: React.FC<UserProps> = ({}) => {
           const ranked: string = tab[i].ranked ? "Ranked" : "Unranked";
           html += `<div class="gameHist">${tab[i].dnW} ${tab[i].scoreW} - ${tab[i].scoreL} ${tab[i].dnL} &nbsp&nbsp&nbsp|&nbsp&nbsp&nbsp ${ranked}</div>`;
         }
-        refHist.current.innerHTML = html;
+        if (refHist?.current?.innerHTML)
+          refHist.current.innerHTML = html;
       });
     }
   }, [userData]);

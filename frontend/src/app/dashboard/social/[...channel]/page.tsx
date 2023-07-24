@@ -743,7 +743,7 @@ const Channel: React.FC<ChannelProps> = ({}) => {
                   {...registerPw.register("password", { required: true })}
                 />
               </div>
-              <input className={styles.buttonSend} type="submit" value="Join" />
+              <input className={styles.buttonSend} type="submit" value="Send" />
             </form>
           </div>
         </>

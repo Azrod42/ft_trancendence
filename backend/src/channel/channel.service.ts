@@ -186,48 +186,39 @@ export class ChannelService {
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
-  }
-  async userJoinChannel(userId: string, id: string, channelPW: string) {
-    const channel: Channel = await this.channelRepo.findOneBy({ id });
-    if (channel.type == 3)
-      await this.verifyPassword(channelPW, channel.password);
-    let chanUsr = [];
-    chanUsr = JSON.parse(channel.channelusers);
-    if (await this.isUserIn(channel.bannedusers, userId))
-      throw new HttpException(
-        'You are banned form this channel',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    if (await this.isUserIn(channel.channelusers, userId))
-      throw new HttpException(
-        'User is already in this channel',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    chanUsr.push({ id: userId });
-    channel.channelusers = JSON.stringify(chanUsr);
-    await this.channelRepo.save(channel);
-    return channel.id;
-  }
-  async changeChannelType(chanInfo: chanNewTypeDto, idUser: string) {
-    const channel = await this.channelRepo.findOneBy({ id: chanInfo.id });
-    if (!channel)
-      throw new HttpException(
-        'Channel with this id does no exist',
-        HttpStatus.NOT_FOUND,
-      );
-    if ((await this.isUserIn(channel.owners, idUser)) == false)
-      throw new HttpException(
-        'User is not administrator',
-        HttpStatus.UNAUTHORIZED,
-      );
-    if (channel.type == chanInfo.type)
-      throw new HttpException(
-        'The channel is already in this category',
-        HttpStatus.UNAUTHORIZED,
-      );
-    if (chanInfo.type == 3) {
-      const hashedPassword = await bcrypt.hash(chanInfo.password, 12);
-      channel.password = chanInfo.password;
+
+    async userJoinChannel (userId: string, id: string, channelPW: string) {
+        const channel: Channel = await this.channelRepo.findOneBy({id});
+        console.log(channel.type);
+        console.log(channelPW);
+        if (channel.type == 3)
+            await this.verifyPassword(channelPW, channel.password);
+        let chanUsr = [];
+        chanUsr = JSON.parse(channel.channelusers);
+        if (await this.isUserIn(channel.bannedusers, userId))
+            throw new HttpException("You are banned form this channel", HttpStatus.INTERNAL_SERVER_ERROR,);
+        if (await this.isUserIn(channel.channelusers, userId))
+            throw new HttpException("User is already in this channel", HttpStatus.INTERNAL_SERVER_ERROR,);
+        chanUsr.push({id: userId});
+        channel.channelusers = JSON.stringify(chanUsr);
+        await this.channelRepo.save(channel);
+        return channel.id;
+    }
+    async changeChannelType (chanInfo: chanNewTypeDto, idUser: string) {
+        const channel = await this.channelRepo.findOneBy({id: chanInfo.id});
+        if (!channel)
+            throw new HttpException("Channel with this id does no exist", HttpStatus.NOT_FOUND,);
+        if (await this.isUserIn(channel.owners, idUser) == false)
+            throw new HttpException("User is not administrator", HttpStatus.UNAUTHORIZED,);
+        if (channel.type == chanInfo.type)
+            throw new HttpException("The channel is already in this category", HttpStatus.UNAUTHORIZED,);
+        if (chanInfo.type == 3) {
+            const hashedPassword = await bcrypt.hash(chanInfo.password, 12);
+            channel.password = hashedPassword;
+        }
+        channel.type = chanInfo.type;
+        await this.channelRepo.save(channel);
+        return true;
     }
     channel.type = chanInfo.type;
     await this.channelRepo.save(channel);
@@ -423,30 +414,29 @@ export class ChannelService {
     return true;
   }
 
-  async muteUser(userTrig: string, muteData: muteUserDto) {
-    const channel: Channel = await this.channelRepo.findOneBy({
-      id: muteData.chanId,
-    });
-    let chanMute = [];
-    const date = new Date().getTime();
-    if (channel.mutedusers) chanMute = JSON.parse(channel.mutedusers);
-    const userToMute = await this.usersService.findByDisplayname(muteData.id);
-    if ((await this.isUserIn(channel.owners, userTrig)) == false)
-      throw new HttpException(
-        'You are not channel administrator',
-        HttpStatus.CONFLICT,
-      );
-    if (await this.isUserIn(channel.owners, userToMute))
-      throw new HttpException(
-        'You cant mute administrator',
-        HttpStatus.CONFLICT,
-      );
-    for (let i = 0; chanMute[i]; i++) {
-      const number: number = chanMute[i].time;
-      if (number < date) {
-        chanMute.splice(i, 1);
-        i = 0;
-      }
+
+    async muteUser (userTrig: string, muteData: muteUserDto) {
+        const channel: Channel = await this.channelRepo.findOneBy({id: muteData.chanId});
+        let chanMute = [];
+        const date = new Date().getTime();
+        if (channel.mutedusers)
+            chanMute = JSON.parse(channel.mutedusers);
+        const userToMute = await this.usersService.findByDisplayname(muteData.id);
+        if (await this.isUserIn(channel.owners, userTrig) == false)
+            throw new HttpException("You are not channel administrator", HttpStatus.CONFLICT,);
+        // if (await this.isUserIn(channel.owners, userToMute))
+        //     throw new HttpException("You cant mute administrator", HttpStatus.CONFLICT,);
+        for (let i = 0; chanMute[i]; i++) {
+            const number: number = chanMute[i].time
+            if (number < date){
+                chanMute.splice(i, 1);
+                i = 0;
+            }
+        }
+        channel.mutedusers = JSON.stringify(chanMute);
+        channel.mutedusers = await this.addList(channel.mutedusers, muteData.id, {id: muteData.id, time: muteData.time, message: '', displayname: ''})
+        await this.channelRepo.save(channel);
+        return true;
     }
     channel.mutedusers = JSON.stringify(chanMute);
     channel.mutedusers = await this.addList(channel.mutedusers, muteData.id, {
