@@ -12,185 +12,189 @@ import { chanNewTypeDto, messageReqDto, muteUserDto } from './dtos/channel.dto';
 
 @Injectable()
 export class ChannelService {
-  constructor(
-    @InjectRepository(Channel) private channelRepo: Repository<Channel>,
-    private usersService: UserService,
-    private readonly configService: ConfigService,
-    private readonly httpService: HttpService,
-  ) {}
+    constructor(
+        @InjectRepository(Channel) private channelRepo: Repository<Channel>,
+        private usersService: UserService,
+        private readonly configService: ConfigService,
+        private readonly httpService: HttpService,
+    ) {
+    }
 
-  async create(channelData: CreateChannelDto) {
-    const newUser = await this.channelRepo.create(channelData);
-    await this.channelRepo.save(newUser);
-    return newUser;
-  }
+    async create(channelData: CreateChannelDto) {
+        const newUser = await this.channelRepo.create(channelData);
+        await this.channelRepo.save(newUser);
+        return newUser;
+    }
 
-  async addElement(data: string, newElem: {}) {
-    let tab = [];
-    if (data !== '') tab = await JSON.parse(data);
-    tab.push(newElem);
-    return JSON.stringify(tab);
-  }
-
-  async removeElement(data: string, tag: string, value: string) {
-    let tab = [];
-    if (data !== '') tab = await JSON.parse(data);
-    for (let i = 0; tab.length; i++) {
-      if (tab[i][tag] == value) {
-        tab.splice(i, 1);
+    async addElement(data: string, newElem: any) {
+        let tab = [];
+        if (data !== '') tab = await JSON.parse(data);
+        tab.push(newElem);
         return JSON.stringify(tab);
-      }
     }
-    return JSON.stringify(tab);
-  }
 
-  async createChannel(channelData: CreateChannelDto) {
-    try {
-      const hashedPassword = await bcrypt.hash(channelData.password, 12);
-      const owner = await this.addElement('', { id: channelData.owners });
-      const channel = await this.create({
-        owners: owner,
-        channelname: channelData.channelname,
-        password: hashedPassword,
-        type: channelData.type,
-        msghist: '',
-        mutedusers: '',
-        bannedusers: '',
-        channelusers: owner,
-        owner: channelData.owners,
-      });
-      channel.password = undefined;
-      return channel;
-    } catch (e) {
-      if (e?.code === postgresErrorCode.UniqueViolation) {
-        throw new HttpException(
-          'Channel name already taken',
-          HttpStatus.BAD_REQUEST,
+    async removeElement(data: string, tag: string, value: string) {
+        let tab = [];
+        if (data !== '') tab = await JSON.parse(data);
+        for (let i = 0; tab.length; i++) {
+            if (tab[i][tag] == value) {
+                tab.splice(i, 1);
+                return JSON.stringify(tab);
+            }
+        }
+        return JSON.stringify(tab);
+    }
+
+    async createChannel(channelData: CreateChannelDto) {
+        try {
+            const hashedPassword = await bcrypt.hash(channelData.password, 12);
+            const owner = await this.addElement('', {id: channelData.owners});
+            const channel = await this.create({
+                owners: owner,
+                channelname: channelData.channelname,
+                password: hashedPassword,
+                type: channelData.type,
+                msghist: '',
+                mutedusers: '',
+                bannedusers: '',
+                channelusers: owner,
+                owner: channelData.owners,
+            });
+            channel.password = undefined;
+            return channel;
+        } catch (e) {
+            if (e?.code === postgresErrorCode.UniqueViolation) {
+                throw new HttpException(
+                    'Channel name already taken',
+                    HttpStatus.BAD_REQUEST,
+                );
+            }
+            console.log(e)
+            throw new HttpException(
+                'Something went wrong',
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
+    }
+
+    async getUserChannel(id: string) {
+        const userChannel = [];
+        const all = await this.channelRepo.query(
+            `SELECT id, channelname, type, channelusers
+             FROM public."channel"`,
         );
-      }
-      console.log(e)
-      throw new HttpException(
-        'Something went wrong',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-  }
-
-  async getUserChannel(id: string) {
-    const userChannel = [];
-    const all = await this.channelRepo.query(
-      `SELECT id, channelname, type, channelusers FROM public."channel"`,
-    );
-    for (let i = 0; all[i]; i++) {
-      const chanData = await JSON.parse(all[i].channelusers);
-      for (let j = 0; j < chanData.length; j++) {
-        if (chanData[j].id == id) {
-          userChannel.push(all[i]);
+        for (let i = 0; all[i]; i++) {
+            const chanData = await JSON.parse(all[i].channelusers);
+            for (let j = 0; j < chanData.length; j++) {
+                if (chanData[j].id == id) {
+                    userChannel.push(all[i]);
+                }
+            }
         }
-      }
+        return JSON.stringify(userChannel);
     }
-    return JSON.stringify(userChannel);
-  }
 
-  async getChannelWithoutUser(id: string) {
-    const channelWithoutUser = [];
-    const all = await this.channelRepo.query(
-      `SELECT id, channelname, type, channelusers FROM public."channel"`,
-    );
-    for (let i = 0; all[i]; i++) {
-      if (all[i].type != 2) {
-        const chanData = await JSON.parse(all[i].channelusers);
-        for (let j = 0; j <= chanData.length; j++) {
-          if (chanData.length == j) {
-            all[i].channelusers = j.toString();
-            channelWithoutUser.push(all[i]);
-            break;
-          }
-          if (chanData[j].id == id) {
-            break;
-          }
+    async getChannelWithoutUser(id: string) {
+        const channelWithoutUser = [];
+        const all = await this.channelRepo.query(
+            `SELECT id, channelname, type, channelusers
+             FROM public."channel"`,
+        );
+        for (let i = 0; all[i]; i++) {
+            if (all[i].type != 2) {
+                const chanData = await JSON.parse(all[i].channelusers);
+                for (let j = 0; j <= chanData.length; j++) {
+                    if (chanData.length == j) {
+                        all[i].channelusers = j.toString();
+                        channelWithoutUser.push(all[i]);
+                        break;
+                    }
+                    if (chanData[j].id == id) {
+                        break;
+                    }
+                }
+            }
         }
-      }
+        return JSON.stringify(channelWithoutUser);
     }
-    return JSON.stringify(channelWithoutUser);
-  }
 
-  async findChannelById(id: string, userTrig: string = '') {
-    const channel = await this.channelRepo.findOneBy({ id });
-    if (channel) {
-      channel.password = userTrig;
-      return channel;
+    async findChannelById(id: string, userTrig = '') {
+        const channel = await this.channelRepo.findOneBy({id});
+        if (channel) {
+            channel.password = userTrig;
+            return channel;
+        }
+        throw new HttpException(
+            'Channel with this id does no exist',
+            HttpStatus.NOT_FOUND,
+        );
     }
-    throw new HttpException(
-      'Channel with this id does no exist',
-      HttpStatus.NOT_FOUND,
-    );
-  }
 
-  async isUserIn(list: string, id: string) {
-    if (!list) return false;
-    const json = JSON.parse(list);
-    for (let i = 0; json[i]; i++) {
-      if (json[i].id == id) {
-        return true;
-      }
+    async isUserIn(list: string, id: string) {
+        if (!list) return false;
+        const json = JSON.parse(list);
+        for (let i = 0; json[i]; i++) {
+            if (json[i].id == id) {
+                return true;
+            }
+        }
+        return false;
     }
-    return false;
-  }
-  async removeFormList(list: string, id: string) {
-    if (!list) return list;
-    const json = JSON.parse(list);
-    for (let i = 0; json[i]; i++) {
-      if (json[i].id == id) {
-        json.splice(i, 1);
+
+    async removeFormList(list: string, id: string) {
+        if (!list) return list;
+        const json = JSON.parse(list);
+        for (let i = 0; json[i]; i++) {
+            if (json[i].id == id) {
+                json.splice(i, 1);
+                return JSON.stringify(json);
+            }
+        }
+        return list;
+    }
+
+    async addList(
+        list: string,
+        id: string,
+        object = {id: 'unset', time: 0, message: '', displayname: ''},
+    ) {
+        let json = [];
+        if (list) json = JSON.parse(list);
+        if (object?.time !== 0) json.push(object);
+        else json.push({id: id});
         return JSON.stringify(json);
-      }
-    }
-    return list;
-  }
-  async addList(
-    list: string,
-    id: string,
-    object = { id: 'unset', time: 0, message: '', displayname: '' },
-  ) {
-    let json = [];
-    if (list) json = JSON.parse(list);
-    if (object?.time !== 0) json.push(object);
-    else json.push({ id: id });
-    return JSON.stringify(json);
-  }
-
-  async addListMsg(
-    list: string,
-    id: string,
-    object = { id: 'unset', time: 0, message: '', displayname: '' },
-  ) {
-    let json = [];
-    if (list) json = JSON.parse(list);
-    if (object?.time !== 0) json.push(object);
-    else json.push({ id: id });
-    return JSON.stringify(json);
-  }
-
-  private async verifyPassword(
-    plainTextPassword: string,
-    hashoedPassword: string,
-  ) {
-    const arePasswordMatching = await bcrypt.compare(
-      plainTextPassword,
-      hashoedPassword,
-    );
-    if (!arePasswordMatching) {
-      throw new HttpException(
-        'Wrong credentials provided',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
     }
 
-    async userJoinChannel (userId: string, id: string, channelPW: string) {
+    async addListMsg(
+        list: string,
+        id: string,
+        object = {id: 'unset', time: 0, message: '', displayname: ''},
+    ) {
+        let json = [];
+        if (list) json = JSON.parse(list);
+        if (object?.time !== 0) json.push(object);
+        else json.push({id: id});
+        return JSON.stringify(json);
+    }
+
+    private async verifyPassword(
+        plainTextPassword: string,
+        hashoedPassword: string,
+    ) {
+        const arePasswordMatching = await bcrypt.compare(
+            plainTextPassword,
+            hashoedPassword,
+        );
+        if (!arePasswordMatching) {
+            throw new HttpException(
+                'Wrong credentials provided',
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
+    }
+
+    async userJoinChannel(userId: string, id: string, channelPW: string) {
         const channel: Channel = await this.channelRepo.findOneBy({id});
-        console.log(channel.type);
-        console.log(channelPW);
         if (channel.type == 3)
             await this.verifyPassword(channelPW, channel.password);
         let chanUsr = [];
@@ -204,7 +208,8 @@ export class ChannelService {
         await this.channelRepo.save(channel);
         return channel.id;
     }
-    async changeChannelType (chanInfo: chanNewTypeDto, idUser: string) {
+
+    async changeChannelType(chanInfo: chanNewTypeDto, idUser: string) {
         const channel = await this.channelRepo.findOneBy({id: chanInfo.id});
         if (!channel)
             throw new HttpException("Channel with this id does no exist", HttpStatus.NOT_FOUND,);
@@ -220,10 +225,7 @@ export class ChannelService {
         await this.channelRepo.save(channel);
         return true;
     }
-    channel.type = chanInfo.type;
-    await this.channelRepo.save(channel);
-    return true;
-  }
+
 
   async inviteUserChannel(
     userTrig: string,
@@ -438,16 +440,6 @@ export class ChannelService {
         await this.channelRepo.save(channel);
         return true;
     }
-    channel.mutedusers = JSON.stringify(chanMute);
-    channel.mutedusers = await this.addList(channel.mutedusers, muteData.id, {
-      id: muteData.id,
-      time: muteData.time,
-      message: '',
-      displayname: '',
-    });
-    await this.channelRepo.save(channel);
-    return true;
-  }
 
   async newMessage(userTrig: string, messageData: messageReqDto) {
     const channel: Channel = await this.channelRepo.findOneBy({
