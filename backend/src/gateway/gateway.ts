@@ -39,12 +39,12 @@ export class MyGateway implements OnModuleInit {
             this.server.emit('ping', {
                 data: 'ping'
             })
-            }, 800)
+            }, 1500)
         setInterval(() => {
             this.server.emit('connectedUser', {
                 data: this.connectedUser,
             })
-        }, 1200)
+        }, 2500)
         setInterval(() => {
             this.waitingPlayer = '';
         }, 10000)
@@ -59,7 +59,7 @@ export class MyGateway implements OnModuleInit {
             if (this.onGoingGame[i].ping < 2)
                 this.server.emit('global', {roomID: this.onGoingGame[i]?.id, status: 'game-cancel'});
             }
-        }, 2500);
+        }, 3000);
     }
 
     @SubscribeMessage('room')
@@ -103,7 +103,7 @@ export class MyGateway implements OnModuleInit {
                     }
                 }
             }
-            this.ready.push({id: body.id, data: body.data});
+            this.ready.push({id: body.id, idReady: body.data.ready});
         } else if (body?.status == 'ranked'){
             this.ready = [];
             for(let i = 0; this.ranked[i]; i++) {

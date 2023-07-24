@@ -167,6 +167,8 @@ export class ChannelService {
     }
     async userJoinChannel (userId: string, id: string, channelPW: string) {
         const channel: Channel = await this.channelRepo.findOneBy({id});
+        console.log(channel.type);
+        console.log(channelPW);
         if (channel.type == 3)
             await this.verifyPassword(channelPW, channel.password);
         let chanUsr = [];
@@ -190,7 +192,7 @@ export class ChannelService {
             throw new HttpException("The channel is already in this category", HttpStatus.UNAUTHORIZED,);
         if (chanInfo.type == 3) {
             const hashedPassword = await bcrypt.hash(chanInfo.password, 12);
-            channel.password = chanInfo.password
+            channel.password = hashedPassword;
         }
         channel.type = chanInfo.type;
         await this.channelRepo.save(channel);
@@ -314,8 +316,8 @@ export class ChannelService {
         const userToMute = await this.usersService.findByDisplayname(muteData.id);
         if (await this.isUserIn(channel.owners, userTrig) == false)
             throw new HttpException("You are not channel administrator", HttpStatus.CONFLICT,);
-        if (await this.isUserIn(channel.owners, userToMute))
-            throw new HttpException("You cant mute administrator", HttpStatus.CONFLICT,);
+        // if (await this.isUserIn(channel.owners, userToMute))
+        //     throw new HttpException("You cant mute administrator", HttpStatus.CONFLICT,);
         for (let i = 0; chanMute[i]; i++) {
             const number: number = chanMute[i].time
             if (number < date){

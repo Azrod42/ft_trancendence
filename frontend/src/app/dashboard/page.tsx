@@ -100,15 +100,8 @@ const Dashboard: React.FC<DashboardProps> = ({}) => {
   const [isLoadingRank, setIsLoadingRank] = useState(true);
 
   useEffect(() => {
-    setIsLoadingRank(true);
-
-    const loadImage = () => {
-      setTimeout(() => {
-        setIsLoadingRank(false);
-      }, 2000);
-    };
-
-    loadImage();
+    if (elo != 0)
+      setIsLoadingRank(false);
   }, [elo]);
   useEffect(() => {
     notInGame().then((res) => {});
@@ -119,10 +112,10 @@ const Dashboard: React.FC<DashboardProps> = ({}) => {
       <div className={styles.containerchild}>
         <DashboardUser />
       </div>
-      <div className={styles.containerchild}>
-        <h2 className={styles.h2ConUsr}>Connected users:</h2>
-        <ConnectedUser />
-      </div>
+      {/*<div className={styles.containerchild}>*/}
+      {/*  <h2 className={styles.h2ConUsr}>Connected users:</h2>*/}
+      {/*  <ConnectedUser />*/}
+      {/*</div>*/}
       <div className={styles.section_a_containerBottom}>
         <p className={styles.p_section_a}>
           Game Win: <span className={styles.p_section_a_value}>{gameWin}</span>
@@ -226,17 +219,6 @@ const Dashboard: React.FC<DashboardProps> = ({}) => {
             </div>
           </div>
         )}
-      </div>
-      <div className={styles.section_c_container}>
-        <div className={styles.levelContainer}>
-          <p className={styles.levelText}>
-            Level {Math.floor(Math.sqrt(xp / 100) + 1)}
-          </p>
-          <p className={styles.xpText}>{xp} XP</p>
-        </div>
-      </div>
-      <div className={styles.containerchild}>
-        <button onClick={testRequest}>CLIC CLIC</button>
       </div>
     </div>
   );
