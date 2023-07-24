@@ -3,24 +3,14 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import styles from "./room.module.css";
 import { useParams, useRouter } from "next/navigation";
-import { useRouter as use2Router } from "next/router";
-
-import { WebsocketContext } from "@/app/(common)/WebsocketContext";
 import {
-  getPlayerSlot,
-  getSlot,
   getUserInfo,
   inGame,
   notInGame,
-  PublicUserResponse,
   UserAuthResponse,
 } from "@/app/auth/auth.api";
 import { useQuery } from "react-query";
-import { mockSession } from "next-auth/client/__tests__/helpers/mocks";
-import { gameLose } from "@/app/auth/auth.api";
-import { createContext } from "react";
-import { Socket } from "socket.io-client";
-import * as io from "socket.io-client";
+
 import { postGameData } from "@/app/dashboard/social/social.api";
 import { DataEndGameDB } from "@/app/dashboard/page";
 import { socket as sock } from "@/app/socket";
@@ -100,11 +90,9 @@ const Room: React.FC<RoomProps> = () => {
         if (data?.data?.status == "ready") {
           //console.log('ready');
         }
-        if (data?.status == "ready")
-          if (data?.status == "game") {
-            //console.log('A player is ready', pSlot)
-            setGameStatus("running");
-          }
+        if (data?.status == "game") {
+          setGameStatus("running");
+        }
         if (data?.data?.status == "ballPosition") {
           newPos(data?.data?.status, data?.data?.ballPosition);
         }
@@ -242,10 +230,7 @@ const Room: React.FC<RoomProps> = () => {
 
   useEffect(() => {
     if (pSlot == 1) {
-      socket.emit(`room-data`, {
-        id: uniqueIdentifier,
-        data: { status: "player2Score", player2Score: player2Score },
-      });
+      socket.emit(`room-data`, {id: uniqueIdentifier, data: { status: "player2Score", player2Score: player2Score }});
     }
   }, [player2Score]);
 
@@ -300,6 +285,7 @@ const Room: React.FC<RoomProps> = () => {
     setGameStatus("running");
   };
   const ready = () => {
+    console.log('ready')
     socket.emit(`room-data`, {
       id: uniqueIdentifier,
       status: "ready",
