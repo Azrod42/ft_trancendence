@@ -59,7 +59,7 @@ const Room: React.FC<RoomProps> = () => {
   const [ballPosition, setBallPosition] = useState({ x: 400, y: 200 }); // Initial ball position
   const [ballSpeed, setBallSpeed] = useState({ dx: 5, dy: 2 }); // Initial ball speed
   const [gameStatus, setGameStatus] = useState("notStarted"); // New state to control the game status
-  const [isBlack, setIsBlack] = useState(false);
+  const [isBlack, setIsBlack] = useState(true);
   const [ballForm, setBallForm] = useState(false);
   const [ranked, setRanked] = useState(false);
   const [scoreSend, setScoreSend] = useState<boolean>(false);

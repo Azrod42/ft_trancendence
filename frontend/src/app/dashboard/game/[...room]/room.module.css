@@ -45,6 +45,7 @@
   }
 
   .containerCanvas {
+      width: 100%;
     display: flex;
     flex-direction: column;
     gap: 30px;
@@ -85,10 +86,14 @@
     .canvas {
         scale: 0.55;
       }
-    /* .containerCanvas {
-      margin-right: 190px;
-    } */
 }
+
+@media (max-width: 445px) {
+    .canvas {
+        scale: 0.35;
+    }
+}
+
 
 .canvas {
     transform: scale(1);

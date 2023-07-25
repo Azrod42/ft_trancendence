@@ -105,6 +105,8 @@ export class UserController {
     if (!request.user || !file) return;
     //remove image if user already have one
     const userProfile = await this.userService.findById(request.user.id);
+    if (userProfile.avatar == 'notset')
+        return ;
     fs.unlink(process.cwd() + '/' + userProfile.avatar, (err) => {
       if (err) {
         console.log(err);
