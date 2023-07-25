@@ -7,6 +7,7 @@ WORKDIR /app
 RUN apk update && apk upgrade
 
 EXPOSE 4000
+EXPOSE 4042
 
 # ENTRYPOINT [ "/bin/sh", "-c", "npx prisma migrate deploy && yarn run start" ]
 
