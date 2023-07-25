@@ -22,7 +22,7 @@ export const ChannelCategory: React.FC = () => {
     { staleTime: 5000, refetchInterval: 1000 * 2, refetchOnWindowFocus: false }
   );
   useEffect(() => {
-    if (refPublic.current) {
+    if (refPublic.current && refPrivate.current && refProtected.current) {
       let htmlPu: string = `
 							<style>
 								.styleItem{

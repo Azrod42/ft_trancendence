@@ -344,6 +344,10 @@ export class UserService {
 		userL.winStreak = 0;
 		userW.winLoseRate = ((userW.gameWin * 100) / (userW.gameWin + userW.gameLose)).toString();
 		userL.winLoseRate = ((userL.gameWin * 100) / (userL.gameWin + userL.gameLose)).toString();
+		if (userW.winLoseRate.length > 4)
+			userW.winLoseRate = userW.winLoseRate.substring(0, 4);
+		if (userL.winLoseRate.length > 4)
+			userL.winLoseRate = userL.winLoseRate.substring(0, 4);
 		if (gameInfo.ranked) {
 			userW.elo = Math.round(userW.elo + (25 / (userW.elo / userL.elo)));
 			userL.elo = Math.round(userL.elo - (25 / (userW.elo / userL.elo)));
@@ -356,7 +360,10 @@ export class UserService {
 		userL.totalPointGet += gameInfo.scoreLoser;
 		userW.pointGetTakeRate = (userW.totalPointGet / userW.totalPointTake).toString();
 		userL.pointGetTakeRate = (userW.totalPointGet / userL.totalPointTake).toString();
-
+		if (userW.pointGetTakeRate.length > 4)
+			userW.pointGetTakeRate = userW.pointGetTakeRate.substring(0, 4);
+		if (userL.pointGetTakeRate.length > 4)
+			userL.pointGetTakeRate = userL.pointGetTakeRate.substring(0, 4);
 		let userWGHist = [];
 		let userLGHist = [];
 		if (userW.gameHist != '')
