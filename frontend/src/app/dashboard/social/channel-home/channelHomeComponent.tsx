@@ -1,11 +1,12 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useRef, useState} from "react";
 import { Category } from "@/app/dashboard/social/chat-home/chatHomeComponent";
 import styles from "@/app/dashboard/social/chat-home/chatHome.module.css";
 import { getUserChannel } from "@/app/dashboard/social/social.api";
 import { useQuery } from "react-query";
 import { useRouter } from "next/navigation";
 import { useTransform } from "framer-motion";
+import Image from "next/image";
 
 export const ChannelCategory: React.FC = () => {
   const { push } = useRouter();
@@ -18,10 +19,11 @@ export const ChannelCategory: React.FC = () => {
         const dta = JSON.parse(JSON.stringify(res.data!));
         setUserChannel(res.data!);
       }),
-    { staleTime: 5000, refetchInterval: 1000 * 5, refetchOnWindowFocus: false }
+    { staleTime: 5000, refetchInterval: 1000 * 2, refetchOnWindowFocus: false }
   );
   useEffect(() => {
-    let htmlPu: string = `
+    if (refPublic.current) {
+      let htmlPu: string = `
 							<style>
 								.styleItem{
 								display: flex;
@@ -31,66 +33,137 @@ export const ChannelCategory: React.FC = () => {
 								align-items: center;
 								}
 							</style>`;
-    let htmlPr: string = htmlPu;
-    let htmlPro: string = htmlPu;
-    let nuPu = 0,
-      nuPr = 0,
-      nuPro = 0;
+      let htmlPr: string = htmlPu;
+      let htmlPro: string = htmlPu;
+      let nuPu = 0,
+          nuPr = 0,
+          nuPro = 0;
 
-    if (!userChannel) return;
-    for (let i = 0; userChannel[i]; i++) {
-      if (userChannel[i].type == 1) {
-        nuPu += 1;
-        htmlPu += ` 
+      if (!userChannel) return;
+      for (let i = 0; userChannel[i]; i++) {
+        if (userChannel[i].type == 1) {
+          nuPu += 1;
+          htmlPu += ` 
 							<div class='styleItem' id='${userChannel[i].id}'>
 							<Image src='/media/logo42_32x32.png' alt='logo-channel' width={32} height={32}/>
 							<div>${userChannel[i].channelname}</div>
 							</div>`;
-      }
-      if (userChannel[i].type == 2) {
-        nuPr += 1;
-        htmlPr += `
+        }
+        if (userChannel[i].type == 2) {
+          nuPr += 1;
+          htmlPr += `
 							<div class='styleItem' id='${userChannel[i].id}'>
 							<Image src='/media/logo42_32x32.png' alt='logo-channel' width={32} height={32}/>
 							<div>${userChannel[i].channelname}</div>
 							</div>`;
-      }
-      if (userChannel[i].type == 3) {
-        nuPro += 1;
-        htmlPro += `
+        }
+        if (userChannel[i].type == 3) {
+          nuPro += 1;
+          htmlPro += `
 							<div class='styleItem' id='${userChannel[i].id}'>
 							<Image src='/media/logo42_32x32.png' alt='logo-channel' width={32} height={32}/>
 							<div>${userChannel[i].channelname}</div>
 							</div>`;
+        }
       }
-    }
-    if (htmlPu != "") {
-      const elDiv = document.getElementById("htmlPublic");
-      const el1Div = document.getElementById("htmlPrivate");
-      const el2Div = document.getElementById("htmlProtected");
-      if (elDiv) elDiv.innerHTML = htmlPu;
-      if (el1Div) el1Div.innerHTML = htmlPr;
-      if (el2Div) el2Div.innerHTML = htmlPro;
-      const elDivnu = document.getElementById("htmlPublicnu");
-      const el1Divnu = document.getElementById("htmlPrivatenu");
-      const el2Divnu = document.getElementById("htmlProtectednu");
-      if (elDivnu) elDivnu.innerText = "(" + nuPu.toString() + ")";
-      if (el1Divnu) el1Divnu.innerText = "(" + nuPr.toString() + ")";
-      if (el2Divnu) el2Divnu.innerText = "(" + nuPro.toString() + ")";
-    }
-    for (let i = 0; userChannel[i]; i++) {
-      let mySelectedElement = document.getElementById(userChannel[i].id);
-      mySelectedElement?.addEventListener("click", function getHtml() {
-        push(`/dashboard/social/channel/${userChannel[i].id}`);
-      });
+      if (htmlPu != "") {
+          refPublic.current.innerHTML! = htmlPu;
+          refPublicNu.current.innerText! = "(" + nuPu.toString() + ")";
+
+          refProtected.current.innerHTML! = htmlPro;
+          refProtectedNu.current.innerText! = "(" + nuPro.toString() + ")";;
+
+          refPrivate.current.innerHTML! = htmlPr;
+          refPrivateNu.current.innerText = "(" + nuPr.toString() + ")";
+
+      }
+      setTimeout(() => {
+        for (let i = 0; userChannel[i]; i++) {
+          let mySelectedElement = document.getElementById(userChannel[i].id);
+          mySelectedElement?.addEventListener("click", function getHtml() {
+            push(`/dashboard/social/channel/${userChannel[i].id}`);
+          });
+        }
+      },500)
     }
   }, [userChannel]);
 
-  return (
+
+  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen2, setIsOpen2] = useState(false);
+  const [isOpen3, setIsOpen3] = useState(false);
+
+
+  const refPublic:  React.MutableRefObject<any> = useRef();
+  const refPublicNu:  React.MutableRefObject<any> = useRef();
+  const refProtected:  React.MutableRefObject<any> = useRef();
+  const refProtectedNu:  React.MutableRefObject<any> = useRef();
+  const refPrivate:  React.MutableRefObject<any> = useRef();
+  const refPrivateNu:  React.MutableRefObject<any> = useRef();
+
+
+    return (
     <div className={styles.container}>
-      <Category title="Private Channels" count={0} type={"htmlPrivate"} />
-      <Category title="Public Channels" count={0} type={"htmlPublic"} />
-      <Category title="Protected Channels" count={0} type={"htmlProtected"} />
+      <div className={styles.category} onClick={() => setIsOpen(!isOpen)}>
+        <div className={styles.name}>
+          <p>Public Channels</p>
+          <p ref={refPublicNu}>(0)</p>
+        </div>
+        <Image
+            className={styles.arrow}
+            src="/media/arrow.png"
+            width={13}
+            height={7}
+            alt="arrow"
+            style={{ transform: isOpen ? "rotate(0deg)" : "rotate(-90deg)" }}
+        />
+      </div>
+      <div className={styles.channelUnit}>
+        {isOpen && (
+            <div ref={refPublic}>
+            </div>
+        )}
+      </div>
+      <div className={styles.category} onClick={() => setIsOpen2(!isOpen2)}>
+        <div className={styles.name}>
+          <p>Protected Channels</p>
+          <p ref={refProtectedNu}>(0)</p>
+        </div>
+        <Image
+            className={styles.arrow}
+            src="/media/arrow.png"
+            width={13}
+            height={7}
+            alt="arrow"
+            style={{ transform: isOpen2 ? "rotate(0deg)" : "rotate(-90deg)" }}
+        />
+      </div>
+      <div className={styles.channelUnit}>
+        {isOpen2 && (
+            <div ref={refProtected}>
+            </div>
+        )}
+      </div>
+      <div className={styles.category} onClick={() => setIsOpen3(!isOpen3)}>
+        <div className={styles.name}>
+          <p>Private Channels</p>
+          <p ref={refPrivateNu}>(0)</p>
+        </div>
+        <Image
+            className={styles.arrow}
+            src="/media/arrow.png"
+            width={13}
+            height={7}
+            alt="arrow"
+            style={{ transform: isOpen3 ? "rotate(0deg)" : "rotate(-90deg)" }}
+        />
+      </div>
+      <div className={styles.channelUnit}>
+        {isOpen3 && (
+            <div ref={refPrivate}>
+            </div>
+        )}
+      </div>
     </div>
   );
 };

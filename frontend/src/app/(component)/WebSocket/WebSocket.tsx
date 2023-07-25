@@ -30,7 +30,7 @@ export const WebSocket = (user: any) => {
             })
         });
         socket.on('connectedUser', (data) => {
-            refDiv.current.innerText = 'Connected user: ' + data?.data.length;
+            refDiv.current.innerText = 'Current users: ' + data?.data.length;
             localStorage.setItem('connectedUser', JSON.stringify(data?.data));
             setNeedRefresh(false)
         });

@@ -170,7 +170,6 @@
   width: 90%;
   height: 85%;
   max-height: 700px;
-  overflow: hidden;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;

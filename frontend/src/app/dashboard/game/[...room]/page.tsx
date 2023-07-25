@@ -163,7 +163,7 @@ const Room: React.FC<RoomProps> = () => {
     if (key == "game-users" && !scoreSend) {
       setScoreSend(true);
       if (pSlot == 1) {
-        if (player2Score >= 5) {
+        if (value.p2S >= 5) {
           const data: DataEndGameDB = {
             idGame: uniqueIdentifier,
             idWinner: value?.p2,
@@ -285,7 +285,6 @@ const Room: React.FC<RoomProps> = () => {
     setGameStatus("running");
   };
   const ready = () => {
-    console.log('ready')
     socket.emit(`room-data`, {
       id: uniqueIdentifier,
       status: "ready",

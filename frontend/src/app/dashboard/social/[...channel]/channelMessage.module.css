@@ -112,6 +112,10 @@
     overflow: scroll;
 }
 
+.chatWindow::-webkit-scrollbar {
+    display: none;
+}
+
 .h1 {
     font-size: 1.4rem;
     /*border: 1px solid red;*/

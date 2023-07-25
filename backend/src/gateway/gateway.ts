@@ -7,7 +7,7 @@ import * as process from "process";
 
 
 
-@WebSocketGateway(4042, { cors: { origin: ['http://51.254.37.204/:3000']}})
+@WebSocketGateway(4042, { cors: true })
 export class MyGateway implements OnModuleInit {
     @WebSocketServer()
     server: Server;

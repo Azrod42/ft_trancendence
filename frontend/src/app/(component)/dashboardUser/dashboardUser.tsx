@@ -36,7 +36,7 @@ const DashboardUser: React.FC<DashboardUserProps> = ({}) => {
             <p className={styles.bigTxt}>{userData?.displayname}</p>
             <p className={styles.smallTxt}>Glad to see you again</p>
             <Link className={styles.smallLinkTxt} href={'/dashboard/profile'}>Acess profile</Link>
-            <Image className={styles.img} src={profilePicture ? profilePicture : '/media/default-img-profile.png'} alt='profile picture' width={256} height={256} />
+            <Image className={styles.img} src={profilePicture ? profilePicture : '/media/default-img-profile.png'} alt='profile picture' width={256} height={256} priority={true}/>
 		</div>
   )
 }

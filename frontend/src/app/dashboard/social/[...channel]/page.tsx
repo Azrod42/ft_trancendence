@@ -407,6 +407,11 @@ const Channel: React.FC<ChannelProps> = ({}) => {
       }),
     { staleTime: 5000, refetchOnWindowFocus: false }
   );
+
+  useEffect(() => {
+    if (!userData?.id)
+      userQuery.refetch();
+  });
   const messageQuery = useQuery(
     "fetchMsgData",
     () =>
@@ -497,8 +502,8 @@ const Channel: React.FC<ChannelProps> = ({}) => {
   const onSubmitSendMessage: SubmitHandler<FormValueSendMessage> = (data) => {
     data.chanId = uniqueIdentifier;
     data.time = new Date().getTime();
-    data.displayname = userData.displayname;
-    data.id = userData.id;
+    data.displayname = userData?.displayname;
+    data.id = userData?.id;
     sendMessageApi(data).then((res) => {
       if (res?.status == false) {
         setHeaderError("Error :");

@@ -162,6 +162,7 @@ const Profile: React.FC<ProfileProps> = ({}) => {
       postGameHist({ id: userData?.id! }).then((res: any) => {
         let tab = [];
         if (res.data) tab = JSON.parse(JSON.stringify(res.data));
+        tab.reverse();
         let html = `<style>
                                 .gameHist {
                                   width: 90%;

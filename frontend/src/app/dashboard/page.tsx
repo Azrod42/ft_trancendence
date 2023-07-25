@@ -160,7 +160,7 @@ const Dashboard: React.FC<DashboardProps> = ({}) => {
                   src={"/media/rank/Bronze_3_Rank.png"}
                   width={128}
                   height={128}
-                  alt="Bronze Rank"
+                  alt="Bronze Rank" priority={true}
                 />
               </div>
             )}
@@ -170,7 +170,7 @@ const Dashboard: React.FC<DashboardProps> = ({}) => {
                   src={"/media/rank/Silver_3_Rank.png"}
                   width={128}
                   height={128}
-                  alt="Silver Rank"
+                  alt="Silver Rank" priority={true}
                 />
               </div>
             )}
@@ -180,7 +180,7 @@ const Dashboard: React.FC<DashboardProps> = ({}) => {
                   src={"/media/rank/Gold_3_Rank.png"}
                   width={128}
                   height={128}
-                  alt="Gold Rank"
+                  alt="Gold Rank" priority={true}
                 />
               </div>
             )}
@@ -190,7 +190,7 @@ const Dashboard: React.FC<DashboardProps> = ({}) => {
                   src={"/media/rank/Diamond_3_Rank.png"}
                   width={128}
                   height={128}
-                  alt="Diamond Rank"
+                  alt="Diamond Rank" priority={true}
                 />
               </div>
             )}
@@ -200,7 +200,7 @@ const Dashboard: React.FC<DashboardProps> = ({}) => {
                   src={"/media/rank/Platinum_3_Rank.png"}
                   width={128}
                   height={128}
-                  alt="Platinum Rank"
+                  alt="Platinum Rank" priority={true}
                 />
               </div>
             )}

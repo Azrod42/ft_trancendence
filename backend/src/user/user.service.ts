@@ -336,7 +336,6 @@ export class UserService {
 		const userW = await this.findById(gameInfo.idWinner);
 		const userL = await this.findById(gameInfo.idLoser);
 
-
 		userW.totalGame += 1;
 		userL.totalGame += 1;
 		userW.gameWin += 1;

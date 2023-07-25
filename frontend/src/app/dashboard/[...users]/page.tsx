@@ -32,6 +32,7 @@ import { getWebSocketIdByUserId } from "@/app/auth/auth.api";
 import uuid from "react-uuid";
 import { setGameNumber } from "@/app/auth/auth.api";
 import { WebsocketContext } from "@/app/(common)/WebsocketContext";
+import {getUserData} from "@/app/(common)/getUserData";
 
 interface UserProps {}
 interface MyPageProps {
@@ -66,13 +67,15 @@ const User: React.FC<UserProps> = ({}) => {
       { staleTime: 5000 };
   });
   useEffect(() => {
-    if (userData == undefined) {
-      refetch();
-    }
+      if (userData == undefined) {
+        refetch();
+      }
   });
   useEffect(() => {
-  if (userData?.id == urlParam)
-    push('/dashboard/profile')
+    getUserInfo().then((res) => {
+      if (res?.id == urlParam)
+        push('/dashboard/profile')
+    });
   },[userData]);
   //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
   //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
@@ -199,6 +202,7 @@ const User: React.FC<UserProps> = ({}) => {
       postGameHist({ id: userData?.id! }).then((res: any) => {
         let tab = [];
         if (res.data) tab = JSON.parse(JSON.stringify(res.data));
+        tab.reverse();
         let html = `<style>
                                 .gameHist {
                                   width: 90%;

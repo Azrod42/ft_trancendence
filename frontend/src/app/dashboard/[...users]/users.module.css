@@ -131,13 +131,16 @@
   /*border: 1px solid red;*/
   width: 90%;
   height: 85%;
-  overflow: hidden;
+  overflow: scroll;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
   gap: 8px;
   padding-top: 10px;
+}
+.section_d_games::-webkit-scrollbar {
+  display: none;
 }
 
 .section_d_gamesitems {
