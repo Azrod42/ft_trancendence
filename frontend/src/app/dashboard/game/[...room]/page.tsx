@@ -490,7 +490,7 @@ const Room: React.FC<RoomProps> = () => {
           {gameStatus === "finished" ? (
             <div className={styles.ggTxt}>
               Congratulation{" "}
-              {playerScore == 3 ? <div>Player 1</div> : <div>Player 2</div>}
+              {playerScore >=5 ? <div>Player 1</div> : <div>Player 2</div>}
             </div>
           ) : (
             <div className={styles.containerCanvas}>
@@ -529,8 +529,8 @@ const Room: React.FC<RoomProps> = () => {
               )}
               {gameStatus === "running" && (
                 <div className={styles.scoreBoard}>
-                  <div>Player 1 Score: {playerScore}</div>
-                  <div>Player 2 Score: {player2Score}</div>
+                  {/*<div>Player 1 Score: {playerScore}</div>*/}
+                  {/*<div>Player 2 Score: {player2Score}</div>*/}
                 </div>
               )}
               <canvas

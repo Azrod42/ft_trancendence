@@ -94,6 +94,9 @@
     }
 }
 
+.scoreBoard{
+    margin-top: 30px;
+}
 
 .canvas {
     transform: scale(1);

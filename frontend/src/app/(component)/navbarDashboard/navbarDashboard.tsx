@@ -114,7 +114,7 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
 			setuserData(userDta);
 			setId(userDta.id);
 			setIsUserData(true)
-		}), {refetchInterval: 5000, refetchOnWindowFocus: false}
+		}), {refetchInterval: 10000, refetchOnWindowFocus: false}
 	);
 	useEffect(() => {
 		if (userData == undefined) {

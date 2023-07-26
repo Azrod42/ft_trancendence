@@ -1,4 +1,4 @@
-import { IsString,IsNotEmpty,MinLength } from "class-validator";
+import {IsString, IsNotEmpty, MinLength, MaxLength} from "class-validator";
 
 export class ChangeDisplayNameDto {
 	@IsString()
@@ -10,6 +10,7 @@ export class ChangeDisplayNameDto {
 
 export class ChangeDisplayName {
 	@IsNotEmpty()
+	@MaxLength(10)
 	displayname: string;
 }
 

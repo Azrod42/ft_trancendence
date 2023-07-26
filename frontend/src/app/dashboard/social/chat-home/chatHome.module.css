@@ -1,6 +1,11 @@
 .container {
   text-align: center;
   color: white;
+  overflow: scroll;
+}
+
+.container::-webkit-scrollbar {
+  display: none;
 }
 
 .category {

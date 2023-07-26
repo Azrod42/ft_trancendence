@@ -88,12 +88,6 @@ export const ChannelCategory: React.FC = () => {
     }
   }, [userChannel]);
 
-
-  const [isOpen, setIsOpen] = useState(false);
-  const [isOpen2, setIsOpen2] = useState(false);
-  const [isOpen3, setIsOpen3] = useState(false);
-
-
   const refPublic:  React.MutableRefObject<any> = useRef();
   const refPublicNu:  React.MutableRefObject<any> = useRef();
   const refProtected:  React.MutableRefObject<any> = useRef();
@@ -104,65 +98,35 @@ export const ChannelCategory: React.FC = () => {
 
     return (
     <div className={styles.container}>
-      <div className={styles.category} onClick={() => setIsOpen(!isOpen)}>
+      <div className={styles.category}>
         <div className={styles.name}>
           <p>Public Channels</p>
           <p ref={refPublicNu}>(0)</p>
         </div>
-        <Image
-            className={styles.arrow}
-            src="/media/arrow.png"
-            width={13}
-            height={7}
-            alt="arrow"
-            style={{ transform: isOpen ? "rotate(0deg)" : "rotate(-90deg)" }}
-        />
       </div>
       <div className={styles.channelUnit}>
-        {isOpen && (
-            <div ref={refPublic}>
-            </div>
-        )}
+        <div ref={refPublic}>
+        </div>
       </div>
-      <div className={styles.category} onClick={() => setIsOpen2(!isOpen2)}>
+      <div className={styles.category}>
         <div className={styles.name}>
           <p>Protected Channels</p>
           <p ref={refProtectedNu}>(0)</p>
         </div>
-        <Image
-            className={styles.arrow}
-            src="/media/arrow.png"
-            width={13}
-            height={7}
-            alt="arrow"
-            style={{ transform: isOpen2 ? "rotate(0deg)" : "rotate(-90deg)" }}
-        />
       </div>
       <div className={styles.channelUnit}>
-        {isOpen2 && (
-            <div ref={refProtected}>
-            </div>
-        )}
+        <div ref={refProtected}>
+        </div>
       </div>
-      <div className={styles.category} onClick={() => setIsOpen3(!isOpen3)}>
+      <div className={styles.category}>
         <div className={styles.name}>
           <p>Private Channels</p>
           <p ref={refPrivateNu}>(0)</p>
         </div>
-        <Image
-            className={styles.arrow}
-            src="/media/arrow.png"
-            width={13}
-            height={7}
-            alt="arrow"
-            style={{ transform: isOpen3 ? "rotate(0deg)" : "rotate(-90deg)" }}
-        />
       </div>
       <div className={styles.channelUnit}>
-        {isOpen3 && (
             <div ref={refPrivate}>
             </div>
-        )}
       </div>
     </div>
   );

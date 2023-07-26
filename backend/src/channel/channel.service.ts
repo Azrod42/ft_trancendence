@@ -215,6 +215,8 @@ export class ChannelService {
             throw new HttpException("Channel with this id does no exist", HttpStatus.NOT_FOUND,);
         if (await this.isUserIn(channel.owners, idUser) == false)
             throw new HttpException("User is not administrator", HttpStatus.UNAUTHORIZED,);
+        if (channel.owner != idUser)
+            throw new HttpException(`Only owner can change type (${channel.owner})`, HttpStatus.UNAUTHORIZED,);
         if (channel.type == chanInfo.type)
             throw new HttpException("The channel is already in this category", HttpStatus.UNAUTHORIZED,);
         if (chanInfo.type == 3) {
@@ -426,6 +428,8 @@ export class ChannelService {
         const userToMute = await this.usersService.findByDisplayname(muteData.id);
         if (await this.isUserIn(channel.owners, userTrig) == false)
             throw new HttpException("You are not channel administrator", HttpStatus.CONFLICT,);
+        if (userToMute == channel.owner)
+            throw new HttpException("You can't mute owner", HttpStatus.CONFLICT,);
         // if (await this.isUserIn(channel.owners, userToMute))
         //     throw new HttpException("You cant mute administrator", HttpStatus.CONFLICT,);
         for (let i = 0; chanMute[i]; i++) {
@@ -445,7 +449,7 @@ export class ChannelService {
     const channel: Channel = await this.channelRepo.findOneBy({
       id: messageData.chanId,
     });
-    const user = await this.usersService.findByDisplayname(userTrig);
+    const user = await this.usersService.findByDisplayname(messageData.displayname);
     let muted = [];
     if (channel.mutedusers) muted = JSON.parse(channel.mutedusers);
     if (muted) {

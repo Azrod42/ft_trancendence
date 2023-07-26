@@ -470,7 +470,7 @@ const Channel: React.FC<ChannelProps> = ({}) => {
                 `;
       for (let i = 0; msgData[i]; i++) {
         const date = new Date(msgData[i].time);
-        const time = `${date.getDay()} / ${date.getMonth()} ${date.getHours()}:${date.getMinutes()}`;
+        const time = `${date.getHours()}:${date.getMinutes()}`;
         html += `
                     <div class="containerMsg">
                         <div class='msgHeader'>

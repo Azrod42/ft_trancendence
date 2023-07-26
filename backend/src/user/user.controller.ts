@@ -464,11 +464,7 @@ export class UserController {
 
   @Post('block-user')
   @UseGuards(JwtAuthGuard)
-  async blockUser(
-    @Req() request: RequestWithUser,
-    @Res() res,
-    @Body() muteData: inviteToChannelDto,
-  ): Promise<string> {
+  async blockUser(@Req() request: RequestWithUser, @Res() res, @Body() muteData: inviteToChannelDto,): Promise<string> {
     return res.send(
       await this.userService.blockUser(request.user.id, muteData),
     );
@@ -526,22 +522,14 @@ export class UserController {
   @HttpCode(200)
   @Post('get-match-hist')
   @UseGuards(JwtAuthGuard)
-  async getMatchHistory(
-    @Req() request: RequestWithUser,
-    @Res() res,
-    @Body() data: chanIdDto,
-  ): Promise<any> {
+  async getMatchHistory(@Req() request: RequestWithUser, @Res() res, @Body() data: chanIdDto,): Promise<any> {
     return res.send(await this.userService.getMatchHistory(data.id));
   }
 
   @HttpCode(200)
   @Post('get-user-stats')
   @UseGuards(JwtAuthGuard)
-  async getUserStats(
-    @Req() request: RequestWithUser,
-    @Res() res,
-    @Body() data: chanIdDto,
-  ): Promise<any> {
+  async getUserStats(@Req() request: RequestWithUser, @Res() res, @Body() data: chanIdDto,): Promise<any> {
     return res.send(await this.userService.getUserStats(data.id));
   }
 

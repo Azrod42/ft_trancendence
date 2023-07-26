@@ -7,7 +7,7 @@ networks:
   backend:
     ipam:
       config:
-        - subnet: 172.20.0.0/16
+        - subnet: 172.22.0.0/16
 services:
   # -=-=-=-=-=-=-=-=-=-=FRONTEND=-=-=-=-=-=-=-=-=-=-
   front:
@@ -24,7 +24,6 @@ services:
       - backend
     depends_on:
       - back
-
   # -=-=-=-=-=-=-=-=-=-=BACKEND=-=-=-=-=-=-=-=-=-=-
   back:
     volumes:
@@ -43,7 +42,6 @@ services:
       - backend
     depends_on:
       - postgres
-
   # # -=-=-=-=-=-=-=-=-=-=POSTGRES=-=-=-=-=-=-=-=-=-=-
   postgres:
        image: postgres:15-alpine
@@ -60,8 +58,7 @@ services:
        restart: unless-stopped
        networks:
          backend:
-           ipv4_address: 172.20.0.10
-
+           ipv4_address: 172.22.0.10
   # # -=-=-=-=-=-=-=-=-=-=PGADMIN=-=-=-=-=-=-=-=-=-=-
   pgadmin:
     image: dpage/pgadmin4
