@@ -179,7 +179,7 @@ const useSignUp: React.FC<signUpProps> = ({}) => {
 						<div className={styles.orBarre} />
 					</div>
 					<div className={styles.loginAuth42} onClick={() => {
-						window.open(`${process.env.AUTH42_LINK1}${process.env.AUTH42_UID}${process.env.AUTH42_LINK2}`, '_self')}}>Register With <Image src='/media/logo42.svg' alt='logo42' width={30} height={30} />
+						window.open(`${process.env.AUTH42_LINK}`, '_self')}}>Auth With <Image src='/media/logo42.svg' alt='logo42' width={30} height={30} />
 					</div>
 				</div>
     		</motion.form>

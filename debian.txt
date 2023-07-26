@@ -15,3 +15,5 @@ make
 172.20.0.10
 
 transcendence_project_tsorabel
+
+AUTH42_LINK: 'https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-2662a2a754551cc5137ce4cba4a210a7f466d016511f7152d18e47db98bb06a5&redirect_uri=http%3A%2F%2F51.254.37.204%3A4000%2Fauth%2Fcallback&response_type=code',
