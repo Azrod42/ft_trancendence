@@ -13,3 +13,5 @@ git clone https://github.com/Azrod42/ft_transcendence.git
 make
 
 172.20.0.10
+
+transcendence_project_tsorabel

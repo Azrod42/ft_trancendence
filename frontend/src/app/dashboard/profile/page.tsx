@@ -328,10 +328,10 @@ const Profile: React.FC<ProfileProps> = ({}) => {
                 </span>
                 <form action="">
                   <input
-                    className={styles.itemFileInputProfileInfo}
                     name="file"
                     type="file"
                     onChange={onFileUploadChange}
+                    className={styles.itemFileInputProfileInfo}
                   />
                 </form>
               </span>

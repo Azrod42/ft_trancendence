@@ -157,7 +157,7 @@ export class AuthController {
 	async handle2faToken(@Req() request: Request, @Res() response: Response, @Body() body) {
 		if (!body.uniqueIdentifier)
 			throw new HttpException('No hashed param', HttpStatus.UNAUTHORIZED,);
-		const code = Buffer.from(body.uniqueIdentifier, 'base64').toString('binary');
+		const code = Buffer.from(body.uniqueIdentifier[1], 'base64').toString('binary');
 		const userid = await this.userService.FindUserOnDB(code);
 		const user = await this.userService.findById(userid);
 		const isCodeValid = this.authService.isTwoFactorAuthenticationCodeValid(
