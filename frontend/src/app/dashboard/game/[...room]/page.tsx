@@ -520,7 +520,7 @@ const Room: React.FC<RoomProps> = () => {
                           className={styles.rankedBtn}
                           onClick={() => rankedChangeType(true)}
                         >
-                          Trun on
+                          Turn on
                         </div>
                       )}
                     </div>

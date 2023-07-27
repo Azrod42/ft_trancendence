@@ -88,7 +88,6 @@ export const TopBar: React.FC = () => {
     <div className={styles.staticTop}>
       <Header text="Social" />
       <ButtonGroup />
-      <SearchBar />
     </div>
   );
 };
