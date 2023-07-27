@@ -30,7 +30,7 @@ export const WebSocket = (user: any) => {
             })
         });
         socket.on('connectedUser', (data) => {
-            refDiv.current.innerText = '' + data?.data.length;
+            // refDiv.current.innerText = '' + data?.data.length;
             localStorage.setItem('connectedUser', JSON.stringify(data?.data));
             setNeedRefresh(false)
         });
@@ -47,7 +47,6 @@ export const WebSocket = (user: any) => {
     },[]);
     return (
         <div ref={refDiv} className={styles.container}>
-            1
         </div>
     )
 }
