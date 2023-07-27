@@ -13,7 +13,6 @@ import {
   banUserChan,
   blockUserApi,
   changeChanType,
-  createChannel,
   fetchChannelInfo,
   FormChangeChanType,
   FormValueInviteUser,
@@ -21,7 +20,6 @@ import {
   FormValueSendMessage,
   getChannelMessageApi,
   inviteUserChan,
-  joinChannel,
   kickUserChan,
   leaveChannel,
   muteUserPost,
@@ -33,10 +31,7 @@ import {
 import { useMutation, useQuery } from "react-query";
 import LoadingPage from "@/app/(component)/loadingPage/loadingPage";
 import ErrorNotification from "@/app/(component)/errorNotification/errorNotification";
-import { mockSession } from "next-auth/client/__tests__/helpers/mocks";
-import user = mockSession.user;
 import { WebsocketContext } from "@/app/(common)/WebsocketContext";
-import { getUserData } from "@/app/(common)/getUserData";
 
 interface ChannelProps {}
 
