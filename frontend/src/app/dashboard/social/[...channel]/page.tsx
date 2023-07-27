@@ -82,11 +82,15 @@ const Channel: React.FC<ChannelProps> = ({}) => {
     { staleTime: 5000, refetchOnWindowFocus: false, refetchInterval: 5000 }
   );
 
-  setInterval(() => {
-    if (localStorage.getItem("connectedUser")) {
-      setLocalConnectedUser(JSON.parse(localStorage.getItem("connectedUser")!));
-    }
-  }, 5000);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (localStorage?.getItem("connectedUser")) {
+        setLocalConnectedUser(JSON.parse(localStorage.getItem("connectedUser")!));
+      }
+    }, 5000);
+
+    return () => clearInterval(interval);
+  },[])
 
   useEffect(() => {
     if (localStorage.getItem("connectedUser")) {
